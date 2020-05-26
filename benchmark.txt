@@ -1,5 +1,8 @@
 ########### BENCHMARKS ##############
 
+GUROBI : AFIRO environ 1ms, KB2 environ 3ms
+
+
 ### code de base
 tolerance eps=1e-8
 # AFIRO : 6.415 ms (6900 allocations: 4.84 MiB)
