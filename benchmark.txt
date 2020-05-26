@@ -18,4 +18,5 @@ tolerance eps=1e-8
 # KB2 : 20.578 ms (13077 allocations: 13.63 MiB)
 
 ### optimisation initialisation et vecteurs redondants
-# AFIRO :  16.304 ms (13065 allocations: 13.63 MiB)
+# AFIRO :  4.060 ms (6104 allocations: 3.26 MiB)
+# KB2 : 16.304 ms (13065 allocations: 13.63 MiB)
