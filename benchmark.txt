@@ -1,0 +1,14 @@
+########### BENCHMARKS ##############
+
+### code de base
+tolerance eps=1e-8
+# AFIRO : 6.415 ms (6900 allocations: 4.84 MiB)
+# KB2 : 27.793 ms (14912 allocations: 20.26 MiB)
+
+### matrices de 0 prédéfinies, affectations redondantes en dehors de la boucle
+# AFIRO : 6.430 ms (6749 allocations: 4.81 MiB)
+# KB2 : 27.797 ms (14527 allocations: 20.18 MiB)
+
+### factorisation LU avant résolution des systèmes aff et cc
+# AFIRO : 4.077 ms (6129 allocations: 3.27 MiB)
+# KB2 : 15.959 ms (13099 allocations: 13.65 MiB)
