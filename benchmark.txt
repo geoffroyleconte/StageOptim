@@ -77,3 +77,45 @@ KB2 :
   --------------
   samples:          287
   evals/sample:     1
+
+
+### résolution forme augmentée factorisation lu
+AFIRO : 
+  memory estimate:  2.33 MiB
+  allocs estimate:  4892
+  --------------
+  minimum time:     2.685 ms (0.00% GC)
+  median time:      2.732 ms (0.00% GC)
+  mean time:        2.890 ms (3.41% GC)
+  maximum time:     5.878 ms (35.65% GC)
+  --------------
+  samples:          1728
+  evals/sample:     1
+KB2 : 
+  memory estimate:  8.49 MiB
+  allocs estimate:  10232
+  --------------
+  minimum time:     10.482 ms (0.00% GC)
+  median time:      11.209 ms (0.00% GC)
+  mean time:        11.564 ms (2.79% GC)
+  maximum time:     14.806 ms (12.92% GC)
+  --------------
+  samples:          433
+  evals/sample:     1
+
+
+
+### résolution forme augmentée factorisation ldlt 
+(ne fonctionne pas lorsqu'il y a des variable avec une borne inf ET sup)
+AFIRO : 
+  memory estimate:  1.45 MiB
+  allocs estimate:  4802
+  --------------
+  minimum time:     1.153 ms (0.00% GC)
+  median time:      1.189 ms (0.00% GC)
+  mean time:        1.296 ms (5.12% GC)
+  maximum time:     5.203 ms (44.11% GC)
+  --------------
+  samples:          3847
+  evals/sample:     1
+KB2 : error (factorization encountered one or more zero pivots. Consider switching to a pivoted LU factorization.)
