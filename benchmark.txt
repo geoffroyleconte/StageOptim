@@ -119,3 +119,103 @@ AFIRO :
   samples:          3847
   evals/sample:     1
 KB2 : error (factorization encountered one or more zero pivots. Consider switching to a pivoted LU factorization.)
+
+
+### ajout +/-1e-6 sur diagonale, factorisation lu
+AFIRO :
+  memory estimate:  2.22 MiB
+  allocs estimate:  5316
+  --------------
+  minimum time:     2.484 ms (0.00% GC)
+  median time:      2.574 ms (0.00% GC)
+  mean time:        2.801 ms (3.38% GC)
+  maximum time:     8.330 ms (27.21% GC)
+  --------------
+  samples:          1782
+  evals/sample:     1
+KB2 :
+  memory estimate:  11.06 MiB
+  allocs estimate:  11683
+  --------------
+  minimum time:     10.687 ms (0.00% GC)
+  median time:      10.833 ms (0.00% GC)
+  mean time:        11.288 ms (3.15% GC)
+  maximum time:     13.210 ms (11.64% GC)
+  --------------
+  samples:          443
+  evals/sample:     1
+
+
+### ajout +/-1e-6 sur diagonale, factorisation ldlt
+AFIRO : 
+  memory estimate:  1.58 MiB
+  allocs estimate:  5191
+  --------------
+  minimum time:     1.435 ms (0.00% GC)
+  median time:      1.479 ms (0.00% GC)
+  mean time:        1.592 ms (4.57% GC)
+  maximum time:     5.326 ms (42.37% GC)
+  --------------
+  samples:          3133
+  evals/sample:     1
+KB2 : 
+  memory estimate:  6.11 MiB
+  allocs estimate:  11330
+  --------------
+  minimum time:     4.453 ms (0.00% GC)
+  median time:      4.582 ms (0.00% GC)
+  mean time:        4.914 ms (4.70% GC)
+  maximum time:     8.475 ms (34.81% GC)
+  --------------
+  samples:          1017
+  evals/sample:     1
+
+
+### rho adaptatif, eps_rb=eps_rc=1e-6 en norme infinie
+AFIRO :
+  memory estimate:  2.51 MiB
+  allocs estimate:  11512
+  --------------
+  minimum time:     2.280 ms (0.00% GC)
+  median time:      2.344 ms (0.00% GC)
+  mean time:        2.558 ms (4.12% GC)
+  maximum time:     6.015 ms (34.56% GC)
+  --------------
+  samples:          1955
+  evals/sample:     1
+KB2 :
+  memory estimate:  7.11 MiB
+  allocs estimate:  21347
+  --------------
+  minimum time:     5.317 ms (0.00% GC)
+  median time:      5.538 ms (0.00% GC)
+  mean time:        5.990 ms (4.17% GC)
+  maximum time:     11.300 ms (16.68% GC)
+  --------------
+  samples:          834
+  evals/sample:     1
+
+
+### Jacobien modifié par blocs à chaque itération
+AFIRO : 
+  memory estimate:  2.34 MiB
+  allocs estimate:  15957
+  --------------
+  minimum time:     2.143 ms (0.00% GC)
+  median time:      2.204 ms (0.00% GC)
+  mean time:        2.455 ms (5.14% GC)
+  maximum time:     6.639 ms (38.81% GC)
+  --------------
+  samples:          2039
+  evals/sample:     1
+KB2 : 
+  memory estimate:  6.22 MiB
+  allocs estimate:  31509
+  --------------
+  minimum time:     5.265 ms (0.00% GC)
+  median time:      5.379 ms (0.00% GC)
+  mean time:        5.844 ms (4.64% GC)
+  maximum time:     9.959 ms (21.63% GC)
+  --------------
+  samples:          854
+  evals/sample:     1
