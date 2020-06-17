@@ -219,3 +219,28 @@ KB2 :
   --------------
   samples:          854
   evals/sample:     1
+
+
+### Initialisation système forme augmentée, \rho=1e-8, \delta=1e-6
+AFIRO : 
+  memory estimate:  1.55 MiB
+  allocs estimate:  10181
+  --------------
+  minimum time:     1.508 ms (0.00% GC)
+  median time:      1.556 ms (0.00% GC)
+  mean time:        1.800 ms (4.77% GC)
+  maximum time:     11.772 ms (49.47% GC)
+  --------------
+  samples:          2771
+  evals/sample:     1
+KB2 : 
+  memory estimate:  3.64 MiB
+  allocs estimate:  17826
+  --------------
+  minimum time:     3.178 ms (0.00% GC)
+  median time:      3.289 ms (0.00% GC)
+  mean time:        3.652 ms (4.34% GC)
+  maximum time:     9.484 ms (39.20% GC)
+  --------------
+  samples:          1368
+  evals/sample:     1
