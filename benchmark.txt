@@ -244,3 +244,78 @@ KB2 :
   --------------
   samples:          1368
   evals/sample:     1
+
+
+### réglage problème de type système cc
+AFIRO : 
+  memory estimate:  1.25 MiB
+  allocs estimate:  8234
+  --------------
+  minimum time:     1.222 ms (0.00% GC)
+  median time:      1.280 ms (0.00% GC)
+  mean time:        1.391 ms (3.99% GC)
+  maximum time:     4.954 ms (47.77% GC)
+  --------------
+  samples:          3584
+  evals/sample:     1
+KB2 : 
+  memory estimate:  2.97 MiB
+  allocs estimate:  14578
+  --------------
+  minimum time:     2.528 ms (0.00% GC)
+  median time:      2.621 ms (0.00% GC)
+  mean time:        2.899 ms (3.76% GC)
+  maximum time:     10.883 ms (52.32% GC)
+  --------------
+  samples:          1723
+  evals/sample:     1
+
+
+### nouveau jacobien sparse
+AFIRO : 
+  memory estimate:  1.19 MiB
+  allocs estimate:  4356
+  --------------
+  minimum time:     996.201 μs (0.00% GC)
+  median time:      1.036 ms (0.00% GC)
+  mean time:        1.125 ms (4.12% GC)
+  maximum time:     4.888 ms (46.53% GC)
+  --------------
+  samples:          4431
+  evals/sample:     1
+KB2 : 
+  memory estimate:  2.76 MiB
+  allocs estimate:  6064
+  --------------
+  minimum time:     2.074 ms (0.00% GC)
+  median time:      2.136 ms (0.00% GC)
+  mean time:        2.296 ms (4.08% GC)
+  maximum time:     5.364 ms (35.17% GC)
+  --------------
+  samples:          2175
+  evals/sample:     1
+
+
+### Initialisation 3
+AFIRO : 
+  memory estimate:  916.73 KiB
+  allocs estimate:  3313
+  --------------
+  minimum time:     811.901 μs (0.00% GC)
+  median time:      847.000 μs (0.00% GC)
+  mean time:        928.277 μs (3.99% GC)
+  maximum time:     6.048 ms (36.96% GC)
+  --------------
+  samples:          5368
+  evals/sample:     1
+KB2 : 
+  memory estimate:  3.24 MiB
+  allocs estimate:  7103
+  --------------
+  minimum time:     2.365 ms (0.00% GC)
+  median time:      2.441 ms (0.00% GC)
+  mean time:        2.631 ms (4.12% GC)
+  maximum time:     5.616 ms (34.05% GC)
+  --------------
+  samples:          1898
+  evals/sample:     1
