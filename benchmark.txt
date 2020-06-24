@@ -319,3 +319,28 @@ KB2 :
   --------------
   samples:          1898
   evals/sample:     1
+
+
+### petites optimisations (\mu, mise à jour des paramètres)
+AFIRO : 
+  memory estimate:  876.67 KiB
+  allocs estimate:  3183
+  --------------
+  minimum time:     798.899 μs (0.00% GC)
+  median time:      827.599 μs (0.00% GC)
+  mean time:        891.684 μs (3.66% GC)
+  maximum time:     4.540 ms (39.11% GC)
+  --------------
+  samples:          5590
+  evals/sample:     1
+KB2 :
+  memory estimate:  3.11 MiB
+  allocs estimate:  6797
+  --------------
+  minimum time:     2.333 ms (0.00% GC)
+  median time:      2.402 ms (0.00% GC)
+  mean time:        2.607 ms (3.88% GC)
+  maximum time:     7.103 ms (21.29% GC)
+  --------------
+  samples:          1915
+  evals/sample:     1
