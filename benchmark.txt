@@ -345,3 +345,28 @@ KB2 :
   --------------
   samples:          2891
   evals/sample:     1
+
+
+### utilisation de la permutation de J_Fact
+AFIRO : 
+  memory estimate:  478.09 KiB
+  allocs estimate:  3056
+  --------------
+  minimum time:     498.499 μs (0.00% GC)
+  median time:      517.501 μs (0.00% GC)
+  mean time:        577.432 μs (4.53% GC)
+  maximum time:     8.123 ms (88.90% GC)
+  --------------
+  samples:          8610
+  evals/sample:     1
+KB2 : 
+  memory estimate:  1.45 MiB
+  allocs estimate:  5858
+  --------------
+  minimum time:     1.089 ms (0.00% GC)
+  median time:      1.130 ms (0.00% GC)
+  mean time:        1.217 ms (5.69% GC)
+  maximum time:     4.928 ms (58.23% GC)
+  --------------
+  samples:          4097
+  evals/sample:     1
