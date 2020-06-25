@@ -321,26 +321,27 @@ KB2 :
   evals/sample:     1
 
 
-### petites optimisations (\mu, mise à jour des paramètres)
+
+### factorisation ldl, @views, petites optimisations
 AFIRO : 
-  memory estimate:  876.67 KiB
-  allocs estimate:  3183
+  memory estimate:  575.83 KiB
+  allocs estimate:  3137
   --------------
-  minimum time:     798.899 μs (0.00% GC)
-  median time:      827.599 μs (0.00% GC)
-  mean time:        891.684 μs (3.66% GC)
-  maximum time:     4.540 ms (39.11% GC)
+  minimum time:     597.600 μs (0.00% GC)
+  median time:      650.900 μs (0.00% GC)
+  mean time:        738.058 μs (3.97% GC)
+  maximum time:     11.317 ms (0.00% GC)
   --------------
-  samples:          5590
+  samples:          6745
   evals/sample:     1
 KB2 :
-  memory estimate:  3.11 MiB
-  allocs estimate:  6797
+  memory estimate:  1.81 MiB
+  allocs estimate:  6029
   --------------
-  minimum time:     2.333 ms (0.00% GC)
-  median time:      2.402 ms (0.00% GC)
-  mean time:        2.607 ms (3.88% GC)
-  maximum time:     7.103 ms (21.29% GC)
+  minimum time:     1.564 ms (0.00% GC)
+  median time:      1.619 ms (0.00% GC)
+  mean time:        1.727 ms (4.90% GC)
+  maximum time:     5.086 ms (50.28% GC)
   --------------
-  samples:          1915
+  samples:          2891
   evals/sample:     1
