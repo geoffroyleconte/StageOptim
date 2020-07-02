@@ -302,41 +302,31 @@ function a_plus_equal_αb(a, α, b, n)
 end
 
 
+
 function equilibrationRT(A, n_rows, n_cols)
     r = zeros(n_rows)
     t = zeros(n_cols)
-    r_i_inv, r_j_inv = 0., 0.
-    for i=1:n_rows
-        # A_i = A[i,:]
-#         nnz_i = A_i[A_i.!=0.]
-#         if length(nnz_i)!=0
-#             r_i_inv = sqrt(maximum(abs.(nnz_i))*minimum(abs.(nnz_i)))
-#         else
-#             r_i_inv = 0.
-#         end
-        r_i_inv = @views maximum(abs.(A[i,:]))
-        if r_i_inv != 0.
-            r[i] = 1/r_i_inv
+    AT = sparse(A')
+    for j=1:n_rows
+        i = AT.colptr[j]
+        k = AT.colptr[j+1] - 1
+        r_j_inv = i <= k ? norm(AT.nzval[i:k], Inf) : 0.0
+        if r_j_inv > 0.0
+          r[j] = 1/r_j_inv
         end
+
     end
+
     for j=1:n_cols
-        #A_j = A[:,j]
-#         nnz_j = A_j[A_j.!=0.]
-#         if length(nnz_j)!=0
-#             t_j_inv = sqrt(maximum(abs.(nnz_j))*minimum(abs.(nnz_j)))
-#         else
-#             t_j_inv = 0.
-#         end
-        t_j_inv = @views maximum(abs.(A[:,j]))
-        if t_j_inv != 0.
-            t[j] = 1/t_j_inv
+        i = A.colptr[j]
+        k = A.colptr[j+1] - 1
+        t_j_inv = i <= k ? norm(A.nzval[i:k], Inf) : 0.0
+        if t_j_inv > 0.0
+          t[j] = 1/t_j_inv
         end
     end
     return Diagonal(r), Diagonal(t)
 end
-
-
-
 
 
 function mehrotraPCQuadBounds(QM; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
