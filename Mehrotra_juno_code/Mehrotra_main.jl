@@ -17,9 +17,7 @@ ucon = b
 x01 = [1.; 2.; 3.];
 
 QM = QuadraticModel(c, Q, A=A, lcon=lcon, ucon=ucon, lvar=lvar, uvar=uvar, x0=x01, c0=c0, name="QM1")
-SM = SlackModel(QM)
-
-stats_mpc1 =  mehrotraPCQuadBounds(SM)
+stats_mpc1 =  mehrotraPCQuadBounds(QM)
 println(stats_mpc1)
 
 # path for netlib problems
@@ -28,9 +26,7 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_n
 afiro = string(path_pb, "\\AFIRO.SIF")
 qpdata2 = readqps(afiro)
 QM2 = createQuadraticModel(qpdata2)
-SM2 = SlackModel(QM2);
-#displayQuadraticModel(SM2)
-stats_mpc2 =  mehrotraPCQuadBounds(SM2)
+stats_mpc2 =  mehrotraPCQuadBounds(QM2)
 println(stats_mpc2)
 
 
@@ -38,12 +34,10 @@ println(stats_mpc2)
 kb2 = string(path_pb, "\\KB2.SIF")
 qpdata3 = readqps(kb2)
 QM3 = createQuadraticModel(qpdata3)
-SM3 = SlackModel(QM3);
-res_mpc3 =  mehrotraPCQuadBounds(SM3);
+res_mpc3 =  mehrotraPCQuadBounds(QM3);
 
 # problem 4 SC50A  obj  -6.4575077059E+01
 SC50A = string(path_pb, "\\CRE-B.SIF")
 qpdata4 = readqps(SC50A)
 QM4 = createQuadraticModel(qpdata4)
-SM4 = SlackModel(QM4);
-res_mpc4 =  mehrotraPCQuadBounds(SM4, max_iter=100);
+res_mpc4 =  mehrotraPCQuadBounds(QM4, max_iter=100);
