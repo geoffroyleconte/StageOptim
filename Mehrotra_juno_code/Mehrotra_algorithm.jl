@@ -16,13 +16,12 @@ using LDLFactorizations
 
 
 function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
-                         lvar, uvar, ilow, iupp, irng, J_augm, ρ, n_rows, n_cols, Δ_xλ)
+                         lvar, uvar, ilow, iupp, irng, J_augm, n_rows, n_cols, Δ_xλ)
 
     T = eltype(Avals)
-    tmp_diag = vcat(ρ*ones(T, n_cols),spzeros(T, n_rows))
 
     #J_fact = ldlt(Symmetric(J_augm-Diagonal(tmp_diag), :U))
-    J_fact = ldl(Symmetric(J_augm-Diagonal(tmp_diag), :U))
+    J_fact = ldl(Symmetric(J_augm, :U))
     J_P = J_fact.P
     Δ_xλ[n_cols+1: end] = b
     Δ_xλ = ldiv!(J_fact, Δ_xλ)
@@ -267,6 +266,7 @@ function check_frontier!(γf, x, x_m_lvar, uvar_m_x, s_l, s_u, Δ, α_pri, α_du
 end
 
 
+
 function mul_Qx_COO!(Qx, Qrows, Qcols, Qvals, x)
     # right mutiplication for sparse COO symetric matrix M: res=Mv
     Qx .= zero(eltype(Qx))
@@ -359,6 +359,25 @@ function scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uva
     return Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uvar, d1, d2
 end
 
+function get_diag_sparseCSC(M; tri=:U)
+    # get diagonal index of M.nzval
+    # we assume all columns of M are non empty, and M triangular (:L or :U)
+    @assert tri ==:U || tri == :L
+    T = eltype(M)
+    n = length(M.rowval)
+    diagind = zeros(Int, M.m) # square matrix
+    index = M.rowval[1] # 1
+    if tri == :U
+        for i=1:M.m
+            diagind[i] = M.colptr[i+1] - 1
+        end
+    else
+        for i=1:M.m
+            diagind[i] = M.colptr[i]
+        end
+    end
+    return diagind
+end
 
 
 function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
@@ -389,18 +408,19 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     if scaling
         Arows, Acols, Avals, Qrows, Qcols, Qvals,
         c, b, lvar, uvar, d1, d2 = scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals,
-                                                 c, b, lvar, uvar, n_rows, n_cols, T(1e-3))
+                                                 c, b, lvar, uvar, n_rows, n_cols, T(1e-4))
     end
 
 
     # init regularization values
-    ρ, δ = T(1e5*sqrt(eps())), T(1e6*sqrt(eps())) # 1e6, 1e-1 ok
+    ρ, δ = T(1e8*sqrt(eps())), T(1e6*sqrt(eps())) # 1e6, 1e-1 ok
 
     J_augmrows = vcat(Qcols, Acols, n_cols+1:n_cols+n_rows, 1:n_cols)
     J_augmcols = vcat(Qrows, Arows.+n_cols, n_cols+1:n_cols+n_rows, 1:n_cols)
-    tmp_diag = zeros(n_cols)
+    tmp_diag = -T(1.0e-7).*ones(T, n_cols)
     J_augmvals = vcat(-Qvals, Avals, δ*ones(n_rows), tmp_diag)
     J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
+    diagind_J = get_diag_sparseCSC(J_augm)
 
     k = 0
     Δ_aff = zeros(T, n_cols+n_rows+n_low+n_upp)
@@ -411,7 +431,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     x, λ, s_l, s_u, J_P, Qx, ATλ,
     x_m_lvar, uvar_m_x, Δ_xλ = @views starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals,
                                                       b, c, lvar, uvar, ilow, iupp, QM.meta.irng,
-                                                      J_augm, T(1.0e-7), n_rows, n_cols, Δ_xλ)
+                                                      J_augm , n_rows, n_cols, Δ_xλ)
 
     Qx = mul_Qx_COO!(Qx, Qrows, Qcols, Qvals, x)
     ATλ = mul_ATλ_COO!(ATλ, Arows, Acols, Avals, λ)
@@ -469,12 +489,12 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         tmp_diag .= -ρ
         tmp_diag[ilow] .-= @views s_l[ilow] ./ x_m_lvar
         tmp_diag[iupp] .-= @views s_u[iupp] ./ uvar_m_x
-        J_augmvals[end-n_cols+1:end] = tmp_diag
 
-        J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
+#         J_augmvals[end-n_cols+1:end] = tmp_diag
+#         J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
+        J_augm.nzval[view(diagind_J,1:n_cols)] .= @views tmp_diag .- Q[diagind(Q)]
+        J_augm.nzval[view(diagind_J, n_cols+1:n_rows+n_cols)] .= δ
 
-        #J_fact = ldlt(Symmetric(J_augm, :U))
-        #J_fact = lu(Symmetric(J_augm), check=true)
         J_fact = ldl(Symmetric(J_augm, :U), J_P)
 
         Δ_aff = solve_augmented_system_aff!(J_fact, Δ_aff, Δ_xλ, rc, rb, x_m_lvar, uvar_m_x,
@@ -553,7 +573,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
 
         if δ >= 100*T(sqrt(eps()))
             δ /= 10
-            J_augmvals[end-n_cols-n_rows+1:end-n_cols] .= δ
+            #J_augmvals[end-n_cols-n_rows+1:end-n_cols] .= δ
         end
         if ρ >= 1*T(sqrt(eps()))
             ρ /= 10
@@ -619,6 +639,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                   iter = k, elapsed_time=elapsed_time)
     return stats
 end
+
 
 
 
