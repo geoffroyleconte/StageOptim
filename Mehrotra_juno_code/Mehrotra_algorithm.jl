@@ -137,23 +137,6 @@ function compute_μ(x_m_lvar, uvar_m_x, s_l, s_u, nb_low, nb_upp)
 end
 
 
-function is_in_Neighborhood_inf(gamma, x_l, x_u, s_l, s_u, lvar, uvar)
-    # check if the current point is in N_inf(gamma)
-    # true : (xi_l - lvari) * si_l >= gamma mu   and   (uvari - xi_u) * si_u >= gamma mu
-    mu = Compute_mu(x_l, x_u, s_l, s_u, lvar, uvar)
-    for i=1:length(x_l)
-        if (x_l[i] - lvar[i]) * s_l[i] < gamma*mu
-            return false
-        end
-    end
-    for i=1:length(x_u)
-        if (uvar[i] - x_u[i]) * s_u[i] < gamma*mu
-            return false
-        end
-    end
-    return true
-end
-
 function solve_augmented_system_aff!(J_fact, Δ_aff, Δ_xλ, rc, rb, x_m_lvar, uvar_m_x,
                                      s_l, s_u, ilow, iupp,  n_cols, n_rows, n_low)
 
@@ -188,6 +171,7 @@ function solve_augmented_system_cc!(J_fact, Δ_cc, Δ_xλ ,Δ_aff, σ, μ, x_m_l
     Δ_cc[n_cols+n_rows+n_low+1:end] .= @views (rxs_u.+s_u[iupp].*Δ_xλ[1:n_cols][iupp])./uvar_m_x
     return Δ_cc
 end
+
 
 function check_frontier!(γf, x, x_m_lvar, uvar_m_x, s_l, s_u, Δ, α_pri, α_dual,
                         x_m_lvar_sup, uvar_m_x_sup, s_l_sup, s_u_sup,
@@ -266,7 +250,6 @@ function check_frontier!(γf, x, x_m_lvar, uvar_m_x, s_l, s_u, Δ, α_pri, α_du
 end
 
 
-
 function mul_Qx_COO!(Qx, Qrows, Qcols, Qvals, x)
     # right mutiplication for sparse COO symetric matrix M: res=Mv
     Qx .= zero(eltype(Qx))
@@ -304,6 +287,7 @@ function get_norm_rc!(v, A_i, Avals, n_v, n)
         if abs(Avals[j]) > v[A_i[j]]
             v[A_i[j]] = abs(Avals[j])
         end
+#         v[A_i[j]] += Avals[j]^2  #2-norm
     end
 
     v = sqrt.(v)
@@ -324,6 +308,13 @@ function mul_A_D1_D2!(Arows, Acols, Avals, d1, d2, r, c, n_rows, n_cols, n)
     return Arows, Acols, Avals, d1, d2
 end
 
+function mul_Q_D!(Qrows, Qcols, Qvals, d, c, n_cols, n)
+    @inbounds @simd for i=1:n
+        Qvals[i] /= c[Qrows[i]] * c[Qcols[i]]
+    end
+    d ./= c
+    return Qrows, Qcols, Qvals, d
+end
 
 function scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uvar,
                        n_rows, n_cols, ϵ; max_iter = 100)
@@ -356,8 +347,30 @@ function scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uva
     lvar ./= d2
     uvar ./= d2
 
-    return Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uvar, d1, d2
+    # scaling Q (symmetric)
+    d3 = ones(T, n_cols)
+    c_k .= zero(T)
+    c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
+    convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
+    Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
+    k = 1
+    while !convergence && k < max_iter
+        c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
+        convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
+        Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
+        k += 1
+    end
+
+    for i=1:n
+        Avals[i] *= d3[Acols[i]]
+    end
+    c .*= d3
+    lvar ./= d3
+    uvar ./= d3
+
+    return Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uvar, d1, d2, d3
 end
+
 
 function get_diag_sparseCSC(M; tri=:U)
     # get diagonal index of M.nzval
@@ -379,6 +392,20 @@ function get_diag_sparseCSC(M; tri=:U)
     return diagind
 end
 
+function get_diag_sparseCOO(Qrows, Qcols, Qvals, n_cols)
+    # get diagonal index of M.nzval
+    # we assume all columns of M are non empty, and M triangular (:L or :U)
+    T = eltype(Qvals)
+    n = length(Qrows)
+    diagval = zeros(T, n_cols)
+    for i=1:n
+        if Qrows[i] == Qcols[i]
+            diagval[Qrows[i]] = Qvals[i]
+        end
+    end
+
+    return diagval
+end
 
 function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
                               tol_Δx=1e-16, ϵ_μ=0., max_time=1080., scaling=true,
@@ -407,13 +434,13 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
 
     if scaling
         Arows, Acols, Avals, Qrows, Qcols, Qvals,
-        c, b, lvar, uvar, d1, d2 = scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals,
-                                                 c, b, lvar, uvar, n_rows, n_cols, T(1e-4))
+        c, b, lvar, uvar, d1, d2, d3 = scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals,
+                                                     c, b, lvar, uvar, n_rows, n_cols, T(1e-4))
     end
 
 
     # init regularization values
-    ρ, δ = T(1e8*sqrt(eps())), T(1e6*sqrt(eps())) # 1e6, 1e-1 ok
+    ρ, δ = T(1e5*sqrt(eps())), T(1e6*sqrt(eps())) # 1e6, 1e-1 ok
 
     J_augmrows = vcat(Qcols, Acols, n_cols+1:n_cols+n_rows, 1:n_cols)
     J_augmcols = vcat(Qrows, Arows.+n_cols, n_cols+1:n_cols+n_rows, 1:n_cols)
@@ -421,6 +448,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     J_augmvals = vcat(-Qvals, Avals, δ*ones(n_rows), tmp_diag)
     J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
     diagind_J = get_diag_sparseCSC(J_augm)
+    diag_Q = get_diag_sparseCOO(Qrows, Qcols, Qvals, n_cols)
 
     k = 0
     Δ_aff = zeros(T, n_cols+n_rows+n_low+n_upp)
@@ -492,8 +520,10 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
 
 #         J_augmvals[end-n_cols+1:end] = tmp_diag
 #         J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
-        J_augm.nzval[view(diagind_J,1:n_cols)] .= @views tmp_diag .- Q[diagind(Q)]
+
+        J_augm.nzval[view(diagind_J,1:n_cols)] .= @views tmp_diag .- diag_Q
         J_augm.nzval[view(diagind_J, n_cols+1:n_rows+n_cols)] .= δ
+
 
         J_fact = ldl(Symmetric(J_augm, :U), J_P)
 
@@ -599,29 +629,29 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     end
 
     if scaling
-        x .*= d2
+        x .*= d2 .* d3
         for i=1:length(Qrows)
-            Qvals[i] /= d2[Qrows[i]] * d2[Qcols[i]]
+            Qvals[i] /= d2[Qrows[i]] * d2[Qcols[i]] * d3[Qrows[i]] * d3[Qcols[i]]
         end
         Qx = mul_Qx_COO!(Qx, Qrows, Qcols, Qvals, x)
         xTQx_2 =  x' * Qx / 2
         for i=1:length(Arows)
-            Avals[i] /= d1[Arows[i]] * d2[Acols[i]]
+            Avals[i] /= d1[Arows[i]] * d2[Acols[i]] * d3[Acols[i]]
         end
         λ .*= d1
         ATλ = mul_ATλ_COO!(ATλ, Arows, Acols, Avals, λ)
         Ax = mul_Ax_COO!(Ax, Arows, Acols, Avals, x)
         b ./= d1
-        c ./= d2
+        c ./= d2 .* d3
         cTx = c' * x
         pri_obj = xTQx_2 + cTx + c0
-        lvar .*= d2
-        uvar .*= d2
+        lvar .*= d2 .* d3
+        uvar .*= d2 .* d3
         dual_obj = b' * λ - xTQx_2 + view(s_l,ilow)'*view(lvar,ilow) -
                     view(s_u,iupp)'*view(uvar,iupp) +c0
 
-        s_l ./= d2
-        s_u ./= d2
+        s_l ./= d2 .* d3
+        s_u ./= d2 .* d3
         rb .= Ax .- b
         rc .= ATλ .-Qx .+ s_l .- s_u .- c
         max_rc, max_rb = norm(rc, Inf), norm(rb, Inf)
