@@ -464,9 +464,9 @@ function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     Δ_xλ = zeros(T, n_cols+n_rows)
 
     x, λ, s_l, s_u, J_P, Qx, ATλ,
-    x_m_lvar, uvar_m_x, Δ_xλ = @views starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals,
-                                                      b, c, lvar, uvar, ilow, iupp, QM.meta.irng,
-                                                      J_augm , n_rows, n_cols, Δ_xλ)
+    x_m_lvar, uvar_m_x, Δ_xλ = starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals,
+                                               b, c, lvar, uvar, ilow, iupp, QM.meta.irng,
+                                               J_augm , n_rows, n_cols, Δ_xλ)
 
     Qx = mul_Qx_COO!(Qx, Qrows, Qcols, Qvals, x)
     ATλ = mul_ATλ_COO!(ATλ, Arows, Acols, Avals, λ)
