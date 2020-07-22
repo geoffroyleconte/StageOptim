@@ -11,18 +11,17 @@ using LinearOperators
 using QPSReader
 using SolverTools
 using SolverBenchmark
-using Plots
 using LDLFactorizations
-
 
 function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
                          lvar, uvar, ilow, iupp, irng, J_augm, n_rows, n_cols, Δ_xλ)
 
     T = eltype(Avals)
-
+    J_P = ldl_analyze(Symmetric(J_augm, :U))
+    J_fact = ldl_factorize!(Symmetric(J_augm, :U), J_P)
     #J_fact = ldlt(Symmetric(J_augm-Diagonal(tmp_diag), :U))
-    J_fact = ldl(Symmetric(J_augm, :U))
-    J_P = J_fact.P
+#     J_fact = ldl(Symmetric(J_augm, :U))
+#     J_P = J_fact.P
     Δ_xλ[n_cols+1: end] = b
     Δ_xλ = ldiv!(J_fact, Δ_xλ)
     #init_xλ2 = J_fact \ [c ; zeros(n_rows)]
@@ -89,7 +88,6 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
 end
 
 
-
 function compute_α_dual(v, dir_v)
     n = length(v)
     T = eltype(v)
@@ -152,6 +150,7 @@ function solve_augmented_system_aff!(J_fact, Δ_aff, Δ_xλ, rc, rb, x_m_lvar, u
     Δ_aff[n_cols+n_rows+n_low+1:end] = @views -s_u[iupp] + s_u[iupp].*Δ_xλ[1:n_cols][iupp]./uvar_m_x
     return Δ_aff
 end
+
 
 function solve_augmented_system_cc!(J_fact, Δ_cc, Δ_xλ ,Δ_aff, σ, μ, x_m_lvar, uvar_m_x,
                                     rxs_l, rxs_u, s_l, s_u, ilow, iupp, n_cols, n_rows, n_low)
@@ -372,6 +371,7 @@ function scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uva
 end
 
 
+
 function get_diag_sparseCSC(M; tri=:U)
     # get diagonal index of M.nzval
     # we assume all columns of M are non empty, and M triangular (:L or :U)
@@ -407,11 +407,13 @@ function get_diag_sparseCOO(Qrows, Qcols, Qvals, n_cols)
     return diagval
 end
 
-function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=0., max_time=1080., scaling=true,
-                              display=true, check_frontier=true)
-    QM = SlackModel(QM0)
 
+
+function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
+                              tol_Δx=1e-16, ϵ_μ=0., max_time=60., scaling=true,
+                              display=true, check_frontier=true)
+
+    QM = SlackModel(QM0)
     start_time = time()
     elapsed_time = 0.0
 
@@ -420,24 +422,29 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     n_cols = length(lvar)
     Oc = zeros(n_cols)
     ilow, iupp = [QM.meta.ilow; QM.meta.irng], [QM.meta.iupp; QM.meta.irng] # finite bounds index
-    n_low, n_upp = length(ilow), length(iupp) # number of finite constraints
+    irng = QM.meta.irng
+    ifix = QM.meta.ifix
     c = grad(QM, Oc)
     A = jac(QM, Oc)
+    A = dropzeros!(A)
     T = eltype(A)
     Arows, Acols, Avals = findnz(A)
     n_rows, n_cols = size(A)
     @assert QM.meta.lcon == QM.meta.ucon # equality constraint (Ax=b)
     b = QM.meta.lcon
     Q = hess(QM, Oc)  # lower triangular
+    Q = dropzeros!(Q)
     Qrows, Qcols, Qvals = findnz(Q)
     c0 = obj(QM, Oc)
 
     if scaling
         Arows, Acols, Avals, Qrows, Qcols, Qvals,
         c, b, lvar, uvar, d1, d2, d3 = scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals,
-                                                     c, b, lvar, uvar, n_rows, n_cols, T(1e-4))
+                                                     c, b, lvar, uvar, n_rows, n_cols, T(1e-3))
     end
 
+
+    n_low, n_upp = length(ilow), length(iupp) # number of finite constraints
 
     # init regularization values
     ρ, δ = T(1e5*sqrt(eps())), T(1e6*sqrt(eps())) # 1e6, 1e-1 ok
@@ -524,8 +531,8 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         J_augm.nzval[view(diagind_J,1:n_cols)] .= @views tmp_diag .- diag_Q
         J_augm.nzval[view(diagind_J, n_cols+1:n_rows+n_cols)] .= δ
 
-
-        J_fact = ldl(Symmetric(J_augm, :U), J_P)
+        J_fact = ldl_factorize!(Symmetric(J_augm, :U), J_P)
+#         J_fact = ldl(Symmetric(J_augm, :U), J_P)
 
         Δ_aff = solve_augmented_system_aff!(J_fact, Δ_aff, Δ_xλ, rc, rb, x_m_lvar, uvar_m_x,
                                             s_l, s_u, ilow, iupp,  n_cols, n_rows, n_low)
@@ -669,7 +676,6 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                   iter = k, elapsed_time=elapsed_time)
     return stats
 end
-
 
 
 
