@@ -409,9 +409,9 @@ end
 
 
 
-function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=0., max_time=60., scaling=true,
-                              display=true, check_frontier=true)
+function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-7, ϵ_rb=1e-7, ϵ_rc=1e-7,
+                              tol_Δx=1e-16, ϵ_μ=1.0e-9, max_time=60., scaling=true,
+                              check_frontier=true)
 
     QM = SlackModel(QM0)
     start_time = time()
@@ -430,7 +430,6 @@ function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     T = eltype(A)
     Arows, Acols, Avals = findnz(A)
     n_rows, n_cols = size(A)
-    @assert QM.meta.lcon == QM.meta.ucon # equality constraint (Ax=b)
     b = QM.meta.lcon
     Q = hess(QM, Oc)  # lower triangular
     Q = dropzeros!(Q)
@@ -443,6 +442,10 @@ function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                                      c, b, lvar, uvar, n_rows, n_cols, T(1e-3))
     end
 
+    cNorm = norm(c)
+    bNorm = norm(b)
+    ANorm = norm(Avals)  # Frobenius norm after scaling; could be computed while scaling?
+    QNorm = norm(Qvals)
 
     n_low, n_upp = length(ilow), length(iupp) # number of finite constraints
 
@@ -499,24 +502,21 @@ function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     pri_obj = xTQx_2 + cTx + c0
     dual_obj = b' * λ - xTQx_2 + view(s_l,ilow)'*view(lvar,ilow) -
                     view(s_u,iupp)'*view(uvar,iupp) +c0
-    pdd = abs(pri_obj - dual_obj ) / (one(T) + abs(pri_obj))
-    max_rc, max_rb = norm(rc, Inf), norm(rb, Inf)
-    optimal = pdd < ϵ_pdd && max_rb < ϵ_rb && max_rc < ϵ_rc
+    pdd = abs(pri_obj - dual_obj ) / (one(T) + abs(pri_obj) + abs(dual_obj))
+    rcNorm, rbNorm = norm(rc), norm(rb)
+    optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb && rcNorm < ϵ_rc
 
     n_Δx = zero(T)
     small_Δx, small_μ = false, μ < ϵ_μ
     Δt = time() - start_time
     tired = Δt > max_time
 
-    # display
-    if display == true
-        @info log_header([:k, :pri_obj, :pdd, :max_rb, :max_rc, :n_Δx, :μ],
-                         [Int, Float64, Float64, Float64, Float64, Float64, Float64, Float64],
-                        hdr_override=Dict(:k=>"Iter", :pri_obj=>"primal", :pdd=>"pdd",
-                                          :max_rb=>"rb cond", :max_rc=>"rc cond",
-                                          :n_Δx=>"‖Δx‖", :μ=>"μ"))
-        @info log_row([k, pri_obj, pdd, max_rb, max_rc, n_Δx, μ])
-    end
+    @info log_header([:k, :pri_obj, :pdd, :rbNorm, :rcNorm, :n_Δx, :α_pri, :α_du, :μ],
+                      [Int, Float64, Float64, Float64, Float64, Float64, Float64, Float64, Float64, Float64],
+                      hdr_override=Dict(:k => "iter", :pri_obj => "obj", :pdd => "rgap",
+                                        :rbNorm => "‖rb‖", :rcNorm => "‖rc‖",
+                                        :n_Δx => "‖Δx‖"))
+    @info log_row(Any[k, pri_obj, pdd, rbNorm, rcNorm, n_Δx, zero(T), zero(T), μ])
 
     while k<max_iter && !optimal && !tired # && !small_μ && !small_μ
 
@@ -603,25 +603,27 @@ function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         # update stopping criterion values:
 
         pdd = abs(pri_obj - dual_obj ) / (one(T) + abs(pri_obj))
-        max_rc, max_rb = norm(rc, Inf), norm(rb, Inf)
-        optimal = pdd < ϵ_pdd && max_rb < ϵ_rb && max_rc < ϵ_rc
+        rcNorm, rbNorm = norm(rc), norm(rb)
+        xNorm = norm(x)
+        λNorm = norm(λ)
+        # @info "" rbNorm ϵ_rb * max(1, bNorm + ANorm * xNorm)
+        # @info "" rcNorm ϵ_rc * max(1, cNorm + QNorm * xNorm + ANorm * λNorm)
+        optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb * max(1, bNorm + ANorm * xNorm) && rcNorm < ϵ_rc * max(1, cNorm + QNorm * xNorm + ANorm * λNorm)
         small_Δx, small_μ = n_Δx < tol_Δx, μ < ϵ_μ
         k += 1
 
-        if δ >= 100*T(sqrt(eps()))
+        if δ >= T(sqrt(eps()))
             δ /= 10
             #J_augmvals[end-n_cols-n_rows+1:end-n_cols] .= δ
         end
-        if ρ >= 1*T(sqrt(eps()))
+        if ρ >= T(sqrt(eps()))
             ρ /= 10
         end
 
         Δt = time() - start_time
         tired = Δt > max_time
 
-        if display == true
-            @info log_row([k, pri_obj, pdd, max_rb, max_rc, n_Δx, μ])
-        end
+        @info log_row(Any[k, pri_obj, pdd, rbNorm, rcNorm, n_Δx, α_pri, α_dual_final, μ])
 
     end
 
@@ -661,19 +663,20 @@ function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         s_u ./= d2 .* d3
         rb .= Ax .- b
         rc .= ATλ .-Qx .+ s_l .- s_u .- c
-        max_rc, max_rb = norm(rc, Inf), norm(rb, Inf)
+        rcNorm, rbNorm = norm(rc), norm(rb)
     end
 
     elapsed_time = time() - start_time
 
     stats = GenericExecutionStats(status, QM, solution = x,
                                   objective = pri_obj ,
-                                  dual_feas = max_rc,
-                                  primal_feas = max_rb,
-                                  multipliers = λ,
-                                  multipliers_L = s_l,
-                                  multipliers_U = s_u,
-                                  iter = k, elapsed_time=elapsed_time)
+                                  dual_feas = rcNorm,
+                                  primal_feas = rbNorm,
+                                  solver_specific = Dict(:multipliers => λ,
+                                                         :multipliers_L => s_l,
+                                                         :multipliers_U => s_u),
+                                  iter = k,
+                                  elapsed_time=elapsed_time)
     return stats
 end
 
