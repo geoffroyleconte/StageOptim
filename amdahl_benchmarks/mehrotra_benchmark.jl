@@ -482,7 +482,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
 
 #         J_fact = ldl_factorize!(Symmetric(J_augm, :U), J_P)
         J_fact = try ldl_factorize!(Symmetric(J_augm, :U), J_P)
-        catch 
+        catch
             # println("error ", k)
             if c_pdd == 0
                 δ *= 1e2
@@ -503,18 +503,11 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
             J_augm.nzval[view(diagind_J, n_cols+1:n_rows+n_cols)] .= δ
             J_fact = ldl_factorize!(Symmetric(J_augm, :U), J_P)
         end
-            c_catch += 1
-            tmp_diag .= -ρ
-            tmp_diag[ilow] .-= @views s_l[ilow] ./ x_m_lvar
-            tmp_diag[iupp] .-= @views s_u[iupp] ./ uvar_m_x
-            J_augm.nzval[view(diagind_J,1:n_cols)] .= @views tmp_diag .- diag_Q
-            J_augm.nzval[view(diagind_J, n_cols+1:n_rows+n_cols)] .= δ
-            J_fact = ldl_factorize!(Symmetric(J_augm, :U), J_P)
-        end
 
         if c_catch >= 3
             break
         end
+
 
         Δ_aff = solve_augmented_system_aff!(J_fact, Δ_aff, Δ_xλ, rc, rb, x_m_lvar, uvar_m_x,
                                             s_l, s_u, ilow, iupp,  n_cols, n_rows, n_low)
