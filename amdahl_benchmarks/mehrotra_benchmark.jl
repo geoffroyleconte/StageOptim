@@ -401,7 +401,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     # init regularization values
     ρ, δ = T(1e5*sqrt(eps())), T(1e6*sqrt(eps())) # 1e6, 1e-1 ok
 #     ρ_min, δ_min = 1e0*T(sqrt(eps())), 100*T(sqrt(eps()))
-    ρ_min, δ_min = 1e-5*T(sqrt(eps())), 1e-5*T(sqrt(eps()))
+    ρ_min, δ_min = 1e-5*T(sqrt(eps())), 1e0*T(sqrt(eps()))
     c_catch = zero(Int) # to avoid endless loop
     c_pdd = zero(Int) # avoid too small δ_min
 
@@ -594,23 +594,22 @@ function mehrotraPCQuadBounds(QM0; max_iter=100, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         k += 1
 
         push!(l_pdd, pdd)
-        if μ < 1e-40 && c_pdd == 0
+        if μ < 1e-40 && c_pdd < 5
             # println("mu  ", k)
-#             δ_min /= 1e3
-#             δ /= 1e3
-#             c_pdd += 3
-        elseif k > 10  && std(l_pdd[end-5:end]./mean(l_pdd[end-5:end])) < 1e-2 && c_pdd < 3
+            δ_min /= 1e3
+            δ /= 1e3
+            c_pdd += 5
+            elseif k > 10  && std(l_pdd[end-5:end]./mean(l_pdd[end-5:end])) < 1e-2 && c_pdd < 5
             # println("pdd  ", k)
             δ_min /= 1e1
             δ /= 1e1
             c_pdd += 1
-        elseif μ < 1e-50 && c_pdd == 3
-#             println("mu2  ", k)
-#             δ_min /= 1e2
-#             δ /= 1e2
-#             c_pdd += 1
+        elseif μ < 1e-50 && c_pdd == 5
+            # println("mu2  ", k)
+            δ_min /= 1e2
+            δ /= 1e2
+            c_pdd += 1
         end
-
 
         if δ >= δ_min
             δ /= 10
@@ -690,9 +689,9 @@ function createQuadraticModel(qpdata; name="qp_pb")
 end
 
 
-path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 # path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
-# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 pb2 = string(path_pb, "/AFIRO.SIF")
 # pb2 = string(path_pb, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
@@ -703,7 +702,7 @@ stats2 =  mehrotraPCQuadBounds(SM2)  # compile code
 
 function optimize_mehrotra(path_pb)
     problems = []
-    i_max = 1000
+    i_max = 10
     i = 1
     for file_name in readdir(path_pb)
          if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
@@ -752,9 +751,13 @@ end
 
 problems_stats =  optimize_mehrotra(path_pb)
 
-save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
-# save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\results"
+# save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
+save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
-file = jldopen(string(save_path, "/mehrotra_lp_test.jld2"), "w")
+file = jldopen(string(save_path, "/mehrotra_lp_test2.jld2"), "w")
 file["stats"] = problems_stats
 close(file)
+
+# jldopen(string(save_path, "/mehrotra_lp_test2.jld2"), "w") do file
+#     file["stats"] = problems_stats
+# end
