@@ -690,11 +690,11 @@ function createQuadraticModel(qpdata; name="qp_pb")
 end
 
 
-path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
-# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
+# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
-pb2 = string(path_pb, "/AFIRO.SIF")
-# pb2 = string(path_pb, "/DUAL1.SIF")
+# pb2 = string(path_pb, "/AFIRO.SIF")
+pb2 = string(path_pb, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
 SM2 = SlackModel(createQuadraticModel(qpdata2))
 stats2 =  mehrotraPCQuadBounds(SM2)  # compile code
@@ -755,7 +755,7 @@ problems_stats =  optimize_mehrotra(path_pb)
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
-file = jldopen(string(save_path, "/mehrotra_lp_test.jld2"), "w")
+file = jldopen(string(save_path, "/mehrotra_qp_test.jld2"), "w")
 file["stats"] = problems_stats
 close(file)
 
