@@ -355,7 +355,7 @@ end
 
 
 function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1300., scaling=true,
+                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=300., scaling=true,
                               display=true)
 
     start_time = time()
@@ -490,8 +490,8 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                 ρ *= 1e5
                 ρ_min *= 1e5
             else
-                δ *= 1e3
-                δ_min *= 1e3
+                δ *= 1e4s
+                δ_min *= 1e4
                 ρ *= 1e5
                 ρ_min *= 1e5
             end
