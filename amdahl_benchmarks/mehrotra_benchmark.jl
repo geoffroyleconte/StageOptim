@@ -82,7 +82,6 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
         end
         if (lvar[i] < x0[i] < uvar[i]) == false
             x0[i] = (lvar[i] + uvar[i]) / 2
-            println(i)
         end
     end
 
@@ -763,12 +762,11 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
-problems_stats_qp =  optimize_mehrotra(path_pb_qp)
-
 file_lp = jldopen(string(save_path, "/mehrotra_lp_test2.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
+problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 file_qp = jldopen(string(save_path, "/mehrotra_qp_test2.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
