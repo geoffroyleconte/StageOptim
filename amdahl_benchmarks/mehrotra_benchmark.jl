@@ -17,7 +17,7 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
     T = eltype(Avals)
     J_P = ldl_analyze(Symmetric(J_augm, :U))
     J_fact = ldl_factorize!(Symmetric(J_augm, :U), J_P)
-#J_fact = ldlt(Symmetric(J_augm-Diagonal(tmp_diag), :U))
+    #J_fact = ldlt(Symmetric(J_augm-Diagonal(tmp_diag), :U))
 #     J_fact = ldl(Symmetric(J_augm, :U))
 #     J_P = J_fact.P
     Δ_xλ[n_cols+1: end] = b
@@ -38,14 +38,14 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
     if length(ilow) == 0
         δx_l1, δs_l1 = zero(T), zero(T)
     else
-        δx_l1 = max(-T(1.5)*minimum(x0_m_lvar), T(1.e0))
+        δx_l1 = max(-T(1.5)*minimum(x0_m_lvar), T(1.e-2))
         δs_l1 = @views max(-T(1.5)*minimum(s0_l[ilow]), T(1.e-4))
     end
 
     if length(iupp) == 0
         δx_u1, δs_u1 = zero(T), zero(T)
     else
-        δx_u1 = max(-T(1.5)*minimum(uvar_m_x0), T(1.e0))
+        δx_u1 = max(-T(1.5)*minimum(uvar_m_x0), T(1.e-2))
         δs_u1 = @views max(-T(1.5)*minimum(s0_u[iupp]), T(1.e-4))
     end
 
@@ -74,8 +74,15 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
     s0_u[iupp] = @views s0_u[iupp] .+ δs
 
     @inbounds @simd for i in irng
+        if lvar[i] > x0[i]
+            x0[i] = lvar[i] + T(1e-4)
+        end
+        if x0[i] > uvar[i]
+            x0[i] = uvar[i] - T(1e-4)
+        end
         if (lvar[i] < x0[i] < uvar[i]) == false
             x0[i] = (lvar[i] + uvar[i]) / 2
+            println(i)
         end
     end
 
@@ -84,6 +91,7 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
 
     return x0, λ0, s0_l, s0_u, J_P, Qx, ATλ, x0_m_lvar, uvar_m_x0, Δ_xλ
 end
+
 
 
 function compute_α_dual(v, dir_v)
@@ -690,11 +698,11 @@ function createQuadraticModel(qpdata; name="qp_pb")
 end
 
 
-# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
-path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
+path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 # pb2 = string(path_pb, "/AFIRO.SIF")
-pb2 = string(path_pb, "/DUAL1.SIF")
+pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
 SM2 = SlackModel(createQuadraticModel(qpdata2))
 stats2 =  mehrotraPCQuadBounds(SM2)  # compile code
@@ -750,14 +758,20 @@ function optimize_mehrotra(path_pb)
     return solve_problems(mehrotraPCQuadBounds, problems)
 end
 
-problems_stats =  optimize_mehrotra(path_pb)
 
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
-file = jldopen(string(save_path, "/mehrotra_qp_test.jld2"), "w")
-file["stats"] = problems_stats
-close(file)
+problems_stats_lp =  optimize_mehrotra(path_pb_lp)
+problems_stats_qp =  optimize_mehrotra(path_pb_qp)
+
+file_lp = jldopen(string(save_path, "/mehrotra_lp_test2.jld2"), "w")
+file_lp["stats"] = problems_stats_lp
+close(file_lp)
+
+file_qp = jldopen(string(save_path, "/mehrotra_qp_test2.jld2"), "w")
+file_qp["stats"] = problems_stats_qp
+close(file_qp)
 
 # jldopen(string(save_path, "/mehrotra_lp_test2.jld2"), "w") do file
 #     file["stats"] = problems_stats
