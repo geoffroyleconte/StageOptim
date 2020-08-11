@@ -83,9 +83,10 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
         if (lvar[i] < x0[i] < uvar[i]) == false
             x0[i] = (lvar[i] + uvar[i]) / 2
         end
-        x0_m_lvar[i] = x0[i] - lvar[i]
-        uvar_m_x0[i] = uvar[i] - x0[i]
     end
+
+    x0_m_lvar .= @views x0[ilow] .- lvar[ilow]
+    uvar_m_x0 .= @views uvar[iupp] .- x0[iupp]
 
     @assert all(x0 .> lvar) && all(x0 .< uvar)
     @assert @views all(s0_l[ilow] .> zero(T)) && all(s0_u[iupp] .> zero(T))
@@ -114,6 +115,7 @@ function compute_α_dual(v, dir_v)
 end
 
 
+
 function compute_α_primal(v, dir_v, lvar, uvar)
     n = length(v)
     T = eltype(v)
@@ -140,23 +142,6 @@ function compute_μ(x_m_lvar, uvar_m_x, s_l, s_u, nb_low, nb_upp)
     return (s_l' * x_m_lvar + s_u' * uvar_m_x) / (nb_low + nb_upp)
 end
 
-
-function is_in_Neighborhood_inf(gamma, x_l, x_u, s_l, s_u, lvar, uvar)
-    # check if the current point is in N_inf(gamma)
-    # true : (xi_l - lvari) * si_l >= gamma mu   and   (uvari - xi_u) * si_u >= gamma mu
-    mu = Compute_mu(x_l, x_u, s_l, s_u, lvar, uvar)
-    for i=1:length(x_l)
-        if (x_l[i] - lvar[i]) * s_l[i] < gamma*mu
-            return false
-        end
-    end
-    for i=1:length(x_u)
-        if (uvar[i] - x_u[i]) * s_u[i] < gamma*mu
-            return false
-        end
-    end
-    return true
-end
 
 function solve_augmented_system_aff!(J_fact, Δ_aff, Δ_xλ, rc, rb, x_m_lvar, uvar_m_x,
                                      s_l, s_u, ilow, iupp,  n_cols, n_rows, n_low)
@@ -314,15 +299,6 @@ function scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uva
     uvar ./= d3
 
     return Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uvar, d1, d2, d3
-end
-
-
-function mul_A_D1!(Arows, Avals, d1, r, n_rows, n)
-    @inbounds @simd for i=1:n
-        Avals[i] /= r[Arows[i]]
-    end
-    d1 ./= r
-    return Arows, Avals, d1
 end
 
 
@@ -701,9 +677,10 @@ end
 
 path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
-# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
-# pb2 = string(path_pb, "/AFIRO.SIF")
-pb2 = string(path_pb_qp, "/DUAL1.SIF")
+# path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
+# path_pb_qp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
+pb2 = string(path_pb_lp, "/AFIRO.SIF")
+# pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
 SM2 = SlackModel(createQuadraticModel(qpdata2))
 stats2 =  mehrotraPCQuadBounds(SM2)  # compile code
@@ -712,7 +689,7 @@ stats2 =  mehrotraPCQuadBounds(SM2)  # compile code
 
 function optimize_mehrotra(path_pb)
     problems = []
-    i_max = 1000
+    i_max = 12
     i = 1
     for file_name in readdir(path_pb)
          if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
