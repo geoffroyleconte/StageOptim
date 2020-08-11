@@ -74,20 +74,21 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
     s0_u[iupp] = @views s0_u[iupp] .+ δs
 
     @inbounds @simd for i in irng
-        if lvar[i] > x0[i]
+        if lvar[i] >= x0[i]
             x0[i] = lvar[i] + T(1e-4)
         end
-        if x0[i] > uvar[i]
+        if x0[i] >= uvar[i]
             x0[i] = uvar[i] - T(1e-4)
         end
         if (lvar[i] < x0[i] < uvar[i]) == false
             x0[i] = (lvar[i] + uvar[i]) / 2
         end
+        x0_m_lvar[i] = x0[i] - lvar[i]
+        uvar_m_x0[i] = uvar[i] - x0[i]
     end
 
     @assert all(x0 .> lvar) && all(x0 .< uvar)
     @assert @views all(s0_l[ilow] .> zero(T)) && all(s0_u[iupp] .> zero(T))
-
     return x0, λ0, s0_l, s0_u, J_P, Qx, ATλ, x0_m_lvar, uvar_m_x0, Δ_xλ
 end
 
@@ -362,7 +363,7 @@ end
 
 
 function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=300., scaling=true,
+                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1300., scaling=true,
                               display=true)
 
     start_time = time()
@@ -414,7 +415,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
 
     J_augmrows = vcat(Qcols, Acols, n_cols+1:n_cols+n_rows, 1:n_cols)
     J_augmcols = vcat(Qrows, Arows.+n_cols, n_cols+1:n_cols+n_rows, 1:n_cols)
-    tmp_diag = -T(1.0e-7).*ones(T, n_cols)
+    tmp_diag = -T(1.0e-2).*ones(T, n_cols)
     J_augmvals = vcat(-Qvals, Avals, δ*ones(n_rows), tmp_diag)
     J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
     diagind_J = get_diag_sparseCSC(J_augm)
@@ -762,12 +763,12 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
-file_lp = jldopen(string(save_path, "/mehrotra_lp_test2.jld2"), "w")
+file_lp = jldopen(string(save_path, "/mehrotra_lp1.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
-file_qp = jldopen(string(save_path, "/mehrotra_qp_test2.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp1.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
