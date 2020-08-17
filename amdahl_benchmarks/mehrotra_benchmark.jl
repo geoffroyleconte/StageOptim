@@ -593,7 +593,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
             c_pdd += 1
         end
 
-        if k>10 && c_catch == 0 && @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -1 / min(δ,ρ) / 1e-1
+        if k>10 && c_catch == 0 && @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -1 / δ / 1e-8
             δ /= 1e2
             δ_min /= 1e2
             c_pdd += 1
@@ -744,13 +744,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/mehrotra_lp6.jld2"), "w")
+file_lp = jldopen(string(save_path, "/mehrotra_lp7.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp6.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp7.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
