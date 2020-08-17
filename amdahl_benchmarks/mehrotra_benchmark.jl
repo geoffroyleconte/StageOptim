@@ -339,7 +339,7 @@ function get_diag_sparseCOO(Qrows, Qcols, Qvals, n_cols)
 end
 
 
-function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=1e-6,
+function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
                               tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
                               display=true)
 
@@ -474,6 +474,11 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=
                 δ_min *= 1e2
                 ρ *= 1e5
                 ρ_min *= 1e5
+            elseif c_pdd == 0 && c_catch != 0
+                δ *= 1e2
+                δ_min *= 1e2
+                ρ *= 1e1
+                ρ_min *= 1e1
             else
                 δ *= 1e4
                 δ_min *= 1e4
@@ -540,14 +545,14 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=
         if zero(T) in x_m_lvar
             for i=1:n_low
                 if x_m_lvar[i] == zero(T)
-                    x_m_lvar[i] = eps()^2
+                    x_m_lvar[i] = eps()
                 end
             end
         end
         if zero(T) in uvar_m_x
             for i=1:n_upp
                 if uvar_m_x[i] == zero(T)
-                    uvar_m_x[i] = eps()^2
+                    uvar_m_x[i] = eps()
                 end
             end
         end
@@ -580,21 +585,24 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=
         k += 1
 
         push!(l_pdd, pdd)
-        if μ < 1e-40 && c_pdd < 5
-            # println("mu  ", k)
-            δ_min /= 1e3
-            δ /= 1e3
-            c_pdd += 5
-            elseif k > 10  && std(l_pdd[end-5:end]./mean(l_pdd[end-5:end])) < 1e-2 && c_pdd < 5
+
+        if k > 10  && std(l_pdd[end-5:end]./mean(l_pdd[end-5:end])) < 1e-2 && c_pdd < 5
             # println("pdd  ", k)
             δ_min /= 1e1
             δ /= 1e1
             c_pdd += 1
-        elseif μ < 1e-50 && c_pdd == 5
-            # println("mu2  ", k)
-            δ_min /= 1e2
+        end
+
+        if c_catch == 0 && ilow != [] && @views maximum(s_l[ilow]./x_m_lvar) > 1 / δ / 1e-10
             δ /= 1e2
+            δ_min /= 1e2
             c_pdd += 1
+            # println("iter ", k, "ilow")
+        elseif c_catch == 0 && iupp != [] && @views maximum(s_u[iupp]./uvar_m_x) > 1 / δ / 1e-10
+            δ /= 1e2
+            δ_min /= 1e2
+            c_pdd += 1
+            # println("iter ", k, "iupp")
         end
 
         if δ >= δ_min
@@ -740,15 +748,15 @@ end
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
-# problems_stats_lp =  optimize_mehrotra(path_pb_lp)
-#
-# file_lp = jldopen(string(save_path, "/mehrotra_lp4.jld2"), "w")
-# file_lp["stats"] = problems_stats_lp
-# close(file_lp)
+problems_stats_lp =  optimize_mehrotra(path_pb_lp)
+
+file_lp = jldopen(string(save_path, "/mehrotra_lp5.jld2"), "w")
+file_lp["stats"] = problems_stats_lp
+close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp4ter.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp5.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
