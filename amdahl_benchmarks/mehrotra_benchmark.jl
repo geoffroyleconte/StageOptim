@@ -339,7 +339,7 @@ function get_diag_sparseCOO(Qrows, Qcols, Qvals, n_cols)
 end
 
 
-function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=1e-6,
+function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
                               tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
                               display=true)
 
@@ -480,9 +480,9 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=
                 ρ *= 1e1
                 ρ_min *= 1e1
             else
-                δ *= 1e4
-                δ_min *= 1e4
-                ρ *= 1e5
+                δ *= 1e6
+                δ_min *= 1e6
+                ρ *= 1e
                 ρ_min *= 1e5
             end
             c_catch += 1
@@ -593,7 +593,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=
             c_pdd += 1
         end
 
-        if k>10 && c_catch == 0 && @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -1 / δ / 1e-8
+        if k>10 && c_catch == 0 && @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -1 / δ / 1e-6
             δ /= 1e2
             δ_min /= 1e2
             c_pdd += 1
@@ -742,15 +742,15 @@ end
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
-# problems_stats_lp =  optimize_mehrotra(path_pb_lp)
-#
-# file_lp = jldopen(string(save_path, "/mehrotra_lp7.jld2"), "w")
-# file_lp["stats"] = problems_stats_lp
-# close(file_lp)
+problems_stats_lp =  optimize_mehrotra(path_pb_lp)
+
+file_lp = jldopen(string(save_path, "/mehrotra_lp8.jld2"), "w")
+file_lp["stats"] = problems_stats_lp
+close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp7bis.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp8.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
