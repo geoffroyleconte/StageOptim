@@ -482,7 +482,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
             else
                 δ *= 1e6
                 δ_min *= 1e6
-                ρ *= 1e
+                ρ *= 1e5
                 ρ_min *= 1e5
             end
             c_catch += 1
