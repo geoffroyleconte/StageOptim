@@ -586,7 +586,6 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
 #         optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb * max(1, bNorm + ANorm * xNorm) &&
 #                     rcNorm < ϵ_rc * max(1, cNorm + QNorm * xNorm + ANorm * λNorm)
         rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
-        tol_rb, tol_rc = ϵ_rb*(one(T) + rbNorm), ϵ_rc*(one(T) + rcNorm)
         optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
         small_Δx, small_μ = n_Δx < tol_Δx, μ < ϵ_μ
         k += 1
@@ -660,7 +659,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         rb .= Ax .- b
         rc .= ATλ .-Qx .+ s_l .- s_u .- c
         rcNorm, rbNorm = norm(rc), norm(rb)
-#         rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
+        # rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
     end
 
     elapsed_time = time() - start_time
