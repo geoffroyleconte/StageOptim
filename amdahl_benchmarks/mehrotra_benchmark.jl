@@ -374,10 +374,10 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=
                                                      c, b, lvar, uvar, n_rows, n_cols, T(1e-3))
     end
 
-#     cNorm = norm(c)
-#     bNorm = norm(b)
-#     ANorm = norm(Avals)  # Frobenius norm after scaling; could be computed while scaling?
-#     QNorm = norm(Qvals)
+    cNorm = norm(c)
+    bNorm = norm(b)
+    ANorm = norm(Avals)  # Frobenius norm after scaling; could be computed while scaling?
+    QNorm = norm(Qvals)
 
     n_low, n_upp = length(ilow), length(iupp) # number of finite constraints
 
@@ -434,11 +434,11 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=
     dual_obj = b' * λ - xTQx_2 + view(s_l,ilow)'*view(lvar,ilow) -
                     view(s_u,iupp)'*view(uvar,iupp) +c0
     pdd = abs(pri_obj - dual_obj ) / (one(T) + abs(pri_obj))
-#     rcNorm, rbNorm = norm(rc), norm(rb)
-#     optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb && rcNorm < ϵ_rc
-    rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
-    tol_rb, tol_rc = ϵ_rb*(one(T) + rbNorm), ϵ_rc*(one(T) + rcNorm)
-    optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
+    rcNorm, rbNorm = norm(rc), norm(rb)
+    optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb && rcNorm < ϵ_rc
+    # rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
+    # tol_rb, tol_rc = ϵ_rb*(one(T) + rbNorm), ϵ_rc*(one(T) + rcNorm)
+    # optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
 
     l_pdd = zeros(T, 6)
     mean_pdd = one(T)
@@ -580,13 +580,13 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=
         # update stopping criterion values:
 
         pdd = abs(pri_obj - dual_obj ) / (one(T) + abs(pri_obj))
-#         rcNorm, rbNorm = norm(rc), norm(rb)
-#         xNorm = norm(x)
-#         λNorm = norm(λ)
-#         optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb * max(1, bNorm + ANorm * xNorm) &&
-#                     rcNorm < ϵ_rc * max(1, cNorm + QNorm * xNorm + ANorm * λNorm)
-        rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
-        optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
+        rcNorm, rbNorm = norm(rc), norm(rb)
+        xNorm = norm(x)
+        λNorm = norm(λ)
+        optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb * max(1, bNorm + ANorm * xNorm) &&
+                    rcNorm < ϵ_rc * max(1, cNorm + QNorm * xNorm + ANorm * λNorm)
+        # rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
+        # optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
         small_Δx, small_μ = n_Δx < tol_Δx, μ < ϵ_μ
         k += 1
 
@@ -658,8 +658,8 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-6, ϵ_rb=1e-6, ϵ_rc=
         s_u ./= d2 .* d3
         rb .= Ax .- b
         rc .= ATλ .-Qx .+ s_l .- s_u .- c
-        rcNorm, rbNorm = norm(rc), norm(rb)
-        # rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
+        # rcNorm, rbNorm = norm(rc), norm(rb)
+        rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
     end
 
     elapsed_time = time() - start_time
@@ -757,7 +757,7 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp9bis.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp8bis.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
