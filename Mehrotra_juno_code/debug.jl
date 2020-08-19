@@ -1,17 +1,15 @@
 using LinearAlgebra
-using LaTeXStrings
 using DataFrames
-using DataStructures
 using QuadraticModels
-using Printf
 using SparseArrays
 using BenchmarkTools
 using NLPModels
-using Statistics
 using QPSReader
 using SolverTools
 using SolverBenchmark
+using JLD2
 using LDLFactorizations
+using Statistics
 
 function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
                          lvar, uvar, ilow, iupp, irng, J_augm, n_rows, n_cols, Δ_xλ)
@@ -77,18 +75,17 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
 
     @inbounds @simd for i in irng
         if lvar[i] >= x0[i]
-            x0[i] = lvar[i] + T(1e-4)
+            x0[i] = lvar[i] + T(1e-1)
         end
         if x0[i] >= uvar[i]
-            x0[i] = uvar[i] - T(1e-4)
+            x0[i] = uvar[i] - T(1e-1)
         end
         if (lvar[i] < x0[i] < uvar[i]) == false
             x0[i] = (lvar[i] + uvar[i]) / 2
         end
+        x0_m_lvar[i] = x0[i] - lvar[i]
+        uvar_m_x0[i] = uvar[i] - x0[i]
     end
-
-    x0_m_lvar .= @views x0[ilow] .- lvar[ilow]
-    uvar_m_x0 .= @views uvar[iupp] .- x0[iupp]
 
     @assert all(x0 .> lvar) && all(x0 .< uvar)
     @assert @views all(s0_l[ilow] .> zero(T)) && all(s0_u[iupp] .> zero(T))
@@ -340,6 +337,7 @@ function get_diag_sparseCOO(Qrows, Qcols, Qvals, n_cols)
     return diagval
 end
 
+
 function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
                               tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
                               display=true)
@@ -369,6 +367,8 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     Qrows, Qcols, Qvals = findnz(Q)
     c0 = obj(QM, Oc)
 
+
+
     if scaling
         Arows, Acols, Avals, Qrows, Qcols, Qvals,
         c, b, lvar, uvar, d1, d2, d3 = scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals,
@@ -383,15 +383,15 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     n_low, n_upp = length(ilow), length(iupp) # number of finite constraints
 
     # init regularization values
-    ρ, δ = 1e5*sqrt(eps(T)), 1e5*sqrt(eps(T)) # 1e6, 1e-1 ok
+    ρ, δ = T(1e5*sqrt(eps())), T(1e6*sqrt(eps())) # 1e6, 1e-1 ok
 #     ρ_min, δ_min = 1e0*T(sqrt(eps())), 100*T(sqrt(eps()))
-    ρ_min, δ_min = 1e-5*sqrt(eps(T)), 1e0*sqrt(eps(T))
+    ρ_min, δ_min = 1e-5*T(sqrt(eps())), 1e0*T(sqrt(eps()))
     c_catch = zero(Int) # to avoid endless loop
     c_pdd = zero(Int) # avoid too small δ_min
 
     J_augmrows = vcat(Qcols, Acols, n_cols+1:n_cols+n_rows, 1:n_cols)
     J_augmcols = vcat(Qrows, Arows.+n_cols, n_cols+1:n_cols+n_rows, 1:n_cols)
-    tmp_diag = -T(1.0e0)/2 .* ones(T, n_cols)
+    tmp_diag = -T(1.0e-2).*ones(T, n_cols)
     J_augmvals = vcat(-Qvals, Avals, δ*ones(n_rows), tmp_diag)
     J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
     diagind_J = get_diag_sparseCSC(J_augm)
@@ -434,15 +434,10 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     pri_obj = xTQx_2 + cTx + c0
     dual_obj = b' * λ - xTQx_2 + view(s_l,ilow)'*view(lvar,ilow) -
                     view(s_u,iupp)'*view(uvar,iupp) +c0
-    pdd = abs(pri_obj - dual_obj ) / (one(T) + abs(pri_obj))
+    pdd = abs(pri_obj - dual_obj ) / (one(T) + abs(pri_obj) + abs(dual_obj))
     rcNorm, rbNorm = norm(rc), norm(rb)
     optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb && rcNorm < ϵ_rc
-    # rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
-    # tol_rb, tol_rc = ϵ_rb*(one(T) + rbNorm), ϵ_rc*(one(T) + rcNorm)
-    # optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
-
-    l_pdd = zeros(T, 6)
-    mean_pdd = one(T)
+    l_pdd = [pdd]
 
     n_Δx = zero(T)
     small_Δx, small_μ = false, μ < ϵ_μ
@@ -458,7 +453,6 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                            :n_Δx => "‖Δx‖"))
         @info log_row(Any[k, pri_obj, pdd, rbNorm, rcNorm, n_Δx, zero(T), zero(T), μ])
     end
-
 
     while k<max_iter && !optimal && !tired # && !small_μ && !small_μ
 
@@ -479,14 +473,9 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                 δ_min *= 1e2
                 ρ *= 1e5
                 ρ_min *= 1e5
-            elseif c_pdd == 0 && c_catch != 0
-                δ *= 1e2
-                δ_min *= 1e2
-                ρ *= 1e1
-                ρ_min *= 1e1
             else
-                δ *= 1e6
-                δ_min *= 1e6
+                δ *= 1e4
+                δ_min *= 1e4
                 ρ *= 1e5
                 ρ_min *= 1e5
             end
@@ -550,14 +539,14 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         if zero(T) in x_m_lvar
             for i=1:n_low
                 if x_m_lvar[i] == zero(T)
-                    x_m_lvar[i] = eps(T)^2
+                    x_m_lvar[i] = eps()
                 end
             end
         end
         if zero(T) in uvar_m_x
             for i=1:n_upp
                 if uvar_m_x[i] == zero(T)
-                    uvar_m_x[i] = eps(T)^2
+                    uvar_m_x[i] = eps()
                 end
             end
         end
@@ -586,24 +575,24 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         λNorm = norm(λ)
         optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb * max(1, bNorm + ANorm * xNorm) &&
                     rcNorm < ϵ_rc * max(1, cNorm + QNorm * xNorm + ANorm * λNorm)
-        # rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
-        # optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
         small_Δx, small_μ = n_Δx < tol_Δx, μ < ϵ_μ
         k += 1
 
-        l_pdd[k%6+1] = pdd
-        mean_pdd = mean(l_pdd)
-
-        if k > 10  && mean_pdd!=zero(T) && std(l_pdd./mean_pdd) < 1e-2 && c_pdd < 5
+        push!(l_pdd, pdd)
+        if μ < 1e-40 && c_pdd < 5
+            # println("mu  ", k)
+            δ_min /= 1e3
+            δ /= 1e3
+            c_pdd += 5
+            elseif k > 10  && std(l_pdd[end-5:end]./mean(l_pdd[end-5:end])) < 1e-2 && c_pdd < 5
             # println("pdd  ", k)
             δ_min /= 1e1
             δ /= 1e1
             c_pdd += 1
-        end
-
-        if k>10 && c_catch == 0 && @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / 1e-6
-            δ /= 1e2
+        elseif μ < 1e-50 && c_pdd == 5
+            # println("mu2  ", k)
             δ_min /= 1e2
+            δ /= 1e2
             c_pdd += 1
         end
 
@@ -659,13 +648,12 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         s_u ./= d2 .* d3
         rb .= Ax .- b
         rc .= ATλ .-Qx .+ s_l .- s_u .- c
-        # rcNorm, rbNorm = norm(rc), norm(rb)
-        rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
+        rcNorm, rbNorm = norm(rc), norm(rb)
     end
 
     elapsed_time = time() - start_time
 
-    stats = GenericExecutionStats(status, QM, solution = x[1:QM.meta.nvar],
+    stats = GenericExecutionStats(status, QM, solution = x,
                                   objective = pri_obj ,
                                   dual_feas = rcNorm,
                                   primal_feas = rbNorm,
@@ -678,10 +666,20 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
 end
 
 
-
 function createQuadraticModel(qpdata; name="qp_pb")
     return QuadraticModel(qpdata.c, qpdata.qrows, qpdata.qcols, qpdata.qvals,
             Arows=qpdata.arows, Acols=qpdata.acols, Avals=qpdata.avals,
             lcon=qpdata.lcon, ucon=qpdata.ucon, lvar=qpdata.lvar, uvar=qpdata.uvar,
             c0=qpdata.c0, name=name)
 end
+
+
+# path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+# path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
+path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
+path_pb_qp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
+pb2 = string(path_pb_lp, "/BOEING1.SIF")
+# pb2 = string(path_pb_qp, "/DUAL1.SIF")
+qpdata2 = readqps(pb2);
+SM2 = SlackModel(createQuadraticModel(qpdata2))
+stats2 =  mehrotraPCQuadBounds(SM2)  # compile code
