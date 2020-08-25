@@ -25,8 +25,8 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
     #init_xλ2 = J_fact \ [c ; zeros(n_rows)]
     x0 = Δ_xλ[1:n_cols]
     λ0 = Δ_xλ[n_cols+1:end]
-    s0_l, s0_u = zeros(T, n_cols), zeros(T, n_cols)
-    Qx, ATλ = zeros(T, n_cols), zeros(T, n_cols)
+    s0_l, s0_u = zeros(n_cols), zeros(n_cols)
+    Qx, ATλ = zeros(n_cols), zeros(n_cols)
     Qx = mul_Qx_COO!(Qx, Qrows, Qcols, Qvals, x0)
     ATλ = mul_ATλ_COO!(ATλ, Arows, Acols, Avals, λ0)
     dual_val = Qx - ATλ + c
@@ -91,8 +91,9 @@ function starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals, b, c,
     @assert all(x0 .> lvar) && all(x0 .< uvar)
     @assert @views all(s0_l[ilow] .> zero(T)) && all(s0_u[iupp] .> zero(T))
 
-    return x0, λ0, s0_l, s0_u, J_fact, J_P, Qx, ATλ, x0_m_lvar, uvar_m_x0, Δ_xλ
+    return x0, λ0, s0_l, s0_u, J_P, Qx, ATλ, x0_m_lvar, uvar_m_x0, Δ_xλ
 end
+
 
 
 function compute_α_dual(v, dir_v)
@@ -278,21 +279,21 @@ function scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uva
 
     # scaling Q (symmetric)
     d3 = ones(T, n_cols)
-    c_k .= zero(T)
-    c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
-    convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
-    Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
-    k = 1
-    while !convergence && k < max_iter
-        c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
-        convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
-        Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
-        k += 1
-    end
-
-    for i=1:n
-        Avals[i] *= d3[Acols[i]]
-    end
+    # c_k .= zero(T)
+    # c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
+    # convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
+    # Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
+    # k = 1
+    # while !convergence && k < max_iter
+    #     c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
+    #     convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
+    #     Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
+    #     k += 1
+    # end
+    #
+    # for i=1:n
+    #     Avals[i] *= d3[Acols[i]]
+    # end
     c .*= d3
     lvar ./= d3
     uvar ./= d3
@@ -401,7 +402,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     Δ = zeros(T, n_cols+n_rows+n_low+n_upp)
     Δ_xλ = zeros(T, n_cols+n_rows)
 
-    x, λ, s_l, s_u, J_fact, J_P, Qx, ATλ,
+    x, λ, s_l, s_u, J_P, Qx, ATλ,
     x_m_lvar, uvar_m_x, Δ_xλ = @views starting_points(Qrows, Qcols, Qvals, Arows, Acols, Avals,
                                                       b, c, lvar, uvar, ilow, iupp, QM.meta.irng,
                                                       J_augm , n_rows, n_cols, Δ_xλ)
@@ -675,7 +676,6 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     return stats
 end
 
-
 function createQuadraticModel(qpdata; name="qp_pb")
     return QuadraticModel(qpdata.c, qpdata.qrows, qpdata.qcols, qpdata.qvals,
             Arows=qpdata.arows, Acols=qpdata.acols, Avals=qpdata.avals,
@@ -751,13 +751,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/mehrotra_lp10.jld2"), "w")
+file_lp = jldopen(string(save_path, "/mehrotra_lp11.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp10.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp11.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
