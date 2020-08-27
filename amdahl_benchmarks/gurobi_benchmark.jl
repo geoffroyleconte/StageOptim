@@ -93,7 +93,7 @@ pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
 stats2 = optimizeGurobi(qpdata2)  # compile code
 
-function optimize_netlib_gurobi(path_netlib)
+function optimize_netlib_gurobi(path_pb)
     problems = []
     i_max = 1000
     i = 1
