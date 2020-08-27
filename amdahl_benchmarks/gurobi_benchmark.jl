@@ -76,7 +76,7 @@ function optimizeGurobi(QM)
                                   iter = Gurobi.get_intattr(model,"BarIterCount"),
                                   primal_feas = norm(Aeq * x - beq),
                                   dual_feas = norm(Aeq' * y - H*x + s - f),
-                                  multipliers = y,
+                                  solver_specific = Dict(:multipliers => λ),
                                   elapsed_time = optim_info.runtime)
     return stats
 end
