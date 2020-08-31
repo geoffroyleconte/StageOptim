@@ -330,7 +330,7 @@ end
 function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
                           ilow, iupp, n_rows, n_cols,n_low, n_upp,
                           Arows, Acols, Avals, Qrows, Qcols, Qvals, c0,
-                          c, b, rc, rb, rcNorm, rbNorm, tol_rb, tol_rc, 
+                          c, b, rc, rb, rcNorm, rbNorm, tol_rb, tol_rc,
                           Qx, ATλ, Ax, xTQx_2, cTx, pri_obj, dual_obj,
                           pdd, l_pdd, mean_pdd, n_Δx, small_Δx, small_μ,
                           Δt, tired, optimal, μ, k, k_mp, ρ, δ, ρ_min, δ_min,
@@ -532,7 +532,7 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
 end
 
 function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=120., scaling=true,
+                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
                               display=true)
 
     start_time = time()
