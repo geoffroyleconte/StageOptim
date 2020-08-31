@@ -330,7 +330,7 @@ end
 function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
                           ilow, iupp, n_rows, n_cols,n_low, n_upp,
                           Arows, Acols, Avals, Qrows, Qcols, Qvals, c0,
-                          c, b, rc, rb, rcNorm, rbNorm, tol_rb, tol_rc,
+                          c, b, rc, rb, rcNorm, rbNorm, tol_rb, tol_rc, 
                           Qx, ATλ, Ax, xTQx_2, cTx, pri_obj, dual_obj,
                           pdd, l_pdd, mean_pdd, n_Δx, small_Δx, small_μ,
                           Δt, tired, optimal, μ, k, k_mp, ρ, δ, ρ_min, δ_min,
@@ -367,11 +367,11 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
             elseif c_pdd == 0 && c_catch != 0
                 δ *= T(1e1)
                 δ_min *= T(1e1)
-                ρ *= T(1e-1)
-                ρ_min *= T(1e-1)
+                ρ *= T(1e0)
+                ρ_min *= T(1e0)
             elseif c_pdd != 0 && c_catch==0
-                δ *= T(1e2)
-                δ_min *= T(1e2)
+                δ *= T(1e1)
+                δ_min *= T(1e1)
                 ρ *= T(1e5)
                 ρ_min *= T(1e5)
             else
@@ -497,8 +497,8 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
         if T == Float64 && k>10 && c_catch <= 1 &&
                 @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-6)
             # println("reduc diagJ iter ", k)
-            δ /= 100
-            δ_min /= 100
+            δ /= 10
+            δ_min /= 10
             c_pdd += 1
         end
 
@@ -532,12 +532,14 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
 end
 
 function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
+                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=120., scaling=true,
                               display=true)
 
     start_time = time()
     elapsed_time = 0.0
     QM = SlackModel(QM0)
+
+
     # get variables from QuadraticModel
     lvar, uvar = QM.meta.lvar, QM.meta.uvar
     n_cols = length(lvar)
@@ -597,7 +599,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
 
     J_augmrows = vcat(Qcols, Acols, n_cols+1:n_cols+n_rows, 1:n_cols)
     J_augmcols = vcat(Qrows, Arows.+n_cols, n_cols+1:n_cols+n_rows, 1:n_cols)
-    tmp_diag = -T(1.0e0) .* ones(T, n_cols)
+    tmp_diag = -T(1.0e-4) .* ones(T, n_cols)
     J_augmvals = vcat(-Qvals32, Avals32, δ.*ones(T, n_rows), tmp_diag)
     J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
     diagind_J = get_diag_sparseCSC(J_augm)
@@ -699,7 +701,11 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     pdd, l_pdd, mean_pdd = convert(T, pdd), convert(Array{T}, l_pdd), convert(T, mean_pdd)
     n_Δx, μ = convert(T, n_Δx), convert(T, μ)
     ρ, δ = convert(T, ρ), convert(T, δ)
+    ρ /= 10
+    δ /= 10
     J_augm = convert(SparseMatrixCSC{T,Int64}, J_augm)
+    #J_fact = convert(LDLFactorizations.LDLFactorization{T,Int64,Int64,Int64}, J_fact)
+
     J_P = LDLFactorizations.LDLFactorization(J_P.__analyzed, J_P.__factorized, J_P.__upper,
                               J_P.n, J_P.parent, J_P.Lnz, J_P.flag, J_P.P,
                               J_P.pinv, J_P.Lp, J_P.Cp, J_P.Ci, J_P.Li,
@@ -798,7 +804,6 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                   elapsed_time=elapsed_time)
     return stats
 end
-
 
 function createQuadraticModel(qpdata; name="qp_pb")
     return QuadraticModel(qpdata.c, qpdata.qrows, qpdata.qcols, qpdata.qvals,
