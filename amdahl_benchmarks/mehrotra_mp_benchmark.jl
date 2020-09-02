@@ -582,9 +582,9 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     b32 = Array{T}(b)
     lvar32 = Array{T}(lvar)
     uvar32 = Array{T}(uvar)
-    ϵ_pdd32 = T(1e-1)
-    ϵ_rb32 = T(1e-1)
-    ϵ_rc32 = T(1e-1)
+    ϵ_pdd32 = T(1e-2)
+    ϵ_rb32 = T(1e-2)
+    ϵ_rc32 = T(1e-2)
     tol_Δx32 = T(tol_Δx)
     ϵ_μ32 = T(ϵ_μ)
 
@@ -877,13 +877,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/mehrotra_lp_mp2.jld2"), "w")
+file_lp = jldopen(string(save_path, "/mehrotra_lp_mp3.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp_mp2.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp_mp3.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
