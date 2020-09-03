@@ -24,7 +24,7 @@ path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
 qm2 = createQuadraticModel(qpdata2)
-stats2 = gurobi(qpdata2)  # compile code
+stats2 = gurobi(qm2)  # compile code
 
 function optimize_gurobi(path_pb)
     problems = []
