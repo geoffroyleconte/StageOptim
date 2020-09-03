@@ -1,4 +1,4 @@
-using Gurobi
+using QuadraticModelsGurobi
 using QPSReader
 using QuadraticModels
 using NLPModels
@@ -17,83 +17,16 @@ function createQuadraticModel(qpdata; name="qp_pb")
 end
 
 
-
-
-function optimizeGurobi(QM)
-    SM = SlackModel(QM)
-    env = Gurobi.Env()
-
-    # -1=automatic, 0=primal simplex, 1=dual simplex, 2=barrier,
-    # 3=concurrent, 4=deterministic concurrent, 5=deterministic concurrent simplex.
-    setparam!(env, "Method", 2)
-
-    # set presolve to 0
-    #setparam!(env, "Presolve", 0)
-
-    # no scaling
-    #setparam!(env, "ScaleFlag", 0)
-
-    #setparam!(env, "Crossover", 0)
-
-    Aeq = jac(SM, SM.meta.x0)
-    beq = SM.meta.lcon
-    f = grad(SM, zeros(length(SM.meta.x0)))
-    H = hess(SM, zeros(length(SM.meta.x0)))
-    H = Matrix(Symmetric(H, :L))
-    n,m = size(Aeq)
-    model = gurobi_model(env; f = f, H = H,
-                        Aeq = Aeq, beq = beq,
-                        lb = SM.meta.lvar, ub = SM.meta.uvar)
-     # run optimization
-    optimize(model)
-
-    # y with dual: b'*y   s.t. A'*y <= c and y >= 0
-    y = zeros(n)
-    for i=1:n
-        y[i] = Gurobi.get_dblattrelement(model, "Pi", i)
-    end
-
-    s = zeros(m) # s_l - s_u
-    for i=1:m
-        s[i] = Gurobi.get_dblattrelement(model, "RC", i)
-    end
-
-    # outputs
-    optim_info = get_optiminfo(model)
-    if optim_info.status == :optimal
-        status = :acceptable
-    elseif optim_info.status == :iteration_limit
-        status = :max_iter
-    elseif optim_info.status == :unbounded
-        status = :unbounded
-    else
-        status = :unknown
-    end
-
-    x = get_solution(model)
-    stats = GenericExecutionStats(status, SM, solution = x,
-                                  objective = get_objval(model),
-                                  iter = Gurobi.get_intattr(model,"BarIterCount"),
-                                  primal_feas = norm(Aeq * x - beq),
-                                  dual_feas = norm(Aeq' * y - H*x + s - f),
-                                  solver_specific = Dict(:multipliers => y),
-                                  elapsed_time = optim_info.runtime)
-    return stats
-end
-
-function optimizeGurobi(qpdata::QPSData)
-    return optimizeGurobi(createQuadraticModel(qpdata))
-end
-
 path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 # path_pb = "/user/eleves/gleconte2017/Z/Documents/TFE/marosmeszaros"
 #path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
-stats2 = optimizeGurobi(qpdata2)  # compile code
+qm2 = createQuadraticModel(qpdata)
+stats2 = gurobi(qpdata2)  # compile code
 
-function optimize_netlib_gurobi(path_pb)
+function optimize_gurobi(path_pb)
     problems = []
     i_max = 1000
     i = 1
@@ -138,24 +71,21 @@ function optimize_netlib_gurobi(path_pb)
             i += 1
         end
     end
-
-    return solve_problems(optimizeGurobi, problems)
+    return solve_problems(gurobi, problems)
 end
-
-
 
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
 # save_path = "/user/eleves/gleconte2017/Z/Documents/TFE/results"
 #save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\results"
 
-problems_stats_lp =  optimize_netlib_gurobi(path_pb_lp)
+problems_stats_lp =  optimize_gurobi(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/gurobi_test.jld2"), "w")
+file_lp = jldopen(string(save_path, "/gurobi_scaling_lp.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
-# problems_stats_qp =  optimize_netlib_gurobi(path_pb_qp)
-#
-# file_qp = jldopen(string(save_path, "/mehrotra_qp11.jld2"), "w")
-# file_qp["stats"] = problems_stats_qp
-# close(file_qp)
+problems_stats_qp =  optimize_gurobi(path_pb_qp)
+
+file_qp = jldopen(string(save_path, "/gurobi_scaling_qp.jld2"), "w")
+file_qp["stats"] = problems_stats_qp
+close(file_qp)
