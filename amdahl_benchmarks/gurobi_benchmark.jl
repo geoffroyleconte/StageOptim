@@ -23,7 +23,7 @@ path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 #path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
-qm2 = createQuadraticModel(qpdata)
+qm2 = createQuadraticModel(qpdata2)
 stats2 = gurobi(qpdata2)  # compile code
 
 function optimize_gurobi(path_pb)
