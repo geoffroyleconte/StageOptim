@@ -16,6 +16,9 @@ function createQuadraticModel(qpdata; name="qp_pb")
             c0=qpdata.c0, name=name)
 end
 
+function gurobi2(QM)
+    return gurobi(QM, presolve=0, crossover=0)
+end
 
 path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
@@ -71,7 +74,7 @@ function optimize_gurobi(path_pb)
             i += 1
         end
     end
-    return solve_problems(gurobi, problems)
+    return solve_problems(gurobi2, problems)
 end
 
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
