@@ -66,7 +66,7 @@ end
 
 # path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
-dat = readqps(string(path_pb_lp, "\\AFIRO.SIF"))
+dat = readqps(string(path_pb_lp, "/AFIRO.SIF"))
 QM = QuadraticModel(dat)
 stats1 = tulip_solve(QM)
 
