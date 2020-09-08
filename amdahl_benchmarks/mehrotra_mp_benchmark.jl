@@ -501,16 +501,21 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
         end
 
         if T == Float64 && k>10 && c_catch <= 1 &&
-            @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-6)
+                @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-6)
             # println("reduc diagJ iter ", k)
             δ /= 10
             δ_min /= 10
             c_pdd += 1
         end
 
-        if T == Float32 && c_pdd < 2 && minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-3)
-            # println("δ float32")
+        if T == Float32 && c_pdd < 2 && minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-5)
             break
+#             println("δ float32")
+#             δ /= 10
+#             δ_min /= 10
+# #             ρ /= 10
+# #             ρ_min /= 10
+#             c_pdd += 1
         end
 
         if δ >= δ_min
@@ -538,8 +543,9 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
                 ρ, δ, ρ_min, δ_min, J_augm, J_fact, c_catch, c_pdd
 end
 
-function mehrotraPCQuadBounds(QM0; max_iter=740, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
+
+function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
+                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=120., scaling=true,
                               display=true)
 
     start_time = time()
