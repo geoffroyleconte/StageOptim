@@ -508,7 +508,7 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
             c_pdd += 1
         end
 
-        if T == Float32 && c_pdd < 2 && minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-5)
+        if T == Float32 && c_pdd < 2 && minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-3)
             # println("δ float32")
             δ /= 10
             δ_min /= 10
@@ -543,7 +543,7 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
 end
 
 function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=120., scaling=true,
+                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
                               display=true)
 
     start_time = time()
@@ -694,7 +694,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                           J_augm, J_fact, J_P, diagind_J, diag_Q, tmp_diag,
                                           Δ_aff, Δ_cc, Δ, Δ_xλ, s_l_αΔ_aff, s_u_αΔ_aff,
                                           x_m_l_αΔ_aff, u_m_x_αΔ_aff, rxs_l, rxs_u,
-                                          100, ϵ_pdd32, ϵ_μ32, ϵ_rc32, ϵ_rb32, tol_Δx32,
+                                          20, ϵ_pdd32, ϵ_μ32, ϵ_rc32, ϵ_rb32, tol_Δx32,
                                           start_time, max_time, c_catch, c_pdd, display)
 
     # conversions to Float64
