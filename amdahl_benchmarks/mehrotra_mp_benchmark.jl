@@ -510,11 +510,7 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
 
         if T == Float32 && c_pdd < 2 && minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-3)
             # println("δ float32")
-            δ /= 10
-            δ_min /= 10
-#             ρ /= 10
-#             ρ_min /= 10
-            c_pdd += 1
+            break
         end
 
         if δ >= δ_min
