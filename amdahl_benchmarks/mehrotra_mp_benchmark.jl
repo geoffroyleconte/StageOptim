@@ -333,7 +333,7 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
                           c, b, rc, rb, rcNorm, rbNorm, tol_rb, tol_rc,
                           Qx, ATλ, Ax, xTQx_2, cTx, pri_obj, dual_obj,
                           pdd, l_pdd, mean_pdd, n_Δx, small_Δx, small_μ,
-                          Δt, tired, optimal, μ, k, k_mp, ρ, δ, ρ_min, δ_min,
+                          Δt, tired, optimal, μ, k, ρ, δ, ρ_min, δ_min,
                           J_augm, J_fact, J_P, diagind_J, diag_Q, tmp_diag,
                           Δ_aff, Δ_cc, Δ, Δ_xλ, s_l_αΔ_aff, s_u_αΔ_aff,
                           x_m_l_αΔ_aff, u_m_x_αΔ_aff, rxs_l, rxs_u,
@@ -356,6 +356,8 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
         catch
             # println("error ", k, "   c_pdd = ", c_pdd, "   c_catch = ", c_catch)
             if T == Float32
+#                 ρ *= T(1e1)
+#                 ρ_min *= T(1e1)
                 break
                 break
             end
@@ -476,12 +478,16 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
         rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
         optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
         small_Δx, small_μ = n_Δx < tol_Δx, μ < ϵ_μ
-        k += 1
+
+        ###
+        if optimal && T==Float32
+            # println("######## optimal Float32")
+        end
 
         if T == Float32
-            k_mp += 1/4
+            k += 1
         else
-            k_mp += 1
+            k += 4
         end
 
         l_pdd[k%6+1] = pdd
@@ -495,15 +501,20 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
         end
 
         if T == Float64 && k>10 && c_catch <= 1 &&
-                @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-6)
+            @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-6)
             # println("reduc diagJ iter ", k)
             δ /= 10
             δ_min /= 10
             c_pdd += 1
         end
 
-        if T == Float32 && minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-3)
-            break
+        if T == Float32 && c_pdd < 2 && minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-5)
+            # println("δ float32")
+            δ /= 10
+            δ_min /= 10
+#             ρ /= 10
+#             ρ_min /= 10
+            c_pdd += 1
         end
 
         if δ >= δ_min
@@ -527,12 +538,12 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
 
     return x, λ, s_l, s_u, x_m_lvar, uvar_m_x, rc, rb,
                 rcNorm, rbNorm, Qx, ATλ, Ax, xTQx_2, cTx, pri_obj, dual_obj,
-                pdd, l_pdd, mean_pdd, n_Δx, Δt, tired, optimal, μ, k, k_mp,
+                pdd, l_pdd, mean_pdd, n_Δx, Δt, tired, optimal, μ, k,
                 ρ, δ, ρ_min, δ_min, J_augm, J_fact, c_catch, c_pdd
 end
 
 function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
+                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=120., scaling=true,
                               display=true)
 
     start_time = time()
@@ -582,7 +593,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     b32 = Array{T}(b)
     lvar32 = Array{T}(lvar)
     uvar32 = Array{T}(uvar)
-    ϵ_pdd32 = T(1e-2)
+    ϵ_pdd32 = T(1e-1)
     ϵ_rb32 = T(1e-2)
     ϵ_rc32 = T(1e-2)
     tol_Δx32 = T(tol_Δx)
@@ -592,21 +603,20 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     ρ, δ = T(sqrt(eps())*1e5), T(sqrt(eps())*1e5) # 1e6, 1e-1 ok
 #     ρ, δ = T(1.5e-3), T(1.5e-3)
 #     ρ_min, δ_min = T(sqrt(eps())*1e-5), T(sqrt(eps()))
-    ρ_min, δ_min = T(sqrt(eps(T))*1e-2), T(sqrt(eps(T)))
+    ρ_min, δ_min = T(sqrt(eps(T))*1e0), T(sqrt(eps(T))*5e0)
 #     ρ_min, δ_min = T(1.5e-13), T(1.5e-8)
     c_catch = zero(Int) # to avoid endless loop
     c_pdd = zero(Int) # avoid too small δ_min
 
     J_augmrows = vcat(Qcols, Acols, n_cols+1:n_cols+n_rows, 1:n_cols)
     J_augmcols = vcat(Qrows, Arows.+n_cols, n_cols+1:n_cols+n_rows, 1:n_cols)
-    tmp_diag = -T(1.0e-2) .* ones(T, n_cols)
+    tmp_diag = -T(1.0e0) .* ones(T, n_cols)
     J_augmvals = vcat(-Qvals32, Avals32, δ.*ones(T, n_rows), tmp_diag)
     J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
     diagind_J = get_diag_sparseCSC(J_augm)
     diag_Q = get_diag_sparseCOO(Qrows, Qcols, Qvals32, n_cols)
 
     k = 0
-    k_mp = 0
     Δ_aff = zeros(T, n_cols+n_rows+n_low+n_upp)
     Δ_cc = zeros(T, n_cols+n_rows+n_low+n_upp)
     Δ = zeros(T, n_cols+n_rows+n_low+n_upp)
@@ -672,7 +682,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         rc, rb, rcNorm, rbNorm, Qx, ATλ,
         Ax, xTQx_2, cTx, pri_obj, dual_obj,
         pdd, l_pdd, mean_pdd, n_Δx, Δt,
-        tired, optimal, μ, k, k_mp, ρ, δ,
+        tired, optimal, μ, k, ρ, δ,
         ρ_min, δ_min, J_augm, J_fact,
         c_catch, c_pdd  = iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar32, uvar32,
                                           ilow, iupp, n_rows, n_cols,n_low, n_upp,
@@ -680,14 +690,12 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                           c32, b32, rc, rb, rcNorm, rbNorm, tol_rb32, tol_rc32,
                                           Qx, ATλ, Ax, xTQx_2, cTx, pri_obj, dual_obj,
                                           pdd, l_pdd, mean_pdd, n_Δx, small_Δx, small_μ,
-                                          Δt, tired, optimal, μ, k, k_mp, ρ, δ, ρ_min, δ_min,
+                                          Δt, tired, optimal, μ, k, ρ, δ, ρ_min, δ_min,
                                           J_augm, J_fact, J_P, diagind_J, diag_Q, tmp_diag,
                                           Δ_aff, Δ_cc, Δ, Δ_xλ, s_l_αΔ_aff, s_u_αΔ_aff,
                                           x_m_l_αΔ_aff, u_m_x_αΔ_aff, rxs_l, rxs_u,
-                                          20, ϵ_pdd32, ϵ_μ32, ϵ_rc32, ϵ_rb32, tol_Δx32,
+                                          100, ϵ_pdd32, ϵ_μ32, ϵ_rc32, ϵ_rb32, tol_Δx32,
                                           start_time, max_time, c_catch, c_pdd, display)
-
-
 
     # conversions to Float64
     T = Float64
@@ -726,13 +734,14 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
 
 
     optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
+
     # println("#################  iter float32 = ", k)
     # iters Float64
     x, λ, s_l, s_u, x_m_lvar, uvar_m_x,
         rc, rb, rcNorm, rbNorm, Qx, ATλ,
         Ax, xTQx_2, cTx, pri_obj, dual_obj,
         pdd, l_pdd, mean_pdd, n_Δx, Δt,
-        tired, optimal, μ, k, k_mp, ρ, δ,
+        tired, optimal, μ, k, ρ, δ,
         ρ_min, δ_min, J_augm, J_fact,
         c_catch, c_pdd  = iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
                                           ilow, iupp, n_rows, n_cols,n_low, n_upp,
@@ -740,7 +749,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                           c, b, rc, rb, rcNorm, rbNorm, tol_rb, tol_rc,
                                           Qx, ATλ, Ax, xTQx_2, cTx, pri_obj, dual_obj,
                                           pdd, l_pdd, mean_pdd, n_Δx, small_Δx, small_μ,
-                                          Δt, tired, optimal, μ, k, k_mp, ρ, δ, ρ_min, δ_min,
+                                          Δt, tired, optimal, μ, k, ρ, δ, ρ_min, δ_min,
                                           J_augm, J_fact, J_P, diagind_J, diag_Q, tmp_diag,
                                           Δ_aff, Δ_cc, Δ, Δ_xλ, s_l_αΔ_aff, s_u_αΔ_aff,
                                           x_m_l_αΔ_aff, u_m_x_αΔ_aff, rxs_l, rxs_u,
@@ -796,10 +805,9 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                   objective = pri_obj ,
                                   dual_feas = rcNorm,
                                   primal_feas = rbNorm,
-                                  solver_specific = Dict(:multipliers => λ,
-                                                         :multipliers_L => s_l,
-                                                         :multipliers_U => s_u,
-                                                         :iter_multi_prec => k_mp),
+                                  multipliers = λ,
+                                  multipliers_L = s_l,
+                                  multipliers_U = s_u,
                                   iter = k,
                                   elapsed_time=elapsed_time)
     return stats
@@ -877,13 +885,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/mehrotra_lp_mp5.jld2"), "w")
+file_lp = jldopen(string(save_path, "/mehrotra_lp_mp6.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp_mp5.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp_mp6.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
