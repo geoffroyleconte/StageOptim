@@ -544,8 +544,8 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
 end
 
 
-function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
-                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=120., scaling=true,
+function mehrotraPCQuadBounds(QM0; max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
+                              tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
                               display=true)
 
     start_time = time()
