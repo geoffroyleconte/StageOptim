@@ -542,7 +542,7 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
                 ρ, δ, ρ_min, δ_min, J_augm, J_fact, c_catch, c_pdd
 end
 
-function mehrotraPCQuadBounds(QM0; max_iter=280, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
+function mehrotraPCQuadBounds(QM0; max_iter=740, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1e-6,
                               tol_Δx=1e-16, ϵ_μ=1e-9, max_time=1200., scaling=true,
                               display=true)
 
@@ -694,7 +694,7 @@ function mehrotraPCQuadBounds(QM0; max_iter=280, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                           J_augm, J_fact, J_P, diagind_J, diag_Q, tmp_diag,
                                           Δ_aff, Δ_cc, Δ, Δ_xλ, s_l_αΔ_aff, s_u_αΔ_aff,
                                           x_m_l_αΔ_aff, u_m_x_αΔ_aff, rxs_l, rxs_u,
-                                          80, ϵ_pdd32, ϵ_μ32, ϵ_rc32, ϵ_rb32, tol_Δx32,
+                                          20, ϵ_pdd32, ϵ_μ32, ϵ_rc32, ϵ_rb32, tol_Δx32,
                                           start_time, max_time, c_catch, c_pdd, display)
 
     # conversions to Float64
