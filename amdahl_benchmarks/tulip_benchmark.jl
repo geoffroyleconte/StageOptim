@@ -35,7 +35,6 @@ function tulip_solve(QM)
     # rcNorm = norm(A' * y .+ s .- dat.c, Inf)
     rbNorm = model.solver.res.rp_nrm
     rcNorm = model.solver.res.rd_nrm
-
     if model.solver.solver_status == Tulip.Trm_Optimal
         status = :acceptable
     elseif model.solver.solver_status == Trm_TimeLimit
@@ -62,11 +61,13 @@ function tulip_solve(QM)
                                   multipliers_U = model.solution.s_upper,
                                   iter = model.solver.niter,
                                   elapsed_time=elapsed_time)
+    return stats, model
 end
 
-# path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
-path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
-dat = readqps(string(path_pb_lp, "/AFIRO.SIF"))
+path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
+dat = readqps(string(path_pb_lp, "\\AFIRO.SIF"))
+# path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+# dat = readqps(string(path_pb_lp, "/AFIRO.SIF"))
 QM = QuadraticModel(dat)
 stats1 = tulip_solve(QM)
 
