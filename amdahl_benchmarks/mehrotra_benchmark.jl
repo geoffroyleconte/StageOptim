@@ -671,8 +671,8 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                   dual_feas = rcNorm,
                                   primal_feas = rbNorm,
                                   multipliers = λ,
-                                  multipliers_L => s_l,
-                                  multipliers_U => s_u,
+                                  multipliers_L = s_l,
+                                  multipliers_U = s_u,
                                   iter = k,
                                   elapsed_time=elapsed_time)
     return stats
