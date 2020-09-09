@@ -279,21 +279,21 @@ function scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uva
 
     # scaling Q (symmetric)
     d3 = ones(T, n_cols)
-    # c_k .= zero(T)
-    # c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
-    # convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
-    # Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
-    # k = 1
-    # while !convergence && k < max_iter
-    #     c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
-    #     convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
-    #     Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
-    #     k += 1
-    # end
-    #
-    # for i=1:n
-    #     Avals[i] *= d3[Acols[i]]
-    # end
+    c_k .= zero(T)
+    c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
+    convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
+    Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
+    k = 1
+    while !convergence && k < max_iter
+        c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
+        convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
+        Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
+        k += 1
+    end
+
+    for i=1:n
+        Avals[i] *= d3[Acols[i]]
+    end
     c .*= d3
     lvar ./= d3
     uvar ./= d3
@@ -374,10 +374,10 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
                                                      c, b, lvar, uvar, n_rows, n_cols, T(1e-3))
     end
 
-    cNorm = norm(c)
-    bNorm = norm(b)
-    ANorm = norm(Avals)  # Frobenius norm after scaling; could be computed while scaling?
-    QNorm = norm(Qvals)
+    # cNorm = norm(c)
+    # bNorm = norm(b)
+    # ANorm = norm(Avals)  # Frobenius norm after scaling; could be computed while scaling?
+    # QNorm = norm(Qvals)
 
     n_low, n_upp = length(ilow), length(iupp) # number of finite constraints
 
@@ -434,11 +434,13 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     dual_obj = b' * λ - xTQx_2 + view(s_l,ilow)'*view(lvar,ilow) -
                     view(s_u,iupp)'*view(uvar,iupp) +c0
     pdd = abs(pri_obj - dual_obj ) / (one(T) + abs(pri_obj))
-    rcNorm, rbNorm = norm(rc), norm(rb)
-    optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb && rcNorm < ϵ_rc
-    # rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
+    # rcNorm, rbNorm = norm(rc), norm(rb)
+    # optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb && rcNorm < ϵ_rc
+    bNorm, cNorm = norm(b, Inf), norm(c, Inf)
+    rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
+    tol_rb, tol_rc = ϵ_rb*(one(T) + bNorm), ϵ_rc*(one(T) + cNorm)
     # tol_rb, tol_rc = ϵ_rb*(one(T) + rbNorm), ϵ_rc*(one(T) + rcNorm)
-    # optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
+    optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
 
     l_pdd = zeros(T, 6)
     mean_pdd = one(T)
@@ -580,13 +582,13 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
         # update stopping criterion values:
 
         pdd = abs(pri_obj - dual_obj ) / (one(T) + abs(pri_obj))
-        rcNorm, rbNorm = norm(rc), norm(rb)
-        xNorm = norm(x)
-        λNorm = norm(λ)
-        optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb * max(1, bNorm + ANorm * xNorm) &&
-                    rcNorm < ϵ_rc * max(1, cNorm + QNorm * xNorm + ANorm * λNorm)
-        # rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
-        # optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
+        # rcNorm, rbNorm = norm(rc), norm(rb)
+        # xNorm = norm(x)
+        # λNorm = norm(λ)
+        # optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb * max(1, bNorm + ANorm * xNorm) &&
+        #             rcNorm < ϵ_rc * max(1, cNorm + QNorm * xNorm + ANorm * λNorm)
+        rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
+        optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
         small_Δx, small_μ = n_Δx < tol_Δx, μ < ϵ_μ
         k += 1
 
@@ -751,13 +753,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/mehrotra_lp11.jld2"), "w")
+file_lp = jldopen(string(save_path, "/mehrotra_lp9t.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp11.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp9t.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
