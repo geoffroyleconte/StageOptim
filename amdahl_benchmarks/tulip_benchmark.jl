@@ -63,7 +63,7 @@ function tulip_solve(QM)
                                   multipliers_U = model.solution.s_upper,
                                   iter = model.solver.niter,
                                   elapsed_time=elapsed_time)
-    return stats, model
+    return stats
 end
 
 # path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
@@ -76,7 +76,7 @@ stats1 = tulip_solve(QM)
 
 function optimize_tulip(path_pb)
     problems = []
-    i_max = 1000
+    i_max = 10
     i = 1
     for file_name in readdir(path_pb)
         if file_name[end-3:end] == ".SIF" && !(file_name in ["80BAU3B.SIF" ; "BORE3D.SIF";
