@@ -14,7 +14,7 @@ function tulip_solve(QM)
     model = Tulip.Model{Float64}()
     Tulip.set_parameter(model, "BarrierIterationsLimit", 200)
     Tulip.set_parameter(model, "TimeLimit", 1200.)
-    Tulip.set_parameter(model, "Presolve", 0)
+    #Tulip.set_parameter(model, "Presolve", 0)
     Tulip.set_parameter(model, "BarrierTolerancePFeas", 1.0e-6)
     Tulip.set_parameter(model, "BarrierToleranceDFeas", 1.0e-6)
     A = sparse(QM.data.Arows, QM.data.Acols, QM.data.Avals, QM.meta.ncon, QM.meta.nvar)
@@ -125,6 +125,6 @@ end
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
 problems_stats_lp =  optimize_tulip(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/tulip_lp1.jld2"), "w")
+file_lp = jldopen(string(save_path, "/tulip_lp2.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
