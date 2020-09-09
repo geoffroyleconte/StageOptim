@@ -596,8 +596,8 @@ function mehrotraPCQuadBounds(QM0; max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     lvar32 = Array{T}(lvar)
     uvar32 = Array{T}(uvar)
     ϵ_pdd32 = T(1e-1)
-    ϵ_rb32 = T(1e-2)
-    ϵ_rc32 = T(1e-2)
+    ϵ_rb32 = T(1e-1)
+    ϵ_rc32 = T(1e-1)
     tol_Δx32 = T(tol_Δx)
     ϵ_μ32 = T(ϵ_μ)
 
@@ -605,14 +605,14 @@ function mehrotraPCQuadBounds(QM0; max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     ρ, δ = T(sqrt(eps())*1e5), T(sqrt(eps())*1e5) # 1e6, 1e-1 ok
 #     ρ, δ = T(1.5e-3), T(1.5e-3)
 #     ρ_min, δ_min = T(sqrt(eps())*1e-5), T(sqrt(eps()))
-    ρ_min, δ_min = T(sqrt(eps(T))*1e0), T(sqrt(eps(T))*5e0)
+    ρ_min, δ_min = T(sqrt(eps(T))*1e0), T(sqrt(eps(T))*1e0)
 #     ρ_min, δ_min = T(1.5e-13), T(1.5e-8)
     c_catch = zero(Int) # to avoid endless loop
     c_pdd = zero(Int) # avoid too small δ_min
 
     J_augmrows = vcat(Qcols, Acols, n_cols+1:n_cols+n_rows, 1:n_cols)
     J_augmcols = vcat(Qrows, Arows.+n_cols, n_cols+1:n_cols+n_rows, 1:n_cols)
-    tmp_diag = -T(1.0e0) .* ones(T, n_cols)
+    tmp_diag = -T(1.0e-4) .* ones(T, n_cols)
     J_augmvals = vcat(-Qvals32, Avals32, δ.*ones(T, n_rows), tmp_diag)
     J_augm = sparse(J_augmrows, J_augmcols, J_augmvals)
     diagind_J = get_diag_sparseCSC(J_augm)
@@ -887,13 +887,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/mehrotra_lp_mp6.jld2"), "w")
+file_lp = jldopen(string(save_path, "/mehrotra_lp_mp1.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp_mp6.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp_mp1.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
