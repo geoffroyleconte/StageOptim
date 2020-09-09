@@ -15,6 +15,8 @@ function tulip_solve(QM)
     Tulip.set_parameter(model, "BarrierIterationsLimit", 200)
     Tulip.set_parameter(model, "TimeLimit", 1200.)
     Tulip.set_parameter(model, "Presolve", 0)
+    Tulip.set_parameter(model, "BarrierTolerancePFeas", 1.0e-6)
+    Tulip.set_parameter(model, "BarrierToleranceDFeas", 1.0e-6)
     A = sparse(QM.data.Arows, QM.data.Acols, QM.data.Avals, QM.meta.ncon, QM.meta.nvar)
     varnames = [string("X", i) for i=1:length(QM.data.c)]
     connames = [string("X", i) for i=1:length(QM.meta.lcon)]
