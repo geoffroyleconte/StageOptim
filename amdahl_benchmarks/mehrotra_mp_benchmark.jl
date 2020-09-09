@@ -372,8 +372,8 @@ function iter_mehrotraPC!(x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
                 ρ *= T(1e0)
                 ρ_min *= T(1e0)
             elseif c_pdd != 0 && c_catch==0
-                δ *= T(1e1)
-                δ_min *= T(1e1)
+                δ *= T(1e3)
+                δ_min *= T(1e3)
                 ρ *= T(1e5)
                 ρ_min *= T(1e5)
             else
