@@ -270,24 +270,24 @@ function scaling_Ruiz!(Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uva
 
     # scaling Q (symmetric)
     d3 = ones(T, n_cols)
-    c_k .= zero(T)
-    c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
-    convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
-    Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
-    k = 1
-    while !convergence && k < max_iter
-        c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
-        convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
-        Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
-        k += 1
-    end
-
-    for i=1:n
-        Avals[i] *= d3[Acols[i]]
-    end
-    c .*= d3
-    lvar ./= d3
-    uvar ./= d3
+    # c_k .= zero(T)
+    # c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
+    # convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
+    # Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
+    # k = 1
+    # while !convergence && k < max_iter
+    #     c_k = get_norm_rc!(c_k, Qcols, Qvals, n_cols, n_Q)
+    #     convergence = maximum(abs.(one(T) .- c_k)) <= ϵ
+    #     Qrows, Qcols, Qvals, d3 = mul_Q_D!(Qrows, Qcols, Qvals, d3, c_k, n_cols, n_Q)
+    #     k += 1
+    # end
+    #
+    # for i=1:n
+    #     Avals[i] *= d3[Acols[i]]
+    # end
+    # c .*= d3
+    # lvar ./= d3
+    # uvar ./= d3
 
     return Arows, Acols, Avals, Qrows, Qcols, Qvals, c, b, lvar, uvar, d1, d2, d3
 end
@@ -887,13 +887,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/mehrotra_lp_mp5.jld2"), "w")
+file_lp = jldopen(string(save_path, "/mehrotra_lp_mp7.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp_mp5.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp_mp7.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
