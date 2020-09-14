@@ -76,15 +76,15 @@ end
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
-problems_stats_lp =  optimize_mehrotra(path_pb_lp)
+problems_stats_lp =  optimize_ripqp(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/mehrotra_lp_mp8.jld2"), "w")
+file_lp = jldopen(string(save_path, "/ripqp_lp_mp1.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
-problems_stats_qp =  optimize_mehrotra(path_pb_qp)
+problems_stats_qp =  optimize_ripqp(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp_mp8.jld2"), "w")
+file_qp = jldopen(string(save_path, "/ripqp_qp_mp1.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
