@@ -13,10 +13,11 @@ path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 # path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 # path_pb_qp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
-pb2 = string(path_pb_lp, "/AFIRO.SIF")
+pb = string(path_pb_lp, "/AFIRO.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
-qpdata2 = readqps(pb2);
-stats2 =  ripqp(SM2)  # compile code
+qpdata = readqps(pb);
+qm = createQuadraticModel(qpdata)
+stats =  ripqp(qm)  # compile code
 
 function ripqp_bm(QM)
     return ripqp(QM, mode=:multi)
