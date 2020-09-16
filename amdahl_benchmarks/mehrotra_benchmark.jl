@@ -439,8 +439,8 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     bNorm, cNorm = norm(b, Inf), norm(c, Inf)
     rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
     # tol_rb, tol_rc = ϵ_rb*(one(T) + bNorm), ϵ_rc*(one(T) + cNorm)
-    tol_rb, tol_rc = ϵ_rb, ϵ_rc
-    # tol_rb, tol_rc = ϵ_rb*(one(T) + rbNorm), ϵ_rc*(one(T) + rcNorm)
+    # tol_rb, tol_rc = ϵ_rb, ϵ_rc
+    tol_rb, tol_rc = ϵ_rb*(one(T) + rbNorm), ϵ_rc*(one(T) + rcNorm)
     optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
 
     l_pdd = zeros(T, 6)
