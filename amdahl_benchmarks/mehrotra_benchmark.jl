@@ -438,7 +438,8 @@ function mehrotraPCQuadBounds(QM0; max_iter=200, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=
     # optimal = pdd < ϵ_pdd && rbNorm < ϵ_rb && rcNorm < ϵ_rc
     bNorm, cNorm = norm(b, Inf), norm(c, Inf)
     rcNorm, rbNorm = norm(rc, Inf), norm(rb, Inf)
-    tol_rb, tol_rc = ϵ_rb*(one(T) + bNorm), ϵ_rc*(one(T) + cNorm)
+    # tol_rb, tol_rc = ϵ_rb*(one(T) + bNorm), ϵ_rc*(one(T) + cNorm)
+    tol_rb, tol_rc = ϵ_rb, ϵ_rc
     # tol_rb, tol_rc = ϵ_rb*(one(T) + rbNorm), ϵ_rc*(one(T) + rcNorm)
     optimal = pdd < ϵ_pdd && rbNorm < tol_rb && rcNorm < tol_rc
 
@@ -753,13 +754,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_mehrotra(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/mehrotra_lp9t.jld2"), "w")
+file_lp = jldopen(string(save_path, "/mehrotra_lp10.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_mehrotra(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/mehrotra_qp9t.jld2"), "w")
+file_qp = jldopen(string(save_path, "/mehrotra_qp10.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
