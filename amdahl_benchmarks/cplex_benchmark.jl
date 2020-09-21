@@ -1,13 +1,8 @@
 using QuadraticModelsCPLEX
 using QPSReader
 using QuadraticModels
-using NLPModels
-using SolverTools
 using SolverBenchmark
-using DataFrames
-using LinearAlgebra
 using JLD2
-using SparseArrays
 
 function createQuadraticModel(qpdata; name="qp_pb")
     return QuadraticModel(qpdata.c, qpdata.qrows, qpdata.qcols, qpdata.qvals,
@@ -17,13 +12,13 @@ function createQuadraticModel(qpdata; name="qp_pb")
 end
 
 function cplex2(QM)
-    return cplex(QM, presolve=0, crossover=2)
+    return cplex(QM, presolve=0, crossover=2, display=0)
 end
 
 path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
-# path_pb = "/user/eleves/gleconte2017/Z/Documents/TFE/marosmeszaros"
-#path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
+# path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
+# path_pb_qp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
 pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
 qm2 = createQuadraticModel(qpdata2)
@@ -79,15 +74,15 @@ end
 
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
 # save_path = "/user/eleves/gleconte2017/Z/Documents/TFE/results"
-#save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\results"
+# save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\results"
 
-problems_stats_lp =  optimize_gurobi(path_pb_lp)
+problems_stats_lp =  optimize_cplex(path_pb_lp)
 
 file_lp = jldopen(string(save_path, "/cplex_scaling_lp1.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
-problems_stats_qp =  optimize_gurobi(path_pb_qp)
+problems_stats_qp =  optimize_cplex(path_pb_qp)
 
 file_qp = jldopen(string(save_path, "/cplex_scaling_qp1.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
