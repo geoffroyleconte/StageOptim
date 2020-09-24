@@ -102,7 +102,8 @@ function createQuadraticModel128(qpdata; name="qp_pb")
             c0=qpdata.c0, name=name)
 end
 
-qps1 = readqps(string(path_pb, "\\TMA_ME.mps"))
+# qps1 = readqps(string(path_pb, "\\TMA_ME.mps"))
+qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
 qps1.qrows, qps1.qcols, qps1.qvals,
     qps1.c, qps1.c0, qps1.arows,
     qps1.acols, qps1.avals, qps1.lcon,
