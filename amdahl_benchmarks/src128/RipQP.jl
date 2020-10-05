@@ -25,7 +25,9 @@ function ripqp(QM0; mode = :mono, max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1
     # get variables from QuadraticModel
     lvar, uvar = QM.meta.lvar, QM.meta.uvar
     n_cols = length(lvar)
-    Oc = zeros(n_cols)
+    T = eltype(lvar)
+    T0 = T
+    Oc = zeros(T, n_cols)
     ilow, iupp = [QM.meta.ilow; QM.meta.irng], [QM.meta.iupp; QM.meta.irng] # finite bounds index
     n_low, n_upp = length(ilow), length(iupp) # number of finite constraints
     irng = QM.meta.irng
@@ -41,10 +43,6 @@ function ripqp(QM0; mode = :mono, max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1
     Q = dropzeros!(Q)
     Qrows, Qcols, Qvals = findnz(Q)
     c0 = obj(QM, Oc)
-    Qvals, Avals, c, c0, b,
-        lvar, uvar = convert_data(Float128, Qvals, Avals, c, c0, b, lvar, uvar)
-    T0 = eltype(Avals)
-    T = T0
 
     if scaling
         Arows, Acols, Avals, Qrows, Qcols, Qvals,
@@ -98,12 +96,12 @@ function ripqp(QM0; mode = :mono, max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1
 
     # display
     if display == true
-        @info log_header([:k, :pri_obj, :pdd, :rbNorm, :rcNorm, :n_Δx, :α_pri, :α_du, :μ],
-        [Int, T, T, T, T, T, T, T, T, T],
+        @info log_header([:k, :pri_obj, :pdd, :rbNorm, :rcNorm, :n_Δx, :α_pri, :α_du, :μ, :ρ, :δ],
+        [Int, T, T, T, T, T, T, T, T, T, T, T],
         hdr_override=Dict(:k => "iter", :pri_obj => "obj", :pdd => "rgap",
         :rbNorm => "‖rb‖", :rcNorm => "‖rc‖",
         :n_Δx => "‖Δx‖"))
-        @info log_row(Any[k, pri_obj, pdd, rbNorm, rcNorm, n_Δx, zero(T), zero(T), μ])
+        @info log_row(Any[k, pri_obj, pdd, rbNorm, rcNorm, n_Δx, zero(T), zero(T), μ, ρ, δ])
     end
 
     if mode == :multi
@@ -179,7 +177,7 @@ function ripqp(QM0; mode = :mono, max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1
                                                    J_augm, J_fact, J_P, diagind_J, diag_Q, tmp_diag,
                                                    Δ_aff, Δ_cc, Δ, Δ_xλ, s_l_αΔ_aff, s_u_αΔ_aff,
                                                    x_m_l_αΔ_aff, u_m_x_αΔ_aff, rxs_l, rxs_u,
-                                                   1000, ϵ_pdd64, ϵ_μ64, ϵ_rc64, ϵ_rb64, tol_Δx64,
+                                                   400, ϵ_pdd64, ϵ_μ64, ϵ_rc64, ϵ_rb64, tol_Δx64,
                                                    start_time, max_time, c_catch, c_pdd, display)
             # conversions to Float128
             T = Float128

@@ -231,6 +231,12 @@ function iter_mehrotraPC!(T0, x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
             δ /= 10
             c_pdd += 1
         end
+        if T == Float128 && k>10 && c_catch <= 1 &&
+                @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-6)
+            δ /= 10
+            δ_min /= 10
+            c_pdd += 1
+        end
         if T == Float64 && k>10 && c_catch <= 1 &&
                 @views minimum(J_augm.nzval[view(diagind_J,1:n_cols)]) < -one(T) / δ / T(1e-6)
             if T0 == Float128
@@ -255,7 +261,7 @@ function iter_mehrotraPC!(T0, x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
         tired = Δt > max_time
 
         if display == true
-            @info log_row(Any[k, pri_obj, pdd, rbNorm, rcNorm, n_Δx, α_pri, α_dual_final, μ])
+            @info log_row(Any[k, pri_obj, pdd, rbNorm, rcNorm, n_Δx, α_pri, α_dual_final, μ, ρ, δ])
         end
     end
 

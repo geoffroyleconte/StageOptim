@@ -99,7 +99,7 @@ function createQuadraticModel128(qpdata; name="qp_pb")
             ucon=convert(Array{Float128}, qps1.ucon),
             lvar=convert(Array{Float128}, qps1.lvar),
             uvar=convert(Array{Float128}, qps1.uvar),
-            c0=qpdata.c0, name=name)
+            c0=Float128(qpdata.c0), name=name)
 end
 
 # qps1 = readqps(string(path_pb, "\\TMA_ME.mps"))
@@ -117,7 +117,7 @@ qps1.qrows, qps1.qcols, qps1.qvals,
                                         qps1.avals, qps1.lcon, qps1.ucon, qps1.lvar,
                                         qps1.uvar, qps1.ncon, qps1.nvar)
 qm1 = createQuadraticModel128(qps1)
-
+# qm1 = QuadraticModel(qps1)
 # include(raw"C:\Users\Geoffroy Leconte\Documents\cours\TFE\code\StageOptim\amdahl_benchmarks\src128\RipQP.jl")
 include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src128/RipQP.jl")
 
