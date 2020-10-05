@@ -122,7 +122,7 @@ function ripqp(QM0; mode = :mono, max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1
                                                J_augm, J_fact, J_P, diagind_J, diag_Q, tmp_diag,
                                                Δ_aff, Δ_cc, Δ, Δ_xλ, s_l_αΔ_aff, s_u_αΔ_aff,
                                                x_m_l_αΔ_aff, u_m_x_αΔ_aff, rxs_l, rxs_u,
-                                               100, ϵ_pdd32, ϵ_μ32, ϵ_rc32, ϵ_rb32, tol_Δx32,
+                                               200, ϵ_pdd32, ϵ_μ32, ϵ_rc32, ϵ_rb32, tol_Δx32,
                                                start_time, max_time, c_catch, c_pdd, display)
 
         # conversions to Float64
@@ -177,7 +177,7 @@ function ripqp(QM0; mode = :mono, max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1
                                                    J_augm, J_fact, J_P, diagind_J, diag_Q, tmp_diag,
                                                    Δ_aff, Δ_cc, Δ, Δ_xλ, s_l_αΔ_aff, s_u_αΔ_aff,
                                                    x_m_l_αΔ_aff, u_m_x_αΔ_aff, rxs_l, rxs_u,
-                                                   400, ϵ_pdd64, ϵ_μ64, ϵ_rc64, ϵ_rb64, tol_Δx64,
+                                                   3000, ϵ_pdd64, ϵ_μ64, ϵ_rc64, ϵ_rb64, tol_Δx64,
                                                    start_time, max_time, c_catch, c_pdd, display)
             # conversions to Float128
             T = Float128
