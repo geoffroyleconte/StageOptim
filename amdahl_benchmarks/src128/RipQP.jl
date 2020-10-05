@@ -208,7 +208,7 @@ function ripqp(QM0; mode = :mono, max_iter=800, ϵ_pdd=1e-8, ϵ_rb=1e-6, ϵ_rc=1
         end
     end
 
-    ρ_min, δ_min = T(sqrt(eps(T0))*1e0), T(sqrt(eps(T0))*1e0)
+    ρ_min, δ_min = T(sqrt(eps(T0))*1e-5), T(sqrt(eps(T0))*1e0)
     # iters T0
     x, λ, s_l, s_u, x_m_lvar, uvar_m_x,
         rc, rb, rcNorm, rbNorm, Qx, ATλ,
