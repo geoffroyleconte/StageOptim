@@ -134,7 +134,7 @@ function iter_mehrotraPC!(T0, x, λ, s_l, s_u, x_m_lvar, uvar_m_x, lvar, uvar,
             J_fact = ldl_factorize!(Symmetric(J_augm, :U), J_P)
         end
 
-        if c_catch >= 4
+        if c_catch >= 10
             break
         end
 
