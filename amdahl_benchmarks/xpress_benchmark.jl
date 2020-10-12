@@ -17,7 +17,7 @@ function createQuadraticModel(qpdata; name="qp_pb")
 end
 
 function xpress2(QM)
-    return xpress(QM, presolve=0, crossover=0)
+    return xpress(QM, presolve=0)
 end
 
 path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
