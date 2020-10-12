@@ -1,8 +1,8 @@
 using QuadraticModels, QPSReader
 using Quadmath, SparseArrays
 using Tulip, Printf
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\quadLP\\data\\MPS"
-# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/quadLP/data/MPS"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\quadLP\\data\\MPS"
+path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/quadLP/data/MPS"
 
 function rm_ifix!(ifix, Qrows, Qcols, Qvals, c, c0, Arows, Acols, Avals,
                   Lcon, Ucon, lvar, uvar, n_rows, n_cols)
@@ -175,8 +175,8 @@ qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
 # qm1 = createQuadraticModel128(qps1)
 qm1 = tulip_presolve(qps1)
 # qm1 = QuadraticModel(qps1)
-include(raw"C:\Users\Geoffroy Leconte\Documents\cours\TFE\code\StageOptim\amdahl_benchmarks\src128\RipQP.jl")
-# include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src128/RipQP.jl")
+# include(raw"C:\Users\Geoffroy Leconte\Documents\cours\TFE\code\StageOptim\amdahl_benchmarks\src128\RipQP.jl")
+include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src128/RipQP.jl")
 
 stats1 = RipQP.ripqp(qm1, mode=:multi, max_iter=200000)
 println(stats1)
