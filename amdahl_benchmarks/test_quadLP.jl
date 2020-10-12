@@ -1,7 +1,8 @@
 using QuadraticModels, QPSReader
-using Quadmath
-# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\quadLP\\data\\MPS"
-path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/quadLP/data/MPS"
+using Quadmath, SparseArrays
+using Tulip, Printf
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\quadLP\\data\\MPS"
+# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/quadLP/data/MPS"
 
 function rm_ifix!(ifix, Qrows, Qcols, Qvals, c, c0, Arows, Acols, Avals,
                   Lcon, Ucon, lvar, uvar, n_rows, n_cols)
@@ -102,27 +103,82 @@ function createQuadraticModel128(qpdata; name="qp_pb")
             c0=Float128(qpdata.c0), name=name)
 end
 
-# qps1 = readqps(string(path_pb, "\\TMA_ME.mps"))
-# qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
-qps1 = readqps(string(path_pb, "/GlcAlift.mps"))
-qps1.qrows, qps1.qcols, qps1.qvals,
-    qps1.c, qps1.c0, qps1.arows,
-    qps1.acols, qps1.avals, qps1.lcon,
-    qps1.ucon, qps1.lvar, qps1.uvar,
-    qps1.nvar,
-    Arows_rm_fix, Acols_rm_fix, Avals_rm_fix,
-    Qrows_rm_fix, Qcols_rm_fix, Qvals_rm_fix,
-    c_rm_fix, x_rm_fix, ifix = rm_ifix!(findall(qps1.uvar .== qps1.lvar),
-                                        qps1.qrows, qps1.qcols, qps1.qvals,
-                                        qps1.c, qps1.c0, qps1.arows, qps1.acols,
-                                        qps1.avals, qps1.lcon, qps1.ucon, qps1.lvar,
-                                        qps1.uvar, qps1.ncon, qps1.nvar)
-qm1 = createQuadraticModel128(qps1)
-# qm1 = QuadraticModel(qps1)
-# include(raw"C:\Users\Geoffroy Leconte\Documents\cours\TFE\code\StageOptim\amdahl_benchmarks\src128\RipQP.jl")
-include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src128/RipQP.jl")
 
-stats1 = RipQP.ripqp(qm1, mode=:multi, max_iter=20000)
+function tulip_presolve(qps)
+    model = Tulip.Model{Float64}()
+    Tulip.set_parameter(model, "BarrierIterationsLimit", 200)
+    Tulip.set_parameter(model, "TimeLimit", 1200.)
+    #Tulip.set_parameter(model, "Presolve", 0)
+    Tulip.set_parameter(model, "BarrierTolerancePFeas", 1.0e-6)
+    Tulip.set_parameter(model, "BarrierToleranceDFeas", 1.0e-6)
+    A = sparse(qps.arows, qps.acols, qps.avals, qps.ncon, qps.nvar)
+    varnames = [string("X", i) for i=1:length(qps.c)]
+    connames = [string("X", i) for i=1:length(qps.lcon)]
+    Tulip.load_problem!(model.pbdata,
+        qps.name,
+        true, qps.c, qps.c0,
+        A,
+        qps.lcon, qps.ucon,
+        qps.lvar, qps.uvar,
+        connames, varnames
+    )
+    pb_ = model.pbdata
+    model.presolve_data = Tulip.PresolveData(model.pbdata)
+    st = Tulip.presolve!(model.presolve_data)
+    Tulip.extract_reduced_problem!(model.presolve_data)
+    pb_ = model.presolve_data.pb_red
+    m, n = pb_.ncon, pb_.nvar
+    nzA = 0
+    for i = 1:pb_.ncon
+        nzA += length(pb.arows[i].nzind)
+    end
+    aI = Vector{Int}(undef, nzA)
+    aJ = Vector{Int}(undef, nzA)
+    aV = Vector{Float64}(undef, nzA)
+    nz_ = 0
+    for (j, col) in enumerate(pb_.acols)
+        for (i, aij) in zip(col.nzind, col.nzval)
+            nz_ += 1
+            aI[nz_] = i
+            aJ[nz_] = j
+            aV[nz_] = aij
+        end
+    end
+    test = convert(Array{Float128}, pb_.lvar)
+    println(eltype(test))
+    # return pb_
+    return QuadraticModel(convert(Array{Float128}, pb_.obj), qps.qrows, qps.qcols,
+            convert(Array{Float128}, qps.qvals),
+            Arows=aI, Acols=aJ, Avals=convert(Array{Float128}, aV),
+            lcon=convert(Array{Float128}, pb_.lcon),
+            ucon=convert(Array{Float128}, pb_.ucon),
+            lvar=convert(Array{Float128}, pb_.lvar),
+            uvar=convert(Array{Float128}, pb_.uvar),
+            c0=Float128(pb_.obj0), name=pb_.name)
+end
+
+# qps1 = readqps(string(path_pb, "\\TMA_ME.mps"))
+qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
+# qps1 = readqps(string(path_pb, "/GlcAlift.mps"))
+# qps1.qrows, qps1.qcols, qps1.qvals,
+#     qps1.c, qps1.c0, qps1.arows,
+#     qps1.acols, qps1.avals, qps1.lcon,
+#     qps1.ucon, qps1.lvar, qps1.uvar,
+#     qps1.nvar,
+#     Arows_rm_fix, Acols_rm_fix, Avals_rm_fix,
+#     Qrows_rm_fix, Qcols_rm_fix, Qvals_rm_fix,
+#     c_rm_fix, x_rm_fix, ifix = rm_ifix!(findall(qps1.uvar .== qps1.lvar),
+#                                         qps1.qrows, qps1.qcols, qps1.qvals,
+#                                         qps1.c, qps1.c0, qps1.arows, qps1.acols,
+#                                         qps1.avals, qps1.lcon, qps1.ucon, qps1.lvar,
+#                                         qps1.uvar, qps1.ncon, qps1.nvar)
+# qm1 = createQuadraticModel128(qps1)
+qm1 = tulip_presolve(qps1)
+# qm1 = QuadraticModel(qps1)
+include(raw"C:\Users\Geoffroy Leconte\Documents\cours\TFE\code\StageOptim\amdahl_benchmarks\src128\RipQP.jl")
+# include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src128/RipQP.jl")
+
+stats1 = RipQP.ripqp(qm1, mode=:multi, max_iter=200000)
 println(stats1)
 
 # qps2 = readqps(string(path_pb, "\\GlcAerWT.mps"))
