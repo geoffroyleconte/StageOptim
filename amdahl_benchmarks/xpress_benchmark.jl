@@ -27,7 +27,7 @@ path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata2 = readqps(pb2);
 qm2 = createQuadraticModel(qpdata2)
-stats2 = xpress2(qm2)  # compile code
+stats2 = xpress(qm2)  # compile code
 
 function optimize_xpress(path_pb)
     problems = []
@@ -74,7 +74,7 @@ function optimize_xpress(path_pb)
             i += 1
         end
     end
-    return solve_problems(xpress2, problems)
+    return solve_problems(xpress, problems)
 end
 
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
@@ -83,12 +83,12 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_xpress(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/xpress_scaling_lp1.jld2"), "w")
+file_lp = jldopen(string(save_path, "/xpress_lp1.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_xpress(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/xpress_scaling_qp1.jld2"), "w")
+file_qp = jldopen(string(save_path, "/xpress_qp1.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
