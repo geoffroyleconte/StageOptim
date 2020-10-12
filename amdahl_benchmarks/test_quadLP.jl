@@ -130,7 +130,7 @@ function tulip_presolve(qps)
     m, n = pb_.ncon, pb_.nvar
     nzA = 0
     for i = 1:pb_.ncon
-        nzA += length(pb.arows[i].nzind)
+        nzA += length(pb_.arows[i].nzind)
     end
     aI = Vector{Int}(undef, nzA)
     aJ = Vector{Int}(undef, nzA)
