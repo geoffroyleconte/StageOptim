@@ -194,9 +194,9 @@ pb_1, qm1 = tulip_presolve(qps1)
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 # include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src128/RipQP.jl")
 
-# stats1 = RipQP.ripqp(qm1, mode=:multi, max_iter=100)
+# stats1 = RipQP.ripqp(qm1, mode=:multi)
 using RipQP
-stats1 = ripqp(qm1, mode=:multi, max_iter=1000000)
+stats1 = ripqp(qm1, mode=:multi, max_iter=1000000, max_iter64=1000)
 println(stats1)
 
 # qps2 = readqps(string(path_pb, "\\GlcAerWT.mps"))
