@@ -100,7 +100,7 @@ function createQuadraticModel128(qpdata; name="qp_pb")
             ucon=convert(Array{Float128}, qps1.ucon),
             lvar=convert(Array{Float128}, qps1.lvar),
             uvar=convert(Array{Float128}, qps1.uvar),
-            c0=Float128(qpdata.c0), name=name)
+            c0=Float128(qpdata.c0), x0 = zeros(Float128, length(qps1.c)), name=name)
 end
 
 
@@ -173,9 +173,10 @@ end
 #     end
 
 
-# qps1 = readqps(string(path_pb, "\\TMA_ME.mps"))
+
 # qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
-qps1 = readqps(string(path_pb, "/GlcAlift.mps"))
+# qps1 = readqps(string(path_pb, "/GlcAlift.mps"))
+qps1 = readqps(string(path_pb, "/GlcAerWT.mps"))
 # qps1.qrows, qps1.qcols, qps1.qvals,
 #     qps1.c, qps1.c0, qps1.arows,
 #     qps1.acols, qps1.avals, qps1.lcon,
@@ -194,10 +195,30 @@ pb_1, qm1 = tulip_presolve(qps1)
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 # include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src128/RipQP.jl")
 
-# stats1 = RipQP.ripqp(qm1, mode=:multi)
+# stats1 = RipQP.ripqp(qm1, mode=:multi, max_time=3600, max_iter=40, max_iter64=20, max_iter32=15)
 using RipQP
-stats1 = ripqp(qm1, mode=:multi, max_time=3600, max_iter=1000000, max_iter64=1000)
+stats1 = ripqp(qm1, mode=:multi, max_time=12000, max_iter=200000, max_iter64=2000, max_iter32=200)
 println(stats1)
 
 # qps2 = readqps(string(path_pb, "\\GlcAerWT.mps"))
 # qm2 = QuadraticModel(qps1)
+
+
+# probleme1
+# using Quadmath
+# Q = Float128.([6. 2. 1.
+#      2. 5. 2.
+#      1. 2. 4.])
+# c = Float128.([-8.; -3; -3])
+# c0 =Float128( 0.)
+# A = Float128.([1. 0. 1.
+#     0. 1. 1.])
+# b = Float128.([0.; 3])
+# lvar = Float128.([0.;0;0])
+# uvar = Float128.([Inf; Inf; Inf])
+# lcon = b
+# ucon = b
+#
+# x01 = [1.; 2.; 3.];
+# QM = QuadraticModel(c, Q, A=A, lcon=lcon, ucon=ucon, lvar=lvar, uvar=uvar, x0=x01, c0=c0, name="QM1")
+# stats1 = RipQP.ripqp(QM, mode=:multi, max_time=3600, max_iter=40, max_iter64=20, max_iter32=15)

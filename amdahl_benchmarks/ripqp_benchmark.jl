@@ -78,15 +78,15 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_ripqp(path_pb_lp)
 
-# file_lp = jldopen(string(save_path, "/ripqp_lp_mp5.jld2"), "w")
-# file_lp["stats"] = problems_stats_lp
-# close(file_lp)
+file_lp = jldopen(string(save_path, "/ripqp_mono_d1.jld2"), "w")
+file_lp["stats"] = problems_stats_lp
+close(file_lp)
 
 problems_stats_qp =  optimize_ripqp(path_pb_qp)
 
-# file_qp = jldopen(string(save_path, "/ripqp_qp_mp5.jld2"), "w")
-# file_qp["stats"] = problems_stats_qp
-# close(file_qp)
+file_qp = jldopen(string(save_path, "/ripqp_mono_d1.jld2"), "w")
+file_qp["stats"] = problems_stats_qp
+close(file_qp)
 
 # jldopen(string(save_path, "/mehrotra_lp_test2.jld2"), "w") do file
 #     file["stats"] = problems_stats
