@@ -58,14 +58,14 @@ function solve_augmented_system_aff!(J_fact, J_augm, LDL, r, Δ_aff, Δ_xλ, rhs
     r = mul!(r, LDL, Δ_xλ)
     r .-= rhs
     rNorm = norm(r, Inf)
-    println("res aff  = ", rNorm)
+    # println("res aff  = ", rNorm)
     c_ref = 0
     while rNorm > sqrt(eps(T)) && c_ref < 2
         refinement!(J_fact, Δ_xλ, r)
         r = mul!(r, LDL, Δ_xλ)
         r .-= rhs
         rNorm = norm(r, Inf)
-        println("res aff after  = ", rNorm)
+        # println("res aff after  = ", rNorm)
         c_ref += 1
     end
     Δ_aff[1:n_cols+n_rows] = Δ_xλ
