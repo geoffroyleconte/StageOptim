@@ -193,7 +193,7 @@ qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
 pb_1, qm1 = tulip_presolve(qps1)
 # qm1 = QuadraticModel(qps1)
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
-# include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src128/RipQP.jl")
+# include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src/RipQP.jl")
 
 # stats1 = RipQP.ripqp(qm1, mode=:multi, max_time=3600, max_iter=40, max_iter64=20, max_iter32=15)
 using RipQP

@@ -58,14 +58,14 @@ function solve_augmented_system_aff!(J_fact, J_augm, LDL, r, Δ_aff, Δ_xλ, rhs
     r = mul!(r, LDL, Δ_xλ)
     r .-= rhs
     rNorm = norm(r, Inf)
-    # println("res aff  = ", rNorm)
+    println("res aff  = ", rNorm)
     c_ref = 0
     while rNorm > sqrt(eps(T)) && c_ref < 2
         refinement!(J_fact, Δ_xλ, r)
         r = mul!(r, LDL, Δ_xλ)
         r .-= rhs
         rNorm = norm(r, Inf)
-        # println("res aff after  = ", rNorm)
+        println("res aff after  = ", rNorm)
         c_ref += 1
     end
     Δ_aff[1:n_cols+n_rows] = Δ_xλ
@@ -147,11 +147,11 @@ function iter_mehrotraPC!(pt :: point{T}, itd :: iter_data{T}, FloatData :: QM_F
                                                 itd.x_m_lvar, itd.uvar_m_x, pt.s_l, pt.s_u,
                                                 IntData.ilow, IntData.iupp, IntData.n_cols, IntData.n_rows,
                                                 IntData.n_low)
-        if c_ref == 2 && safe.c_catch < 2
-            safe.c_catch += 1
-            # regu.ρ *= 10
-            regu.δ *= 10
-        end
+        # if c_ref == 2 && safe.c_catch < 2
+        #     safe.c_catch += 1
+        #     # regu.ρ *= 10
+        #     regu.δ *= 10
+        # end
         α_aff_pri = @views compute_α_primal(pt.x, pad.Δ_aff[1:IntData.n_cols], FloatData.lvar, FloatData.uvar)
         α_aff_dual_l = @views compute_α_dual(pt.s_l[IntData.ilow],
                                              pad.Δ_aff[IntData.n_rows+IntData.n_cols+1:IntData.n_rows+IntData.n_cols+IntData.n_low])
@@ -175,11 +175,11 @@ function iter_mehrotraPC!(pt :: point{T}, itd :: iter_data{T}, FloatData :: QM_F
                                               itd.x_m_lvar, itd.uvar_m_x, pad.rxs_l, pad.rxs_u, pt.s_l, pt.s_u,
                                               IntData.ilow, IntData.iupp, IntData.n_cols, IntData.n_rows,
                                               IntData.n_low)
-        if c_ref == 2 && safe.c_catch < 2
-            safe.c_catch += 1
-            # regu.ρ *= 10
-            regu.δ *= 10
-        end
+        # if c_ref == 2 && safe.c_catch < 2
+        #     safe.c_catch += 1
+        #     # regu.ρ *= 10
+        #     regu.δ *= 10
+        # end
         pad.Δ .= pad.Δ_aff .+ pad.Δ_cc # final direction
         α_pri = @views compute_α_primal(pt.x, pad.Δ[1:IntData.n_cols], FloatData.lvar, FloatData.uvar)
         α_dual_l = @views compute_α_dual(pt.s_l[IntData.ilow],
