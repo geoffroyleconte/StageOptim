@@ -104,7 +104,7 @@ function createQuadraticModel128(qpdata; name="qp_pb")
 end
 
 
-function tulip_presolve(qps)
+function tulip_presolve(qps, T)
     model = Tulip.Model{Float64}()
     Tulip.set_parameter(model, "BarrierIterationsLimit", 200)
     Tulip.set_parameter(model, "TimeLimit", 1200.)
@@ -145,14 +145,14 @@ function tulip_presolve(qps)
         end
     end
     # return pb_
-    return pb_, QuadraticModel(convert(Array{Float128}, pb_.obj), qps.qrows, qps.qcols,
-                               convert(Array{Float128}, qps.qvals),
-                               Arows=aI, Acols=aJ, Avals=convert(Array{Float128}, aV),
-                               lcon=convert(Array{Float128}, pb_.lcon),
-                               ucon=convert(Array{Float128}, pb_.ucon),
-                               lvar=convert(Array{Float128}, pb_.lvar),
-                               uvar=convert(Array{Float128}, pb_.uvar),
-                               c0=Float128(pb_.obj0), x0 = zeros(Float128, pb_.nvar), name=pb_.name)
+    return pb_, QuadraticModel(convert(Array{T}, pb_.obj), qps.qrows, qps.qcols,
+                               convert(Array{T}, qps.qvals),
+                               Arows=aI, Acols=aJ, Avals=convert(Array{T}, aV),
+                               lcon=convert(Array{T}, pb_.lcon),
+                               ucon=convert(Array{T}, pb_.ucon),
+                               lvar=convert(Array{T}, pb_.lvar),
+                               uvar=convert(Array{T}, pb_.uvar),
+                               c0=T(pb_.obj0), x0 = zeros(T, pb_.nvar), name=pb_.name)
 end
 
 # function tulip_postsolve(pb_, QM, stats)
@@ -172,7 +172,9 @@ end
 #         model.solution = sol_inner
 #     end
 
-
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
+qps1 = readqps(string(path_pb, "\\BNL2.SIF"), mpsformat=:fixed)
 
 qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAlift.mps"))
@@ -190,14 +192,14 @@ qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
 #                                         qps1.avals, qps1.lcon, qps1.ucon, qps1.lvar,
 #                                         qps1.uvar, qps1.ncon, qps1.nvar)
 # qm1 = createQuadraticModel128(qps1)
-pb_1, qm1 = tulip_presolve(qps1)
+pb_1, qm1 = tulip_presolve(qps1, Float128)
 # qm1 = QuadraticModel(qps1)
-# include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
+include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 # include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src/RipQP.jl")
 
-# stats1 = RipQP.ripqp(qm1, mode=:multi, max_time=3600, max_iter=40, max_iter64=20, max_iter32=15)
-using RipQP
-stats1 = ripqp(qm1, mode=:multi, max_time=12000, max_iter=200000, max_iter64=2000, max_iter32=200)
+stats1 = RipQP.ripqp(qm1, mode=:mono, max_time=3600, max_iter=40, max_iter64=100, max_iter32=15)
+# using RipQP
+# stats1 = ripqp(qm1, mode=:multi, max_time=12000, max_iter=200000, max_iter64=2000, max_iter32=200)
 println(stats1)
 
 # qps2 = readqps(string(path_pb, "\\GlcAerWT.mps"))

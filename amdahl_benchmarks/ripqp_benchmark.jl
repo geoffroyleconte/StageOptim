@@ -1,6 +1,6 @@
 using QuadraticModels, QPSReader
-# using RipQP
-include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src/RipQP.jl")
+using RipQP
+# include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src/RipQP.jl")
 using JLD2
 using SolverBenchmark
 
@@ -19,10 +19,10 @@ pb = string(path_pb_lp, "/AFIRO.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
-stats =  RipQP.ripqp(qm)  # compile code
+stats =  ripqp(qm)  # compile code
 
 function ripqp_bm(QM)
-    return RipQP.ripqp(QM, mode=:mono)
+    return ripqp(QM, mode=:mono)
 end
 
 function optimize_ripqp(path_pb)
@@ -80,13 +80,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_ripqp(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/ripqp_lp_mono_d7.jld2"), "w")
+file_lp = jldopen(string(save_path, "/ripqp_lp_mono_d8.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_ripqp(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/ripqp_qp_mono_d7.jld2"), "w")
+file_qp = jldopen(string(save_path, "/ripqp_qp_mono_d8.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
