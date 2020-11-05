@@ -71,7 +71,6 @@ mutable struct iter_data{T<:Real}
     diag_Q      :: Vector{T}
     J_augm      :: SparseMatrixCSC{T,Int}
     J_fact      :: LDLFactorizations.LDLFactorization{T,Int,Int,Int}
-    LDL         :: SparseMatrixCSC{T,Int}
     diagind_J   :: Vector{Int}
     x_m_lvar    :: Vector{T}
     uvar_m_x    :: Vector{T}
@@ -99,7 +98,6 @@ convert(::Type{iter_data{T}}, itd) where {T<:Real} = iter_data(convert(Array{T},
                                                                 convert(Array{T}, itd.diag_Q),
                                                                 convert(SparseMatrixCSC{T,Int}, itd.J_augm),
                                                                 createldl(T, itd.J_fact),
-                                                                convert(SparseMatrixCSC{T,Int}, itd.LDL),
                                                                 itd.diagind_J,
                                                                 convert(Array{T}, itd.x_m_lvar),
                                                                 convert(Array{T}, itd.uvar_m_x),
@@ -121,8 +119,6 @@ mutable struct preallocated_data{T<:Real}
     Δ_cc             :: Vector{T}
     Δ                :: Vector{T}
     Δ_xλ             :: Vector{T}
-    rhs              :: Vector{T}
-    r                :: Vector{T}
     x_m_l_αΔ_aff     :: Vector{T}
     u_m_x_αΔ_aff     :: Vector{T}
     s_l_αΔ_aff       :: Vector{T}
@@ -135,8 +131,6 @@ convert(::Type{preallocated_data{T}}, pad) where {T<:Real} = preallocated_data(c
                                                                                convert(Array{T}, pad.Δ_cc),
                                                                                convert(Array{T}, pad.Δ),
                                                                                convert(Array{T}, pad.Δ_xλ),
-                                                                               convert(Array{T}, pad.rhs),
-                                                                               convert(Array{T}, pad.r),
                                                                                convert(Array{T}, pad.x_m_l_αΔ_aff),
                                                                                convert(Array{T}, pad.u_m_x_αΔ_aff),
                                                                                convert(Array{T}, pad.s_l_αΔ_aff),

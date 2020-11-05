@@ -3,18 +3,15 @@ module RipQP
 using LinearAlgebra, Quadmath, SparseArrays, Statistics
 
 using LDLFactorizations, NLPModels, QuadraticModels, SolverTools
-# using NLPModels, QuadraticModels, SolverTools
-
 
 export ripqp
 
-# include(raw"C:\Users\Geoffroy Leconte\.julia\dev\LDLFactorizations\src\LDLFactorizations.jl")
 include("types_definition.jl")
+include("types_toolbox.jl")
 include("starting_points.jl")
 include("scaling.jl")
 include("sparse_toolbox.jl")
 include("iterations.jl")
-include("types_toolbox.jl")
 
 function ripqp(QM0 :: AbstractNLPModel; mode :: Symbol = :mono,
                max_iter :: Int = 800, ϵ_pdd :: Real = 1e-8, ϵ_rb :: Real = 1e-6, ϵ_rc :: Real = 1e-6,
@@ -108,7 +105,7 @@ function ripqp(QM0 :: AbstractNLPModel; mode :: Symbol = :mono,
 
     elapsed_time = time() - start_time
 
-    stats = GenericExecutionStats(status, QM, solution = pt.x[1:QM.meta.nvar],
+    stats = GenericExecutionStats(status, QM, solution = pt.x[1:QM0.meta.nvar],
                                   objective = itd.pri_obj,
                                   dual_feas = res.rcNorm,
                                   primal_feas = res.rbNorm,

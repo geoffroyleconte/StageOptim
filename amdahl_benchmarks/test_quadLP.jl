@@ -145,7 +145,7 @@ function tulip_presolve(qps, T)
         end
     end
     # return pb_
-    return pb_, QuadraticModel(convert(Array{T}, pb_.obj), qps.qrows, qps.qcols,
+    return model, QuadraticModel(convert(Array{T}, pb_.obj), qps.qrows, qps.qcols,
                                convert(Array{T}, qps.qvals),
                                Arows=aI, Acols=aJ, Avals=convert(Array{T}, aV),
                                lcon=convert(Array{T}, pb_.lcon),
@@ -155,28 +155,37 @@ function tulip_presolve(qps, T)
                                c0=T(pb_.obj0), x0 = zeros(T, pb_.nvar), name=pb_.name)
 end
 
-# function tulip_postsolve(pb_, QM, stats)
-#     sol_inner = Tulip.Solution{T}(pb_.ncon, pb_.nvar, Tulip.Sln_Unknown, Tulip.Sln_Unknown, false, false,
-#         zero(T), zero(T),
-#         stats.solution, zeros(T, pb_.ncon),
-#         zeros(T, m), zeros(T, m),
-#         zeros(T, n), zeros(T, n))
-#     sol_inner.
-#
-#     # Post-solve
-#     if model.params.Presolve > 0
-#         sol_outer = Tulip.Solution{T}(model.pbdata.ncon, model.pbdata.nvar)
-#         Tulip.postsolve!(sol_outer, sol_inner, model.presolve_data)
-#         model.solution = sol_outer
-#     else
-#         model.solution = sol_inner
-#     end
+function tulip_postsolve(model, QM, qps, stats)
+    T = eltype(QM.data.c)
+    sol_inner = Tulip.Solution{T}(model.presolve_data.pb_red.ncon, model.presolve_data.pb_red.nvar)
+    sol_inner.x = stats.solution
+    sol_inner.Ax = sparse(qps.arows, qps.acols, qps.avals,qps.ncon,qps.nvar) * sol_inner.x
+    sol_inner.y_lower = stats.multipliers
+
+    # Post-solve
+    if model.params.Presolve > 0
+        sol_outer = Tulip.Solution{T}(model.pbdata.ncon, model.pbdata.nvar)
+        Tulip.postsolve!(sol_outer, sol_inner, model.presolve_data)
+        model.solution = sol_outer
+    else
+        model.solution = sol_inner
+    end
+    return GenericExecutionStats(stats1.status, QM, solution = model.solution.x,
+                                  objective = qps.c'*model.solution.x+qps.c0,
+                                  dual_feas = stats.dual_feas,
+                                  primal_feas = stats.primal_feas,
+                                  multipliers = stats.multipliers,
+                                  multipliers_L = stats.multipliers_L,
+                                  multipliers_U = stats.multipliers_U,
+                                  iter = stats.iter,
+                                  elapsed_time = stats.elapsed_time)
+end
 
 path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
 qps1 = readqps(string(path_pb, "\\BNL2.SIF"), mpsformat=:fixed)
 
-qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
+# qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAlift.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAerWT.mps"))
 # qps1.qrows, qps1.qcols, qps1.qvals,
@@ -192,15 +201,17 @@ qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
 #                                         qps1.avals, qps1.lcon, qps1.ucon, qps1.lvar,
 #                                         qps1.uvar, qps1.ncon, qps1.nvar)
 # qm1 = createQuadraticModel128(qps1)
-pb_1, qm1 = tulip_presolve(qps1, Float128)
+model1, qm1 = tulip_presolve(qps1, Float64)
 # qm1 = QuadraticModel(qps1)
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 # include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src/RipQP.jl")
 
-stats1 = RipQP.ripqp(qm1, mode=:mono, max_time=3600, max_iter=40, max_iter64=100, max_iter32=15)
+stats1 = RipQP.ripqp(qm1, mode=:mono, max_time=3600, max_iter=800, max_iter64=100, max_iter32=15)
 # using RipQP
 # stats1 = ripqp(qm1, mode=:multi, max_time=12000, max_iter=200000, max_iter64=2000, max_iter32=200)
 println(stats1)
+
+post_stats1 = tulip_postsolve(model1, qm1, qps1, stats1)
 
 # qps2 = readqps(string(path_pb, "\\GlcAerWT.mps"))
 # qm2 = QuadraticModel(qps1)

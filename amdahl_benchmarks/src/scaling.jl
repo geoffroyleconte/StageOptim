@@ -36,7 +36,6 @@ end
 
 function scaling_Ruiz!(FloatData_T0 :: QM_FloatData{T}, IntData :: QM_IntData, ϵ :: T;
                        max_iter :: Int = 100) where {T<:Real}
-
     n = length(IntData.Arows)
     d1, d2 = ones(T, IntData.n_rows), ones(T, IntData.n_cols)
     r_k, c_k = zeros(T, IntData.n_rows), zeros(T, IntData.n_cols)
