@@ -46,15 +46,11 @@ end
 env = CPLEX.Env()
 CPXsetintparam(env, CPXPARAM_ScreenOutput, 1)   # Enable output (0=off)
 CPXsetdblparam(env, CPXPARAM_TimeLimit, 3600)  # Time limit
-CPXsetintparam(env, CPXPARAM_Threads, 1) # Single thread
-for (k, v) in kwargs
-    if k==:presolve
-        CPXsetintparam(env, CPXPARAM_Preprocessing_Presolve, v) # 0 = no presolve
-    elseif k==:scaling
-        CPXsetintparam(env, CPXPARAM_Read_Scale, -1) # -1 = no scaling
-    elseif k==:crossover
-        CPXsetintparam(env, CPXPARAM_SolutionType, 2)  # 2 = no crossover
-    end
-end
-CPXsetintparam(env, CPXPARAM_LPMethod, method)  # 4 = Use barrier
-CPXsetintparam(env, CPXPARAM_QPMethod, method) # 4 = Use barrier, 0 = automatic
+# CPXsetintparam(env, CPXPARAM_Threads, 1) # Single thread
+CPXsetintparam(env, CPXPARAM_Barrier_Limits_Iteration, 0)
+CPXsetintparam(env, CPXPARAM_SolutionType, 2)  # 2 = no crossover
+CPXsetintparam(env, CPXPARAM_LPMethod, 4)  # 4 = Use barrier
+CPXsetintparam(env, CPXPARAM_QPMethod, 4) # 4 = Use barrier, 0 = automatic
+# Model m("theModel.mod");
+# m.setExportFile("theModel.lp");
+# m.stateConstraint();
