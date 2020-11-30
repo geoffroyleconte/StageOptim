@@ -44,7 +44,7 @@ end
 
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\quadLP\\data\\MPS"
 path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/quadLP/data/MPS"
-QM = QuadraticModel(readqps(string(path_pb, "/TMA_ME.mps")))
+QM = QuadraticModel(readqps(string(path_pb, "//GlcAerWT.mps")))
 
 env = CPLEX.Env()
 CPXsetintparam(env, CPXPARAM_ScreenOutput, 1)   # Enable output (0=off)
@@ -129,10 +129,10 @@ CPXaddrows(env, lp, 0, QM.meta.ncon, length(Acsrcolval), rhs,
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\results\\cplex\\presolved_data"
 save_path = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/quadLP/data/MPS"
 objoff = Ref{Cdouble}()
-status = CPXpreslvwrite(env, lp, string(save_path, "/TMA_ME_presolved.pre"), objoff)
+status = CPXpreslvwrite(env, lp, string(save_path, "//GlcAerWT_presolved.pre"), objoff)
 
 status_p = Ref{Cint}()
 lp = CPXcreateprob(env, status_p, "")
 
-status = CPXreadcopyprob(env, lp, string(save_path, "/TMA_ME_presolved.pre"), C_NULL)
-status = CPXwriteprob(env, lp, string(save_path, "/TMA_ME_presolved.mps"), C_NULL)
+status = CPXreadcopyprob(env, lp, string(save_path, "//GlcAerWT_presolved.pre"), C_NULL)
+status = CPXwriteprob(env, lp, string(save_path, "//GlcAerWT_presolved.mps"), C_NULL)

@@ -186,7 +186,7 @@ end
 # qps1 = readqps(string(path_pb, "\\CAPRI.SIF"), mpsformat=:fixed)
 
 # qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
-qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
+qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAlift.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAerWT.mps"))
 # qps1.qrows, qps1.qcols, qps1.qvals,
@@ -201,15 +201,15 @@ qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
 #                                         qps1.c, qps1.c0, qps1.arows, qps1.acols,
 #                                         qps1.avals, qps1.lcon, qps1.ucon, qps1.lvar,
 #                                         qps1.uvar, qps1.ncon, qps1.nvar)
-# qm1 = createQuadraticModel128(qps1)
-model1, qm1 = tulip_presolve(qps1, Float128)
+qm1 = createQuadraticModel128(qps1)
+# model1, qm1 = tulip_presolve(qps1, Float128)
 # qm1 = QuadraticModel(qps1)
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 # include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src/RipQP.jl")
 
 # stats1 = RipQP.ripqp(qm1, mode=:mono, max_time=3600, ϵ_rb_z=1e-100, max_iter=1000, max_iter64=100, max_iter32=15)
 using RipQP
-stats1 = ripqp(qm1, mode=:mono, max_time=1200, max_iter=1300, max_iter64=2000,
+stats1 = ripqp(qm1, mode=:multi, max_time=3600, max_iter=13000, max_iter64=2000, ϵ_pdd64=1e4, ϵ_rc64=1e-3, ϵ_rb64=1e-3,
                 max_iter32=200, dynamic_regul=true)
 println(stats1)
 
