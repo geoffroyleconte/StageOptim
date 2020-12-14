@@ -19,10 +19,10 @@ pb = string(path_pb_lp, "/AFIRO.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
-stats =  ripqp(qm, mode=:dynamic, K=0)  # compile code
+stats =  ripqp(qm, mode=:mono, regul=:dynamic, K=0)  # compile code
 
 function ripqp_bm(QM)
-    return ripqp(QM, mode=:dynamic, K=0)
+    return ripqp(QM, mode=:mono, regul=:dynamic, K=0)
 end
 
 function optimize_ripqp(path_pb)
