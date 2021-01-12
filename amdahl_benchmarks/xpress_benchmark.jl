@@ -83,12 +83,12 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_xpress(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/xpress_scaling_lp1.jld2"), "w")
+file_lp = jldopen(string(save_path, "/xpress_scaling_lp2.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_xpress(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/xpress_scaling_qp1.jld2"), "w")
+file_qp = jldopen(string(save_path, "/xpress_scaling_qp2.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
