@@ -22,7 +22,7 @@ qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm, mode=:mono, regul=:classic, K=-1)  # compile code
 
 function ripqp_bm(QM)
-    return ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200.)
+    return ripqp(QM, mode=:mono, regul=:classic, K=-1, max_time=1200.)
 end
 
 function optimize_ripqp(path_pb)
