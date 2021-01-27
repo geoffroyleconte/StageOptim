@@ -19,10 +19,10 @@ pb = string(path_pb_lp, "/AFIRO.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
-stats =  ripqp(qm, mode=:mono, regul=:dynamic, K=0)  # compile code
+stats =  ripqp(qm, mode=:multi, regul=:classic, K=0)  # compile code
 
 function ripqp_bm(QM)
-    return ripqp(QM, mode=:mono, regul=:dynamic, K=0, max_time=1200.)
+    return ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200.)
 end
 
 function optimize_ripqp(path_pb)
@@ -80,13 +80,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_ripqp(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/G-2021-03_lp_mono_d.jld2"), "w")
+file_lp = jldopen(string(save_path, "/G-2021-03_lp_multi.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_ripqp(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/G-2021-03_qp_mono_d.jld2"), "w")
+file_qp = jldopen(string(save_path, "/G-2021-03_qp_multi.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
