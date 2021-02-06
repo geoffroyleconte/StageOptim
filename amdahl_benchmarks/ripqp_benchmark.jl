@@ -22,7 +22,7 @@ qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm, mode=:mono, regul=:classic, K=0)  # compile code
 
 function ripqp_bm(QM)
-    return ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=12.)
+    return ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200.)
 end
 
 function optimize_ripqp(path_pb)
@@ -80,13 +80,13 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchma
 
 problems_stats_lp =  optimize_ripqp(path_pb_lp)
 
-file_lp = jldopen(string(save_path, "/ripqp_lp_mono_4.jld2"), "w")
+file_lp = jldopen(string(save_path, "/ripqp_lp_mono_5.jld2"), "w")
 file_lp["stats"] = problems_stats_lp
 close(file_lp)
 
 problems_stats_qp =  optimize_ripqp(path_pb_qp)
 
-file_qp = jldopen(string(save_path, "/ripqp_qp_mono_4.jld2"), "w")
+file_qp = jldopen(string(save_path, "/ripqp_qp_mono_5.jld2"), "w")
 file_qp["stats"] = problems_stats_qp
 close(file_qp)
 
