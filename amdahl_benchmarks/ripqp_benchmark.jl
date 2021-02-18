@@ -1,6 +1,5 @@
 using QuadraticModels, QPSReader
 using RipQP
-# include("/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/src/RipQP.jl")
 using JLD2
 using SolverBenchmark
 
@@ -21,11 +20,14 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm, mode=:mono, regul=:classic, K=0)  # compile code
 
-function ripqp_bm(QM)
-    return ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200.)
-end
+ripqp_bm_classic(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200.)
+ripqp_bm_classic_nrtol(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200., normalize_rtol=false)
+ripqp_bm_dynamic(QM) = ripqp(QM, mode=:mono, regul=:dynamic, K=0, max_time=1200.)
+ripqp_bm_ccorr(QM) = ripqp(QM, mode=:mono, regul=:classic, K=-1, max_time=1200.)
+ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200.)
+ripqp_bm_muti_dynamic(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200.)
 
-function optimize_ripqp(path_pb)
+function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
     i_max = 1000
     i = 1
@@ -71,25 +73,30 @@ function optimize_ripqp(path_pb)
          end
     end
 
-    return solve_problems(ripqp_bm, problems)
+    return solve_problems(ripqp_func, problems)
 end
 
 
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
-problems_stats_lp =  optimize_ripqp(path_pb_lp)
+function save_problems(file_path :: String, ripqp_func :: Function, 
+                       path_pb_lp :: String = path_pb_lp, path_pb_qp :: String = path_pb_qp)
 
-file_lp = jldopen(string(save_path, "/ripqp_lp_mono_5.jld2"), "w")
-file_lp["stats"] = problems_stats_lp
-close(file_lp)
+    lp_classic =  optimize_ripqp(path_pb_lp, ripqp_func)
+    file_lp = jldopen(string(file_path, "_lp.jld2"), "w")
+    file_lp["stats"] = lp_classic
+    close(file_lp)
+    qp_classic = optimize_ripqp(path_pb_qp, ripqp_func)
+    file_qp = jldopen(string(file_path, "_qp.jld2"), "w")
+    file_qp["stats"] = qp_classic
+    close(file_qp)
+    
+return Nothing
 
-problems_stats_qp =  optimize_ripqp(path_pb_qp)
-
-file_qp = jldopen(string(save_path, "/ripqp_qp_mono_5.jld2"), "w")
-file_qp["stats"] = problems_stats_qp
-close(file_qp)
-
-# jldopen(string(save_path, "/mehrotra_lp_test2.jld2"), "w") do file
-#     file["stats"] = problems_stats
-# end
+save_problems(string(save_path, "/ripqp_mono_1"), ripqp_bm_classic)
+save_problems(string(save_path, "/ripqp_mono_nrtol_1"), ripqp_bm_classic_nrtol)
+save_problems(string(save_path, "/ripqp_dynamic_1"), ripqp_bm_dynamic)
+save_problems(string(save_path, "/ripqp_ccorr_1"), ripqp_bm_ccorr)
+save_problems(string(save_path, "/ripqp_multi_1"), ripqp_bm_multi)
+save_problems(string(save_path, "/ripqp_multi_dynamic_1"), ripqp_bm_muti_dynamic)
