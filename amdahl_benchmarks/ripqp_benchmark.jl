@@ -20,12 +20,12 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm, mode=:mono, regul=:classic, K=0)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1.)
-ripqp_bm_classic_nrtol(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1. , normalize_rtol=false)
-ripqp_bm_dynamic(QM) = ripqp(QM, mode=:mono, regul=:dynamic, K=0, max_time=1.)
-ripqp_bm_ccorr(QM) = ripqp(QM, mode=:mono, regul=:classic, K=-1, max_time=1.)
-ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1.)
-ripqp_bm_muti_dynamic(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1.)
+ripqp_bm_classic(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200.)
+ripqp_bm_classic_nrtol(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200. , normalize_rtol=false)
+ripqp_bm_dynamic(QM) = ripqp(QM, mode=:mono, regul=:dynamic, K=0, max_time=1200.)
+ripqp_bm_ccorr(QM) = ripqp(QM, mode=:mono, regul=:classic, K=-1, max_time=1200.)
+ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200.)
+ripqp_bm_muti_dynamic(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200.)
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
