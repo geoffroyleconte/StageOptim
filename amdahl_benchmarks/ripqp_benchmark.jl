@@ -21,7 +21,7 @@ qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm, mode=:mono, regul=:classic, K=0)  # compile code
 
 ripqp_bm_classic(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1.)
-ripqp_bm_classic_nrtol(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1., normalize_rtol=false)
+ripqp_bm_classic_nrtol(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1. , normalize_rtol=false)
 ripqp_bm_dynamic(QM) = ripqp(QM, mode=:mono, regul=:dynamic, K=0, max_time=1.)
 ripqp_bm_ccorr(QM) = ripqp(QM, mode=:mono, regul=:classic, K=-1, max_time=1.)
 ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1.)
@@ -92,7 +92,8 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     file_qp["stats"] = qp_classic
     close(file_qp)
     
-return Nothing
+    return Nothing
+end
 
 save_problems(string(save_path, "/ripqp_mono_1"), ripqp_bm_classic)
 save_problems(string(save_path, "/ripqp_mono_nrtol_1"), ripqp_bm_classic_nrtol)
