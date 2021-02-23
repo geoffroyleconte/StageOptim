@@ -77,7 +77,7 @@ function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
 end
 
 
-save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
+save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 
 function save_problems(file_path :: String, ripqp_func :: Function, 

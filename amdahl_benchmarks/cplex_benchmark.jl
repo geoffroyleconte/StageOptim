@@ -72,7 +72,7 @@ function optimize_cplex(path_pb)
     return solve_problems(cplex2, problems)
 end
 
-save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
+save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 # save_path = "/user/eleves/gleconte2017/Z/Documents/TFE/results"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\results"
 

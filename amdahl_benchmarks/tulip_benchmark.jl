@@ -122,7 +122,7 @@ function optimize_tulip(path_pb)
     return solve_problems(tulip_solve, problems)
 end
 
-save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/StageOptim/amdahl_benchmarks/results"
+save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 problems_stats_lp =  optimize_tulip(path_pb_lp)
 
 file_lp = jldopen(string(save_path, "/tulip_lp2.jld2"), "w")
