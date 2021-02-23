@@ -20,12 +20,12 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm, mode=:mono, regul=:classic, K=0)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200.)
+ripqp_bm_classic(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200., solve! = solve_K2_5!)
 ripqp_bm_classic_nrtol(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200., normalize_rtol=false)
-ripqp_bm_dynamic(QM) = ripqp(QM, mode=:mono, regul=:dynamic, K=0, max_time=1200.)
+ripqp_bm_dynamic(QM) = ripqp(QM, mode=:mono, regul=:dynamic, K=0, max_time=1200., solve! = solve_K2_5!)
 ripqp_bm_ccorr(QM) = ripqp(QM, mode=:mono, regul=:classic, K=-1, max_time=1200.)
-ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200.)
-ripqp_bm_muti_dynamic(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200.)
+ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200., solve! = solve_K2_5!)
+ripqp_bm_muti_dynamic(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200., solve! = solve_K2_5!)
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
@@ -95,9 +95,9 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/ripqp_mono_1"), ripqp_bm_classic)
-save_problems(string(save_path, "/ripqp_mono_nrtol_1"), ripqp_bm_classic_nrtol)
-save_problems(string(save_path, "/ripqp_dynamic_1"), ripqp_bm_dynamic)
-save_problems(string(save_path, "/ripqp_ccorr_1"), ripqp_bm_ccorr)
-save_problems(string(save_path, "/ripqp_multi_1"), ripqp_bm_multi)
-save_problems(string(save_path, "/ripqp_multi_dynamic_1"), ripqp_bm_muti_dynamic)
+save_problems(string(save_path, "/ripqp_mono_K25_1"), ripqp_bm_classic)
+# save_problems(string(save_path, "/ripqp_mono_nrtol_1"), ripqp_bm_classic_nrtol)
+save_problems(string(save_path, "/ripqp_dynamic_K25_1"), ripqp_bm_dynamic)
+# save_problems(string(save_path, "/ripqp_ccorr_1"), ripqp_bm_ccorr)
+save_problems(string(save_path, "/ripqp_multi_K25_1"), ripqp_bm_multi)
+save_problems(string(save_path, "/ripqp_multi_dynamic_K25_1"), ripqp_bm_muti_dynamic)
