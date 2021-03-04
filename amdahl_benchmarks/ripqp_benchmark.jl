@@ -18,15 +18,14 @@ pb = string(path_pb_lp, "/AFIRO.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
-stats =  ripqp(qm, mode=:mono, regul=:classic, K=0)  # compile code
+stats =  ripqp(qm)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200., 
-                             create_iterdata = create_iterdata_DosK2_5, solve! = solve_DosK2_5!)
-# ripqp_bm_classic_nrtol(QM) = ripqp(QM, mode=:mono, regul=:classic, K=0, max_time=1200., normalize_rtol=false)
-# ripqp_bm_dynamic(QM) = ripqp(QM, mode=:mono, regul=:dynamic, K=0, max_time=1200., solve! = solve_K2_5!)
-# ripqp_bm_ccorr(QM) = ripqp(QM, mode=:mono, regul=:classic, K=-1, max_time=1200.)
-# ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200., solve! = solve_K2_5!)
-# ripqp_bm_muti_dynamic(QM) = ripqp(QM, mode=:multi, regul=:classic, K=0, max_time=1200., solve! = solve_K2_5!)
+ripqp_bm_classic(QM) = ripqp(QM, iconf = input_config(max_time=1200.))
+ripqp_bm_zoom(QM) = ripqp(QM, iconf = input_config(max_time=1200., refinement = :zoom), itol = input_tol(ϵ_rbz = 1e-5))
+ripqp_bm_zoom2(QM) = ripqp(QM, iconf = input_config(max_time=1200., refinement = :zoom), itol = input_tol(ϵ_rbz = 1e-7))
+ripqp_bm_multizoom(QM) = ripqp(QM, iconf = input_config(max_time=1200., mode=:multi, refinement = :multizoom))
+ripqp_bm_multizoom2(QM) = ripqp(QM, iconf = input_config(max_time=1200., mode=:multi, refinement = :multizoom), itol = input_tol(ϵ_pdd32=1.0))
+ripqp_bm_multi(QM) = ripqp(QM, iconf = input_config(max_time=1200., mode=:multi))
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
@@ -96,9 +95,10 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/ripqp_mono_osK25_2"), ripqp_bm_classic)
-# save_problems(string(save_path, "/ripqp_mono_nrtol_1"), ripqp_bm_classic_nrtol)
-# save_problems(string(save_path, "/ripqp_dynamic_K25_1"), ripqp_bm_dynamic)
-# save_problems(string(save_path, "/ripqp_ccorr_1"), ripqp_bm_ccorr)
-# save_problems(string(save_path, "/ripqp_multi_K25_1"), ripqp_bm_multi)
-# save_problems(string(save_path, "/ripqp_multi_dynamic_K25_1"), ripqp_bm_muti_dynamic)
+save_problems(string(save_path, "/ripqp_mono_K2"), ripqp_bm_classic)
+save_problems(string(save_path, "/ripqp_mono_z"), ripqp_bm_zoom)
+save_problems(string(save_path, "/ripqp_mono_z2"), ripqp_bm_zoom2)
+save_problems(string(save_path, "/ripqp_multi_z"), ripqp_bm_multizoom)
+save_problems(string(save_path, "/ripqp_multi_z2"), ripqp_bm_multizoom2)
+save_problems(string(save_path, "/ripqp_multi_K2"), ripqp_bm_multi)
+
