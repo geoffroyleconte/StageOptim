@@ -20,12 +20,12 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, iconf = input_config(max_time=1200.))
-ripqp_bm_zoom(QM) = ripqp(QM, iconf = input_config(max_time=1200., refinement = :zoom), itol = input_tol(ϵ_rbz = 1e-5))
-ripqp_bm_zoom2(QM) = ripqp(QM, iconf = input_config(max_time=1200., refinement = :zoom), itol = input_tol(ϵ_rbz = 1e-7))
-ripqp_bm_multizoom(QM) = ripqp(QM, iconf = input_config(max_time=1200., mode=:multi, refinement = :multizoom))
-ripqp_bm_multizoom2(QM) = ripqp(QM, iconf = input_config(max_time=1200., mode=:multi, refinement = :multizoom), itol = input_tol(ϵ_pdd32=1.0))
-ripqp_bm_multi(QM) = ripqp(QM, iconf = input_config(max_time=1200., mode=:multi))
+ripqp_bm_classic(QM) = ripqp(QM, itol = input_tol(max_time=1200.))
+ripqp_bm_zoom(QM) = ripqp(QM, iconf = input_config(refinement = :zoom), itol = input_tol(max_time=1200., ϵ_rbz = 1e-5))
+ripqp_bm_zoom2(QM) = ripqp(QM, iconf = input_config(refinement = :zoom), itol = input_tol(max_time=1200., ϵ_rbz = 1e-7))
+ripqp_bm_multizoom(QM) = ripqp(QM, iconf = input_config(mode=:multi, refinement = :multizoom), itol = input_tol(max_time=1200.))
+ripqp_bm_multizoom2(QM) = ripqp(QM, iconf = input_config(mode=:multi, refinement = :multizoom), itol = input_tol(max_time=1200., ϵ_pdd32=1.0))
+ripqp_bm_multi(QM) = ripqp(QM, iconf = input_config(mode=:multi), itol = input_tol(max_time=1200.))
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
