@@ -20,12 +20,17 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, itol = input_tol(max_time=1200.))
+# ripqp_bm_classic(QM) = ripqp(QM, itol = input_tol(max_time=1200.))
+# ripqp_bm_multi(QM) = ripqp(QM, iconf = input_config(mode=:multi), itol = input_tol(max_time=1200.))
+ripqp_bm_ref(QM) = ripqp(QM, iconf = input_config(refinement = :ref), itol = input_tol(max_time=1200., ϵ_rbz = 1e-5))
+ripqp_bm_ref2(QM) = ripqp(QM, iconf = input_config(refinement = :ref), itol = input_tol(max_time=1200., ϵ_rbz = 1e-7))
+ripqp_bm_multiref(QM) = ripqp(QM, iconf = input_config(mode=:multi, refinement = :multiref), itol = input_tol(max_time=1200.))
+ripqp_bm_multiref2(QM) = ripqp(QM, iconf = input_config(mode=:multi, refinement = :multiref), itol = input_tol(max_time=1200., ϵ_pdd32=1.0))
 ripqp_bm_zoom(QM) = ripqp(QM, iconf = input_config(refinement = :zoom), itol = input_tol(max_time=1200., ϵ_rbz = 1e-5))
 ripqp_bm_zoom2(QM) = ripqp(QM, iconf = input_config(refinement = :zoom), itol = input_tol(max_time=1200., ϵ_rbz = 1e-7))
 ripqp_bm_multizoom(QM) = ripqp(QM, iconf = input_config(mode=:multi, refinement = :multizoom), itol = input_tol(max_time=1200.))
 ripqp_bm_multizoom2(QM) = ripqp(QM, iconf = input_config(mode=:multi, refinement = :multizoom), itol = input_tol(max_time=1200., ϵ_pdd32=1.0))
-ripqp_bm_multi(QM) = ripqp(QM, iconf = input_config(mode=:multi), itol = input_tol(max_time=1200.))
+
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
@@ -96,6 +101,10 @@ function save_problems(file_path :: String, ripqp_func :: Function,
 end
 
 # save_problems(string(save_path, "/ripqp_mono_K2"), ripqp_bm_classic)
+save_problems(string(save_path, "/ripqp_mono_r"), ripqp_bm_ref)
+save_problems(string(save_path, "/ripqp_mono_r2"), ripqp_bm_ref2)
+save_problems(string(save_path, "/ripqp_multi_r"), ripqp_bm_multiref)
+save_problems(string(save_path, "/ripqp_multi_r2"), ripqp_bm_multiref2)
 save_problems(string(save_path, "/ripqp_mono_z"), ripqp_bm_zoom)
 save_problems(string(save_path, "/ripqp_mono_z2"), ripqp_bm_zoom2)
 save_problems(string(save_path, "/ripqp_multi_z"), ripqp_bm_multizoom)
