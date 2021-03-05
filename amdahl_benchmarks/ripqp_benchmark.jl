@@ -95,10 +95,10 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/ripqp_mono_K2"), ripqp_bm_classic)
+# save_problems(string(save_path, "/ripqp_mono_K2"), ripqp_bm_classic)
 save_problems(string(save_path, "/ripqp_mono_z"), ripqp_bm_zoom)
 save_problems(string(save_path, "/ripqp_mono_z2"), ripqp_bm_zoom2)
 save_problems(string(save_path, "/ripqp_multi_z"), ripqp_bm_multizoom)
 save_problems(string(save_path, "/ripqp_multi_z2"), ripqp_bm_multizoom2)
-save_problems(string(save_path, "/ripqp_multi_K2"), ripqp_bm_multi)
+# save_problems(string(save_path, "/ripqp_multi_K2"), ripqp_bm_multi)
 
