@@ -22,8 +22,7 @@ stats =  ripqp(qm)  # compile code
 
 # ripqp_bm_classic(QM) = ripqp(QM, itol = input_tol(max_time=1200.))
 # ripqp_bm_multi(QM) = ripqp(QM, iconf = input_config(mode=:multi), itol = input_tol(max_time=1200.))
-ripqp_bm_ref(QM) = ripqp(QM, iconf = input_config(refinement = :ref), itol = input_tol(max_time=1200., ϵ_rbz = 1e-5))
-ripqp_bm_ref2(QM) = ripqp(QM, iconf = input_config(refinement = :ref), itol = input_tol(max_time=1200., ϵ_rbz = 1e-7))
+ripqp_bm_ref(QM) = ripqp(QM, iconf = input_config(refinement = :ref), itol = input_tol(max_time=1200.))
 ripqp_bm_multiref(QM) = ripqp(QM, iconf = input_config(mode=:multi, refinement = :multiref), itol = input_tol(max_time=1200.))
 ripqp_bm_multiref2(QM) = ripqp(QM, iconf = input_config(mode=:multi, refinement = :multiref), itol = input_tol(max_time=1200., ϵ_pdd32=1.0))
 ripqp_bm_zoom(QM) = ripqp(QM, iconf = input_config(refinement = :zoom), itol = input_tol(max_time=1200., ϵ_rbz = 1e-5))
@@ -102,7 +101,6 @@ end
 
 # save_problems(string(save_path, "/ripqp_mono_K2"), ripqp_bm_classic)
 save_problems(string(save_path, "/ripqp_mono_r"), ripqp_bm_ref)
-save_problems(string(save_path, "/ripqp_mono_r2"), ripqp_bm_ref2)
 save_problems(string(save_path, "/ripqp_multi_r"), ripqp_bm_multiref)
 save_problems(string(save_path, "/ripqp_multi_r2"), ripqp_bm_multiref2)
 save_problems(string(save_path, "/ripqp_mono_z"), ripqp_bm_zoom)
