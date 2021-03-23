@@ -20,7 +20,7 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1200.))
+ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1200.) , iconf = InputConfig(solve_method=:IPF))
 # ripqp_bm_multi(QM) = ripqp(QM, iconf = InputConfig(mode=:multi), itol = InputTol(max_time=1200.))
 # ripqp_bm_ref(QM) = ripqp(QM, iconf = InputConfig(refinement = :ref), itol = InputTol(max_time=1200.))
 # ripqp_bm_multiref(QM) = ripqp(QM, iconf = InputConfig(mode=:multi, refinement = :multiref), itol = InputTol(max_time=1200.))
@@ -99,7 +99,7 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/ripqp_mono_K22"), ripqp_bm_classic)
+save_problems(string(save_path, "/ripqp_mono_IPFK2_2"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_mono_r"), ripqp_bm_ref)
 # save_problems(string(save_path, "/ripqp_multi_r"), ripqp_bm_multiref)
 # save_problems(string(save_path, "/ripqp_multi_r2"), ripqp_bm_multiref2)
