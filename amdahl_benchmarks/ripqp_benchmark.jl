@@ -24,7 +24,7 @@ stats =  ripqp(qm)  # compile code
 # ripqp_bm_ipf(QM) = ripqp(QM, itol = InputTol(max_time=1200.) , iconf = InputConfig(solve_method=:IPF))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5minresParams(preconditioner = :ActiveCLDL)),
-                            itol = InputTol(max_iter=400, max_time=1200.) )#,
+                            itol = InputTol(max_iter=400, max_time=120.) )#,
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
