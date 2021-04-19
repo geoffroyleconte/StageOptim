@@ -20,11 +20,11 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
-# ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1200.))
+ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1200.))
 # ripqp_bm_ipf(QM) = ripqp(QM, itol = InputTol(max_time=1200.) , iconf = InputConfig(solve_method=:IPF))
-# ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
-ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5minresParams(preconditioner = :ActiveCLDL)),
-                            itol = InputTol(max_iter=400, max_time=120.) )#,
+ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
+# ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5minresParams(preconditioner = :ActiveCLDL)),
+#                             itol = InputTol(max_iter=400, max_time=120.) )#,
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
@@ -94,11 +94,11 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-# save_problems(string(save_path, "/ripqp_mono_1"), ripqp_bm_classic)
-save_problems(string(save_path, "/ripqp_minres_1"), ripqp_bm_minres)
+save_problems(string(save_path, "/ripqp_mono_1"), ripqp_bm_classic)
+# save_problems(string(save_path, "/ripqp_minres_1"), ripqp_bm_minres)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_1"), ripqp_bm_ipf)
-# save_problems(string(save_path, "/ripqp_ccorr_1"), ripqp_bm_cc)
-# save_problems(string(save_path, "/ripqp_ccorr_3"), ripqp_bm_cc)
+# save_problems(string(save_path, "/ripqp_ccorr_2"), ripqp_bm_cc)
+save_problems(string(save_path, "/ripqp_ccorr_3"), ripqp_bm_cc)
 # save_problems(string(save_path, "/ripqp_multi_r"), ripqp_bm_multiref)
 # save_problems(string(save_path, "/ripqp_mono_z"), ripqp_bm_zoom)
 # save_problems(string(save_path, "/ripqp_multi_z"), ripqp_bm_multizoom)
