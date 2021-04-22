@@ -86,10 +86,10 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     file_lp = jldopen(string(file_path, "_lp.jld2"), "w")
     file_lp["stats"] = lp_classic
     close(file_lp)
-    qp_classic = optimize_ripqp(path_pb_qp, ripqp_func)
-    file_qp = jldopen(string(file_path, "_qp.jld2"), "w")
-    file_qp["stats"] = qp_classic
-    close(file_qp)
+    # qp_classic = optimize_ripqp(path_pb_qp, ripqp_func)
+    # file_qp = jldopen(string(file_path, "_qp.jld2"), "w")
+    # file_qp["stats"] = qp_classic
+    # close(file_qp)
     
     return Nothing
 end
