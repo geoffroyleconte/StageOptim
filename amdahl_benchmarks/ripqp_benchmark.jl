@@ -95,7 +95,7 @@ function save_problems(file_path :: String, ripqp_func :: Function,
 end
 
 # save_problems(string(save_path, "/ripqp_mono_1"), ripqp_bm_classic)
-save_problems(string(save_path, "/ripqp_minres_1"), ripqp_bm_minres)
+save_problems(string(save_path, "/ripqp_minres_2"), ripqp_bm_minres)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_1"), ripqp_bm_ipf)
 # save_problems(string(save_path, "/ripqp_ccorr_2"), ripqp_bm_cc)
 # save_problems(string(save_path, "/ripqp_ccorr_4"), ripqp_bm_cc)
