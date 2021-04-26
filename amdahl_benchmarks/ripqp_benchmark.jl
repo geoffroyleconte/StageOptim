@@ -2,7 +2,7 @@ using QuadraticModels, QPSReader
 using RipQP
 using JLD2
 using SolverBenchmark
-include("/home/mgi.polymtl.ca/geleco/git_workspace/docGL/utils/K1QR.jl")
+# include("/home/mgi.polymtl.ca/geleco/git_workspace/docGL/utils/K1QR.jl")
 
 function createQuadraticModel(qpdata; name="qp_pb")
     return QuadraticModel(qpdata.c, qpdata.qrows, qpdata.qcols, qpdata.qvals,
@@ -22,7 +22,7 @@ qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
 # ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1.))
-ripqp_bm_K1(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(sp = K1QRParams(method=:sne)))
+ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=false))
 # ripqp_bm_ipf(QM) = ripqp(QM, itol = InputTol(max_time=1200.) , iconf = InputConfig(solve_method=:IPF))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
@@ -30,7 +30,7 @@ ripqp_bm_K1(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfi
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
-    i_max = 20
+    i_max = 1000
     i = 1
     for file_name in readdir(path_pb)
          if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
@@ -88,16 +88,16 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     file_lp = jldopen(string(file_path, "_lp.jld2"), "w")
     file_lp["stats"] = lp_classic
     close(file_lp)
-    qp_classic = optimize_ripqp(path_pb_qp, ripqp_func)
-    file_qp = jldopen(string(file_path, "_qp.jld2"), "w")
-    file_qp["stats"] = qp_classic
-    close(file_qp)
+    # qp_classic = optimize_ripqp(path_pb_qp, ripqp_func)
+    # file_qp = jldopen(string(file_path, "_qp.jld2"), "w")
+    # file_qp["stats"] = qp_classic
+    # close(file_qp)
     
     return Nothing
 end
 
 # tf = save_problems(string(save_path, "/ripqp_mono_solvercore2"), ripqp_bm_classic)
-save_problems(string(save_path, "/ripqp_K1"), ripqp_bm_K1)
+save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_1"), ripqp_bm_ipf)
 # save_problems(string(save_path, "/ripqp_ccorr_2"), ripqp_bm_cc)
 # save_problems(string(save_path, "/ripqp_ccorr_4"), ripqp_bm_cc)
