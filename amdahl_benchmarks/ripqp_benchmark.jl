@@ -84,6 +84,7 @@ save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/r
 function save_problems(file_path :: String, ripqp_func :: Function, 
                        path_pb_lp :: String = path_pb_lp, path_pb_qp :: String = path_pb_qp)
 
+    lp_classic =  optimize_ripqp(path_pb_lp, ripqp_func)
     file_lp = jldopen(string(file_path, "_lp.jld2"), "w")
     file_lp["stats"] = lp_classic
     close(file_lp)
@@ -96,7 +97,7 @@ function save_problems(file_path :: String, ripqp_func :: Function,
 end
 
 # tf = save_problems(string(save_path, "/ripqp_mono_solvercore2"), ripqp_bm_classic)
-save_problems(string(save_path, "/ripqp_K1sne"), ripqp_bm_K1)
+save_problems(string(save_path, "/ripqp_K1"), ripqp_bm_K1)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_1"), ripqp_bm_ipf)
 # save_problems(string(save_path, "/ripqp_ccorr_2"), ripqp_bm_cc)
 # save_problems(string(save_path, "/ripqp_ccorr_4"), ripqp_bm_cc)
