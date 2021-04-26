@@ -133,11 +133,11 @@ end
 
 using QuadraticModels, QPSReader
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
-qm = QuadraticModel(readqps(string(path_pb, "\\AGG.SIF"), mpsformat=:fixed))
-stats1 = ripqp(qm, iconf = InputConfig(sp = K1QRParams(method = :sne)))
-stats1bis = ripqp(qm, iconf = InputConfig(sp = K1QRParams(method = :ln)))
-stats2 = ripqp(qm)
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
+# qm = QuadraticModel(readqps(string(path_pb, "\\AGG.SIF"), mpsformat=:fixed))
+# stats1 = ripqp(qm, iconf = InputConfig(sp = K1QRParams(method = :sne)))
+# stats1bis = ripqp(qm, iconf = InputConfig(sp = K1QRParams(method = :ln)))
+# stats2 = ripqp(qm)
 
 # Q = [6. 2. 1.
 #      2. 5. 2.
