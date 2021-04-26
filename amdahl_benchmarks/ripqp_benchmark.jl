@@ -22,7 +22,7 @@ qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
 # ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1.))
-ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=false))
+ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=true))
 # ripqp_bm_ipf(QM) = ripqp(QM, itol = InputTol(max_time=1200.) , iconf = InputConfig(solve_method=:IPF))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
@@ -100,7 +100,7 @@ end
 save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_1"), ripqp_bm_ipf)
 # save_problems(string(save_path, "/ripqp_ccorr_2"), ripqp_bm_cc)
-# save_problems(string(save_path, "/ripqp_ccorr_4"), ripqp_bm_cc)
+# save_problems(string(save_path, "/ripqp_ccorr_4"), ripqp_bm_cc) 
 # save_problems(string(save_path, "/ripqp_multi_r"), ripqp_bm_multiref)
 # save_problems(string(save_path, "/ripqp_mono_z"), ripqp_bm_zoom)
 # save_problems(string(save_path, "/ripqp_multi_z"), ripqp_bm_multizoom)
