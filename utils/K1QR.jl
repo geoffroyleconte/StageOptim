@@ -10,7 +10,7 @@ struct K1QRParams{T<:Real} <: SolverParams
     δ_min  :: T
 end
 
-function K1QRParams(;method :: Symbol = :sne, ρ_min :: T = sqrt(eps()), δ_min :: T = sqrt(eps())) where {T<:Real} 
+function K1QRParams(; method :: Symbol = :sne, ρ_min :: T = sqrt(eps()), δ_min :: T = sqrt(eps())) where {T<:Real} 
     if method != :sne && method != :ln 
         error("method should be :sne or :ln")  
     end 

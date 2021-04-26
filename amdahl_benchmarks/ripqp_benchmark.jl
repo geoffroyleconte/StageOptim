@@ -22,7 +22,7 @@ qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
 # ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1.))
-ripqp_bm_K1(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(sp = K1QRParams(:sne)))
+ripqp_bm_K1(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(sp = K1QRParams(method=:sne)))
 # ripqp_bm_ipf(QM) = ripqp(QM, itol = InputTol(max_time=1200.) , iconf = InputConfig(solve_method=:IPF))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
