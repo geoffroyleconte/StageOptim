@@ -35,7 +35,8 @@ function mul2!(y, A, x)
   # config = launch_configuration(kernel.fun)
   # N = min(length(x), config.threads)
   threads = min(length(x), 256)
-  blocks = ceil(Int, length(A.colVal)/threads)
+  # blocks = ceil(Int, length(A.colVal)/threads)
+  blocks = ceil(Int, length(y)/threads)
   @cuda name="mul2" threads=threads blocks=blocks kernel(y, A.rowPtr, A.colVal, A.nzVal, size(A, 1), x)
   return y2
 end
