@@ -1,4 +1,4 @@
-using OSQP, QuadraticModels, SolverCore, SparseArrays, LinearAlgebra
+using OSQP, QuadraticModels, SolverCore, SparseArrays, LinearAlgebra, QPSReader
 
 const status_map_qm = Dict{Symbol,Symbol}(
   :Dual_infeasible_inaccurate => :infeasible,
@@ -45,6 +45,6 @@ function osqp(QM::QuadraticModel; kwargs...)
 end
 
 path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
-qm = QuadraticModel(readqps(string(path_pb, "\\QAFIRO.SIF"), mpsformat=:fixed))
-stats = osqp(qm)
+qm = QuadraticModel(readqps(string(path_pb, "\\QSEBA.SIF"), mpsformat=:fixed))
+stats = osqp(qm, eps_abs=1.0e-7, eps_rel=1.0e-7)
 println(stats)
