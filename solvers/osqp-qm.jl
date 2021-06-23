@@ -44,7 +44,8 @@ function osqp(QM::QuadraticModel; kwargs...)
   return stats
 end
 
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
-qm = QuadraticModel(readqps(string(path_pb, "\\QSEBA.SIF"), mpsformat=:fixed))
-stats = osqp(qm, eps_abs=1.0e-7, eps_rel=1.0e-7)
-println(stats)
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+# qm = QuadraticModel(readqps(string(path_pb, "\\LISWET1.SIF"), mpsformat=:fixed))
+# stats = osqp(qm, eps_abs=0.0, eps_rel=1.0e-7, time_limit=10., max_iter=8000)
+# println(stats)
