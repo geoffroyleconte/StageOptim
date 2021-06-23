@@ -1,4 +1,5 @@
 include("/home/mgi.polymtl.ca/geleco/git_workspace/docGL/solvers/osqp-qm.jl")
+using SolverBenchmark, JLD2
 
 function createQuadraticModel(qpdata; name="qp_pb")
     return QuadraticModel(qpdata.c, qpdata.qrows, qpdata.qcols, qpdata.qvals,
