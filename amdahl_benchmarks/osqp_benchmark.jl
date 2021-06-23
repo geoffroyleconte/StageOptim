@@ -9,7 +9,7 @@ function createQuadraticModel(qpdata; name="qp_pb")
 end
 
 function osqp2(QM)
-  stats = osqp(QM, eps_abs=0.0, eps_rel=1.0e-6, time_limit=1200., max_iter=80000, verbose=false)
+  stats = osqp(QM, eps_abs=1.0e-3, eps_rel=1.0e-3, time_limit=1200., max_iter=80000, verbose=false)
 end
 
 path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
