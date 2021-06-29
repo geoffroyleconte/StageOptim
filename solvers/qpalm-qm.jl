@@ -43,12 +43,12 @@ function qpalm(QM::QuadraticModel; settings...)
   return stats
 end
 
-path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
-path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
+# path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+# path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 # path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 # path_pb_qp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
-pb2 = string(path_pb_qp, "/QSEBA.SIF")
-qpdata2 = readqps(pb2);
-qm2 = createQuadraticModel(qpdata2)
-stats2 = qpalm(qm2, eps_rel=1.0e-6,eps_abs=0.0, verbose=0, time_limit=1200.) 
-println(stats2)
+# pb2 = string(path_pb_qp, "/QSEBA.SIF")
+# qpdata2 = readqps(pb2);
+# qm2 = createQuadraticModel(qpdata2)
+# stats2 = qpalm(qm2, eps_rel=1.0e-6,eps_abs=0.0, verbose=0, time_limit=1200.) 
+# println(stats2)

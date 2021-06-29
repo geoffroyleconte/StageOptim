@@ -9,7 +9,7 @@ function createQuadraticModel(qpdata; name="qp_pb")
 end
 
 function qpalm2(QM)
-  stats =  qpalm(qm2, eps_rel=1.0e-6, eps_abs=0.0, verbose=0, time_limit=1200.) 
+  stats =  qpalm(QM, eps_rel=1.0e-6, eps_abs=0.0, verbose=0, time_limit=1200.) 
 end
 
 path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
