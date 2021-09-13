@@ -80,7 +80,7 @@ function build_table(problem)
                       formatters = ft_printf("%7.1e", [1, 2, 3, 4]))
 end
 
-problem = "\\AGG.SIF"
+problem = "\\AFIRO.SIF"
 build_table(problem)
 
 # save_path = string(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\graphes\residuals","/", formul, problem[1:end-4])#, "_10-6")
