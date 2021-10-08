@@ -23,6 +23,15 @@ function zeros_logscale!(v, min_val)
   end
 end
 
+function ripqpK1(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K1KrylovParams(kmethod=:cg, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
+                    solve_method=:IPF, history=true#, stepsize = stepsize,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=30, max_time=20.0))
+end
+
 function ripqpK2(qm)
   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
                     sp = RipQP.K2KrylovParams(kmethod=:minres, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
@@ -111,15 +120,15 @@ end
 
 n_k = 31
 n_pb = 10
-n_solvers = 4
+n_solvers = 5
 data = zeros(n_k, n_pb, n_solvers)
 N = ones(n_pb)
-solvers = [:ripqpK2, :ripqpK2_5, :ripqpK3, :ripqpK3_5]
+solvers = [:ripqpK1, :ripqpK2, :ripqpK2_5, :ripqpK3, :ripqpK3_5]
 for is in 1: length(solvers)
   optimize_ripqp!(path_pb, eval(solvers[is]), n_pb, data, is)
 end
 
-perf = data_profile(PlotsBackend(), data, N, [string(solver) for solver in solvers], legend=:bottomright,
+perf = data_profile(PlotsBackend(), data, N, [string(solver) for solver in solvers], legend=:topright,
                     τ= 1.0e-3)
 # plot(perf, )
 title!("data profile (Netlib problems)")

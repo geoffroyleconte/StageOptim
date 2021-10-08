@@ -7,6 +7,7 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\irish-electricity.mps")))
+path_pb_ps = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib_ps"
 
 function createQuadraticModel(qpdata; name="qp_pb")
   return QuadraticModel(qpdata.c, qpdata.qrows, qpdata.qcols, qpdata.qvals,
@@ -23,31 +24,57 @@ function zeros_logscale!(v, min_val)
   end
 end
 
+function ripqpK1(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K1KrylovParams(kmethod=:cg, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
+                    solve_method=:IPF, history=true#, stepsize = stepsize,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=30, max_time=20.0))
+end
+
 function ripqpK2(qm)
-  return RipQP.ripqp(qm, display = true, iconf = RipQP.InputConfig(
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
                     sp = RipQP.K2KrylovParams(kmethod=:minres, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
-                    solve_method=:IPF, history=true, #stepsize = stepsize,
+                    solve_method=:IPF, history=true#, stepsize = stepsize,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=24, max_time=20.0))
+                itol = RipQP.InputTol(max_iter=30, max_time=20.0))
 end
 
-function ripqpK2NInf(qm)
-  return RipQP.ripqp(qm, display = true, iconf = RipQP.InputConfig(
-                    sp = RipQP.K2KrylovParams(kmethod=:minres, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
-                    solve_method=:IPF, history=true, LIPF = true,
+function ripqpK2_5(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K2_5KrylovParams(kmethod=:minres, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
+                    solve_method=:IPF, history=true,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=24, max_time=20.0))
+                itol = RipQP.InputTol(max_iter=30, max_time=20.0))
 end
 
+function ripqpK3(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K3KrylovParams(kmethod=:bicgstab, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
+                    solve_method=:IPF, history=true,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=30, max_time=20.0))
+end
+
+function ripqpK3_5(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K3_5KrylovParams(kmethod=:minres, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
+                    solve_method=:IPF, history=true,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=30, max_time=20.0))
+end
 
 function optimize_ripqp!(path_pb :: String, ripqp_func :: Function, n_pb :: Int, data, solver)
   problems = []
   i_max = n_pb
   i = 1
   for file_name in readdir(path_pb)
-       if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
+       if file_name[end-3:end] in [".SIF", ".mps"] && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
                                                        "CAPRI.SIF"; "CZPROB.SIF";
                                                        "ETAMACRO.SIF"; "FINNIS.SIF";
                                                        "FORPLAN.SIF"; "GREENBEA.SIF";
@@ -92,17 +119,20 @@ function optimize_ripqp!(path_pb :: String, ripqp_func :: Function, n_pb :: Int,
   end
 end
 
-n_k = 25
-n_pb = 4
-n_solvers = 2
+n_k = 31
+n_pb = 10
+n_solvers = 4
 data = zeros(n_k, n_pb, n_solvers)
 N = ones(n_pb)
-solvers = [:ripqpK2, :ripqpK2NInf]
+solvers = [:ripqpK1, :ripqpK2]
 for is in 1: length(solvers)
   optimize_ripqp!(path_pb, eval(solvers[is]), n_pb, data, is)
 end
+for is in 1: length(solvers)
+  optimize_ripqp!(path_pb_ps, eval(solvers[is]), n_pb, data, is+length(solvers))
+end
 
-perf = data_profile(PlotsBackend(), data, N, [string(solver) for solver in solvers], legend=:bottomright,
+perf = data_profile(PlotsBackend(), data, N, ["ripqp_K1", "ripqp_K2", "ripqp_K1_ps", "ripqp_K2_ps"], legend=:topright,
                     τ= 1.0e-3)
 # plot(perf, )
 title!("data profile (Netlib problems)")
