@@ -200,3 +200,64 @@ p2, ip2 = Metis.permutation(K)
 K[p2,p2]
 p3 = Metis.partition(K, 3)
 K[p3, p3]
+
+using LinearAlgebra, SparseArrays, BenchmarkTools, CUDA
+CUDA.allowscalar(false)
+T = Float32
+n = 10000
+a = CUDA.rand(T, n)
+b = CUDA.rand(T, n)
+A = sprand(T, n, n, 0.2)
+Agpu = CUDA.CUSPARSE.CuSparseMatrixCSR(A)
+
+function bench_ldiv!(b, A, a)
+  ALT = UnitLowerTriangular(A)
+  CUDA.@sync begin
+    ldiv!(b, ALT, a)
+  end
+end
+
+@benchmark bench_ldiv!(b, Agpu, a)
+
+function custom_mul!(res::AbstractVector{T}, A, v) where T
+  colptr = A.colptr
+  rowval = A.rowval
+  nzval = A.nzval
+  res .= zero(T)
+  @inbounds for j=1:size(A, 2)
+    for k = colptr[j]:(colptr[j+1]-1)
+      i = rowval[k]
+      res[i] += nzval[k] * v[j]
+    end
+  end
+  res
+end
+
+function custom_mul2!(res::AbstractVector{T}, A, v) where T
+  colptr = A.colptr
+  rowval = A.rowval
+  nzval = A.nzval
+  res .= zero(T)
+  @inbounds for j=1:size(A, 2)
+    @simd for k = colptr[j]:(colptr[j+1]-1)
+      i = rowval[k]
+      res[i] += nzval[k] * v[j]
+    end
+  end
+  res
+end
+
+# solve functions for a single rhs
+function ldl_lsolve!(n, x::AbstractVector{T}, Lp, Li, Lx) where T
+  @inbounds for j = 1:n
+    xj = x[j]
+    @inbounds for p = Lp[j]:(Lp[j + 1] - 1)
+      x[Li[p]] -= Lx[p] * xj
+    end
+  end
+  return x
+end
+function custom_ldiv!(res, A, b)
+  ldl_lsolve!(size(A, 2), b, A.colptr, A.rowval, A.nzval) 
+  res .= b
+end
