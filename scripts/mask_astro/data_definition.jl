@@ -29,6 +29,7 @@ uvar = ones(T, nP)
 m = 35 # Fourier discretization parameter
 ξs = [i * ρ1 / m for i=0:m]
 ηs = [i * ρ1 / m for i=0:m]
+check_DarkHole(ξ, η) = (ξ^2 + η^2 ≥ ρ0^2 && ξ^2 + η^2 ≤ ρ1^2 && η ≤ ξ)
 DarkHole = [[ξ, η] for ξ in ξs for η in ηs if (ξ^2 + η^2 ≥ ρ0^2 && ξ^2 + η^2 ≤ ρ1^2 && η ≤ ξ)]
 idxDarkHole = [Idx2D([i, j]) for i in 1:length(ξs) for j in 1:length(ηs) if (ξs[i]^2 + ηs[j]^2 ≥ ρ0^2 && ξs[i]^2 + ηs[j]^2 ≤ ρ1^2 && ηs[j] ≤ ξs[i])]
 nDH = length(DarkHole)
@@ -47,3 +48,32 @@ lcon = fill(-sqrtϵ, nDH)
 ucon = fill(sqrtϵ, nDH)
 nvar, ncon = nP, nDH
 c = ones(T, nvar) .* (-Δx * Δy)
+
+
+function formFFT(res, ξs, ηs, m)
+  cFFT = 0
+  FFTout = zeros(m+1, m+1)
+  for j2=1:m+1
+    for j1=1:m+1
+      if check_DarkHole(ξs[j1], ηs[j2])
+        cFFT += 1
+        FFTout[j1, j2] = res[cFFT]
+      end
+    end
+  end
+  return FFTout
+end
+
+function formF(res, X, Y, n)
+  F = zeros(n, n)
+  cF = 0
+  for k2=1:n
+    for k1=1:n
+      if X[k1]^2 + Y[k2]^2 < T(0.25)
+        cF += 1
+        F[k1, k2] = res[cF]
+      end
+    end
+  end
+  return F
+end

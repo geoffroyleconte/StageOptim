@@ -5,6 +5,12 @@ using Plots
 F = zeros(T, n, n)
 FFT = zeros(T, m+1, m+1)
 gj1 = zeros(T, n)
+K = zeros(T, m+1, n)
+for j1=1:m+1
+  for k2=1:n
+    K[j1, k2] = cos(2 * π * X[k2] * ξs[j1]) *Δx
+  end
+end
 
 function compute_gj!(gj1, X, ξj1, F, Δx, n, transpose)
   for k2 = 1:n
@@ -20,27 +26,90 @@ end
 function mulopfft!(res::AbstractVector{T}, FFT, f, F, α, β, gj1, X, Y, Δx, Δy, ξs, ηs, idxPupil, idxDarkHole, transpose) where {T}
   cDH = 0
   F .= zero(T)
-  for k=1:length(idxPupil)
-    idx2D = idxPupil[k]
-    F[idx2D.idx[1], idx2D.idx[2]] = f[k]
+  cF = 0
+  for k2=1:n
+    for k1=1:n
+      if X[k1]^2 + Y[k2]^2 < T(0.25)
+        cF += 1
+        F[k1, k2] = f[cF]
+      end
+    end
   end
   for j1=1:m+1
-    compute_gj!(gj1, X, ξs[j1], F, Δx, n, transpose)
+    ξj1 = ξs[j1]
     for j2=1:m+1
-      fftj1j2 = zero(T)
       ηj2 = ηs[j2]
-      for k2=1:n
-        fftj1j2 += 2 * cos(2 * π * Y[k2] * ηj2) * gj1[k2] * Δy
+      fftj1j2 = zero(T)
+      if check_DarkHole(ξj1, ηj2)
+        for k1=1:n
+          xk1 = X[k1]
+          for k2=1:n
+            yk2 = Y[k2]
+            fftj1j2 += 4 * cos(2 * π * xk1 * ξj1) * cos(2 * π * yk2 * ηj2) * F[k1, k2] * Δy * Δx
+          end
+        end
       end
       FFT[j1, j2] = fftj1j2
     end
   end
-  for k=1:length(idxDarkHole)
-    idx2D = idxDarkHole[k]
-    if β == zero(T)
-      res[k] = α * FFT[idx2D.idx[1], idx2D.idx[2]]
-    else
-      res[k] = α * FFT[idx2D.idx[1], idx2D.idx[2]] + β * res[k]
+  cFFT = 0
+  for j2=1:m+1
+    for j1=1:m+1
+      if check_DarkHole(ξs[j1], ηs[j2])
+        cFFT += 1
+        if β == 0
+          res[cFFT] = α * FFT[j1, j2]
+        else
+          res[cFFT] = α * FFT[j1, j2] + β * res[cFFT]
+        end
+      end
+    end
+  end
+end
+
+
+function mulopFFT!(FFT, f, F, α::T, β, gj1, X, Y, Δx, Δy, ξs, ηs) where {T}
+  cDH = 0
+  # F .= zero(T)
+  # cF = 0
+  # for k2=1:n
+  #   for k1=1:n
+  #     if X[k1]^2 + Y[k2]^2 < T(0.25)
+  #       cF += 1
+  #       F[k1, k2] = f[cF]
+  #     end
+  #   end
+  # end
+  for j1=1:m+1
+    ξj1 = ξs[j1]
+    for j2=1:m+1
+      ηj2 = ηs[j2]
+      fftj1j2 = zero(T)
+      if check_DarkHole(ξj1, ηj2)
+        for k1=1:n
+          xk1 = X[k1]
+          for k2=1:n
+            yk2 = Y[k2]
+            fftj1j2 += 4 * cos(2 * π * xk1 * ξj1) * cos(2 * π * yk2 * ηj2) * F[k1, k2] * Δy * Δx
+          end
+        end
+      end
+      FFT[j1, j2] = fftj1j2
+    end
+  end
+  cFFT = 0
+  return FFT
+end
+a = rand(nP)
+Fa = formF(a, X, Y, n)
+afft = opA * a
+aFFT = formFFT(afft, ξs, ηs, m)
+aFFT3 = mulopFFT!(zeros(m+1, m+1), a, Fa, 1.0, 0.0, gj1, X, Y, Δx, Δy, ξs, ηs)
+aFFT2 = 4 * K * Fa * K'
+for i=1:m+1
+  for j=1:m+1
+    if !check_DarkHole(ξs[i], ηs[j])
+      aFFT2[i,j] = 0.
     end
   end
 end
@@ -64,3 +133,4 @@ for indexes in idxPupil
   c += 1
 end
 heatmap(X, Y, data)
+
