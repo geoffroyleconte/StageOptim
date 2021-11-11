@@ -8,7 +8,7 @@ import Base.isless
 isless(a::Idx2D, b::Idx2D) = a.idx[2] < b.idx[2]
 
 T = Float64
-n = 5 # domain discretization parameter
+n = 36 # domain discretization parameter
 ρ0 = T(4)
 ρ1 = T(20)
 sqrtϵ = T(1.0e-5)
@@ -27,6 +27,8 @@ uvar = ones(T, nP)
 # index fk1k2 = k1 + (k2-1) * n 
 
 m = 35 # Fourier discretization parameter
+Δξ = ρ1 / m
+Δη = Δξ
 ξs = [i * ρ1 / m for i=0:m]
 ηs = [i * ρ1 / m for i=0:m]
 check_DarkHole(ξ, η) = (ξ^2 + η^2 ≥ ρ0^2 && ξ^2 + η^2 ≤ ρ1^2 && η ≤ ξ)
