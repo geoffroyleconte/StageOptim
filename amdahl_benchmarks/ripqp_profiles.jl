@@ -5,7 +5,7 @@ using JLD
 using RipQP
 
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
-path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 # save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks"
 save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/data_profiles"
