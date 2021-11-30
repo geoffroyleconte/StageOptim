@@ -145,23 +145,23 @@ opA2 = LinearOperator(T, ncon, nvar, false, false,
 
 opA3 = LinearOperator(T, ncon, nvar, false, false, 
                      (res, f, α, β) -> mulopfft2!(res, f, α, β, X, Y, ξs, ηs, gj2, Δx, Δy),
-                     (res, fft, α, β) -> mulopfftt3!(res, fft, α, β, X, Y, ξs, ηs, gk2, Δξ, Δη))
+                     (res, fft, α, β) -> mulopfftt3!(res, fft, α, β, X, Y, ξs, ηs, gk2, Δx, Δy))
 
-qm = QuadraticModel(c, LinearOperator(spzeros(T, nvar, nvar)), A = opA3, 
-                    lcon = lcon, ucon = ucon, lvar = lvar, uvar = uvar)
+# qm = QuadraticModel(c, LinearOperator(spzeros(T, nvar, nvar)), A = opA3, 
+#                     lcon = lcon, ucon = ucon, lvar = lvar, uvar = uvar)
 
-stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
-                        sp = RipQP.K1KrylovParams(uplo=:L, kmethod = :cg, preconditioner=:Identity),
-                        solve_method=:IPF, scaling = false, history=false, presolve=false),
-                        itol = RipQP.InputTol(ϵ_pdd = 1.0e-4, max_time=10 * 60.))
+# stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
+#                         sp = RipQP.K1KrylovParams(uplo=:L, kmethod = :cg, preconditioner=:Identity),
+#                         solve_method=:IPF, scaling = false, history=false, presolve=false),
+#                         itol = RipQP.InputTol(ϵ_pdd = 1.0e-4, max_time=10 * 60.))
 
-data = zeros(n, n)
-cnt = 1
-for indexes in idxPupil
-  data[indexes.idx[1], indexes.idx[2]] = stats1.solution[cnt]
-  cnt += 1
-end
-heatmap(X, Y, data)
+# data_sol = zeros(n, n)
+# cnt = 1
+# for indexes in idxPupil
+#   data_sol[indexes.idx[1], indexes.idx[2]] = stats1.solution[cnt]
+#   cnt += 1
+# end
+# heatmap(X, Y, data_sol)
 # using FFTW
 # function mulopfft2!(res, f, α, β, Pupil, DarkHole, X, Y, ξs, ηs, Δx, Δy)
 #   FFT2 = FFTW.r2r(f, FFTW.REDFT00)

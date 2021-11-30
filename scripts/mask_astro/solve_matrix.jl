@@ -140,15 +140,27 @@ function mulopfftt!(res::AbstractVector{T}, FFT, fft, F, α, β, X, Y, Δξ, Δ�
   end
 end
 
-function mulopFFTvec!(fft::AbstractVector{T}, f, K) where {T}
-  m, n = size(K)
-  F = reshape(f, n, n)
-  FFT = K * F * K'
-  fft .= FFT[:]
+tmpM, FFT, F = zeros(T, n, m+1), zeros(T, m+1, m+1), zeros(T, n, n)
+function mulopFFTmat!(fft::AbstractVector{T}, K, f, α, β, F, FFT, tmpM, X, Y, ξs, ηs, n, m) where {T}
+  formF!(F, f, X, Y, n)
+  tmpM .= 0
+  mul!(tmpM, F, K')
+  mul!(FFT, K, tmpM)
+  formfft!(fft, FFT, ξs, ηs, m, α, β)
+end
+
+function mulopFFTTmat!(f::AbstractVector{T}, K, fft, α, β, F, FFT, tmpM, X, Y, ξs, ηs, n, m) where {T}
+  formFFT!(FFT, fft, ξs, ηs, m)
+  tmpM .= 0
+  mul!(tmpM, K', FFT)
+  mul!(F, tmpM, K)
+  formf!(f, F, X, Y, n, α, β)
 end
 
 using QuadraticModels, LinearOperators, SparseArrays
-opAmat = LinearOperator(T, (m+1)^2, n^2, false, false, (fft, f, α, β) -> mulopFFTvec!(fft, f, K))
+opAmat = LinearOperator(T, ncon, nvar, false, false, 
+                        (fft, f, α, β) -> mulopFFTmat!(fft, K, f, α, β, F, FFT, tmpM, X, Y, ξs, ηs, n, m),
+                        (f, fft, α, β) -> mulopFFTTmat!(f, K, fft, α, β, F, FFT, tmpM, X, Y, ξs, ηs, n, m))
 
 #prod!
 a = rand(nP)
@@ -192,19 +204,19 @@ end
 Fb = mulopFFTT!(zeros(n, n), aFFT2, X, Y, Δξ, Δη, ξs, ηs)
 
 
-qm = QuadraticModel(c, LinearOperator(spzeros(T, nvar, nvar)), A = opA, 
+qm = QuadraticModel(c, LinearOperator(spzeros(T, nvar, nvar)), A = opAmat, 
                     lcon = lcon, ucon = ucon, lvar = lvar, uvar = uvar)
 
 stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
-                     sp = RipQP.K1KrylovParams(uplo=:L, kmethod = :cg, preconditioner=:Identity),
+                     sp = RipQP.K1KrylovParams(uplo=:L, kmethod = :minres, preconditioner=:Identity),
                      solve_method=:IPF, scaling = false, history=false, presolve=false),
-                     itol = RipQP.InputTol(ϵ_pdd = 1.0e-4, max_time=600.))
+                     itol = RipQP.InputTol(ϵ_pdd = 1.0e-4, max_time=600., max_iter=30))
 
-data = zeros(n, n)
+datap = zeros(n, n)
 c = 1
 for indexes in idxPupil
-  data[indexes.idx[1], indexes.idx[2]] = stats1.solution[c]
+  datap[indexes.idx[1], indexes.idx[2]] = stats1.solution[c]
   c += 1
 end
-heatmap(X, Y, data)
+heatmap(X, Y, datap)
 

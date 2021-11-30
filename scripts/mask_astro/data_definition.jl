@@ -8,7 +8,7 @@ import Base.isless
 isless(a::Idx2D, b::Idx2D) = a.idx[2] < b.idx[2]
 
 T = Float64
-n = 36 # domain discretization parameter
+n = 20 # domain discretization parameter
 ρ0 = T(4)
 ρ1 = T(20)
 sqrtϵ = T(1.0e-5)
@@ -52,30 +52,99 @@ nvar, ncon = nP, nDH
 c = ones(T, nvar) .* (-Δx * Δy)
 
 
-function formFFT(res, ξs, ηs, m)
+function formFFT!(FFT, fft, ξs, ηs, m)
+  FFT .= 0
   cFFT = 0
-  FFTout = zeros(m+1, m+1)
   for j2=1:m+1
     for j1=1:m+1
       if check_DarkHole(ξs[j1], ηs[j2])
         cFFT += 1
-        FFTout[j1, j2] = res[cFFT]
+        FFT[j1, j2] = fft[cFFT]
       end
     end
   end
-  return FFTout
+  return FFT
 end
+formFFT(fft, ξs, ηs, m) = formFFT!(zeros(m+1, m+1), fft, ξs, ηs, m)
 
-function formF(res, X, Y, n)
-  F = zeros(n, n)
+function formF!(F, f, X, Y, n)
+  F .= 0
   cF = 0
   for k2=1:n
     for k1=1:n
       if X[k1]^2 + Y[k2]^2 < T(0.25)
         cF += 1
-        F[k1, k2] = res[cF]
+        F[k1, k2] = f[cF]
       end
     end
   end
   return F
 end
+formF(f, X, Y, n) = formF!(zeros(n, n), f, X, Y, n)
+
+function formf!(f, F, X, Y, n, α, β)
+  f .= 0
+  cF = 0
+  for k2=1:n
+    for k1=1:n
+      if X[k1]^2 + Y[k2]^2 < T(0.25)
+        cF += 1
+        if β == 0
+          f[cF] = α * F[k1, k2]
+        else
+          f[cF] = α * F[k1, k2] + β * f[cF]
+        end
+      end
+    end
+  end
+  return f
+end
+formf(F, X, Y, n) = formf!(zeros(nP), F, X, Y, n, 1.0, 0.0)
+
+function formfft!(fft, FFT, ξs, ηs, m, α, β)
+  fft .= 0
+  cFFT = 0
+  for j2=1:m+1
+    for j1=1:m+1
+      if check_DarkHole(ξs[j1], ηs[j2])
+        cFFT += 1
+        if β == 0
+          fft[cFFT] = α * FFT[j1, j2]
+        else
+          fft[cFFT] = α * FFT[j1, j2] + β * fft[cFFT]
+        end
+      end
+    end
+  end
+  return fft
+end
+formfft(FFT, ξs, ηs, m) = formfft!(zeros(nDH), FFT, ξs, ηs, m, 1.0, 0.0)
+
+# Pupil and DarkHole by column
+idPupil = [[k1,k2] for k2 in 1:length(Y)  for k1 in 1:length(X) if X[k1]^2 + Y[k2]^2 < T(0.25)]
+idDarkHole = [[j1, j2] for j2 in 1:length(ηs) for j1 in 1:length(ξs) if (ξs[j1]^2 + ηs[j2]^2 ≥ ρ0^2 && ξs[j1]^2 + ηs[j2]^2 ≤ ρ1^2 && ηs[j2] ≤ ξs[j1])]
+
+# idx of the beginning of each column in idPupil and idDarkHole
+colptr_DarkHole = ones(Int, m+1)
+function get_colptr(idvec, n)
+  nv = length(idvec)
+  colptr = ones(Int, n+1)
+  cv = 1
+  col = 0
+  for j=1:n
+    k2 = idvec[cv][2]
+    col = 0
+    while k2 == j && cv < nv
+      cv += 1
+      k2 = idvec[cv][2]
+      col += 1
+    end
+    if cv == nv && k2 == j
+      col += 1
+    end
+    colptr[j+1] = col + colptr[j]
+  end
+  return colptr
+end
+colptr_Pupil = get_colptr(idPupil, n)
+colptr_DarkHole = get_colptr(idDarkHole, m+1)

@@ -1,10 +1,14 @@
 using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, BenchmarkProfiles, Plots, PrettyTables
-include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
-# using RipQP
+using JLD
 
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+# include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
+using RipQP
+
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
-save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
+# save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks"
+save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/data_profiles"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\irish-electricity.mps")))
 
@@ -206,9 +210,16 @@ for is in 1: length(solvers)
   optimize_ripqp!(path_pb, eval(solvers[is]), n_pb, data_solv, is)
 end
 
-perf = data_profile(PlotsBackend(), data_solv, N, [string(solver) for solver in solvers], legend=:topright,
+solvers_list = [string(solver) for solver in solvers]
+
+perf = data_profile(PlotsBackend(), data_solv, N, solvers_list, legend=:topright,
                     τ= 1.0e-3)
 # plot(perf, )
 title!("data profile (Netlib problems)")
 
 display("image/svg+xml", perf)
+
+save(string(save_path, "/test2.jld"), "data", data_solv)
+open(string(save_path, "/test2_solvs.txt"), "w") do io
+  writedlm(io, solvers_list)
+end;

@@ -7,13 +7,13 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\AGG.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\AFIRO.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
 stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                         # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
-                        sp = RipQP.K2KrylovParams(uplo=:L, kmethod = :dqgmres, memory=30),
+                        sp = RipQP.K2_5StructuredParams(uplo=:L, kmethod = :trimr),
                         # sp = RipQP.K2KrylovParams(kmethod=:minres, preconditioner = :Identity,
                         # atol0 = 0., rtol0 = 0.1, atol_min=1.0e-10, rtol_min=1.0e-10), 
                         solve_method=:IPF, scaling = true, history=true, presolve=true,
@@ -24,6 +24,8 @@ stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                      ))
 println(stats1)
 println(sum(stats1.solver_specific[:KresNormH]))
+
+print(aze+z)
 
 using DelimitedFiles, MatrixMarket
 K = MatrixMarket.mmread(string(save_path, "\\bug_minaresK_iter1.mtx"))
