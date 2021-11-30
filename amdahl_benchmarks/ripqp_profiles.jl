@@ -212,12 +212,12 @@ end
 
 solvers_list = [string(solver) for solver in solvers]
 
-perf = data_profile(PlotsBackend(), data_solv, N, solvers_list, legend=:topright,
-                    τ= 1.0e-3)
+# perf = data_profile(PlotsBackend(), data_solv, N, solvers_list, legend=:topright,
+#                     τ= 1.0e-3)
 # plot(perf, )
-title!("data profile (Netlib problems)")
+# title!("data profile (Netlib problems)")
 
-display("image/svg+xml", perf)
+# display("image/svg+xml", perf)
 
 save(string(save_path, "/test2.jld"), "data", data_solv)
 open(string(save_path, "/test2_solvs.txt"), "w") do io
