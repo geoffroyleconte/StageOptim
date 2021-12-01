@@ -131,54 +131,61 @@ function ripqpK2_5Jacobi(qm)
                 itol = RipQP.InputTol(max_iter=30, max_time=20.0))
 end
 
-
-function optimize_ripqp!(path_pb :: String, ripqp_func :: Function, n_pb :: Int, data, solver)
-  problems = []
+function get_QuadraticModels(path_pb :: String, n_pb :: Int)
+  qms = []
   i_max = n_pb
   i = 1
   for file_name in readdir(path_pb)
-       if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
-                                                       "CAPRI.SIF"; "CZPROB.SIF";
-                                                       "ETAMACRO.SIF"; "FINNIS.SIF";
-                                                       "FORPLAN.SIF"; "GREENBEA.SIF";
-                                                       "GREENBEB.SIF"; "MAROS.SIF";
-                                                       "NESM.SIF"; "PEROLD.SIF";
-                                                        "PILOT-JA.SIF"; "PILOT-WE.SIF";
-                                                        "PILOT.SIF"; "PILOT4.SIF";
-                                                        "PILOT87.SIF"; "PILOTNOV.SIF";
-                                                         "RECIPELP.SIF"; "SHELL.SIF";
-                                                        "SIERRA.SIF"; "STAIR.SIF";
-                                                        "STANDATA.SIF"; "STANDGUB.SIF";
-                                                       "STANDMPS.SIF"; "TUFF.SIF";
-                                                       "VTP-BASE.SIF"; "DTOC3.SIF";
-                                                        "HS35MOD.SIF";"QBORE3D.SIF";
-                                                       "QCAPRI.SIF"; "QETAMACR.SIF";
-                                                         "QFORPLAN.SIF"; "QPCSTAIR.SIF";
-                                                       "QPCSTAIR.SIF"; "QPILOTNO.SIF";
-                                                       "QRECIPE.SIF"; "QSHELL.SIF";
-                                                       "QSIERRA.SIF"; "QSTAIR.SIF";
-                                                       "QSTANDAT.SIF"; "UBH1.SIF";
-                                                       "YAO.SIF"]) # problems with fixed variables
+    if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
+                                                    "CAPRI.SIF"; "CZPROB.SIF";
+                                                    "ETAMACRO.SIF"; "FINNIS.SIF";
+                                                    "FORPLAN.SIF"; "GREENBEA.SIF";
+                                                    "GREENBEB.SIF"; "MAROS.SIF";
+                                                    "NESM.SIF"; "PEROLD.SIF";
+                                                    "PILOT-JA.SIF"; "PILOT-WE.SIF";
+                                                    "PILOT.SIF"; "PILOT4.SIF";
+                                                    "PILOT87.SIF"; "PILOTNOV.SIF";
+                                                      "RECIPELP.SIF"; "SHELL.SIF";
+                                                    "SIERRA.SIF"; "STAIR.SIF";
+                                                    "STANDATA.SIF"; "STANDGUB.SIF";
+                                                    "STANDMPS.SIF"; "TUFF.SIF";
+                                                    "VTP-BASE.SIF"; "DTOC3.SIF";
+                                                    "HS35MOD.SIF";"QBORE3D.SIF";
+                                                    "QCAPRI.SIF"; "QETAMACR.SIF";
+                                                      "QFORPLAN.SIF"; "QPCSTAIR.SIF";
+                                                    "QPCSTAIR.SIF"; "QPILOTNO.SIF";
+                                                    "QRECIPE.SIF"; "QSHELL.SIF";
+                                                    "QSIERRA.SIF"; "QSTAIR.SIF";
+                                                    "QSTANDAT.SIF"; "UBH1.SIF";
+                                                    "YAO.SIF"]) # problems with fixed variables
 
 
-           println(file_name)
-           pb_i = string(path_pb, "/", file_name)
-           if file_name in ["BLEND.SIF"; "DFL001.SIF"; "FORPLAN.SIF"; "GFRD-PNC.SIF"; "SIERRA.SIF";
-                       "EXDATA.SIF"; "QFORPLAN.SIF"; "QGFRDXPN.SIF"; "VALUES.SIF"]
-               qpdata_i = readqps(pb_i, mpsformat=:fixed)
-           else
-               qpdata_i = readqps(pb_i)
-           end
-           qm = createQuadraticModel(qpdata_i, name=file_name[1:end-4])
-           push!(problems, qm)
-           stats = ripqp_func(qm)
-           ldata = length(stats.solver_specific[:pddH])
-           data[1:ldata, i, solver] .= stats.solver_specific[:pddH]
-           if i==i_max
-               break
-           end
-           i += 1
-       end
+      println(file_name)
+      pb_i = string(path_pb, "/", file_name)
+      if file_name in ["BLEND.SIF"; "DFL001.SIF"; "FORPLAN.SIF"; "GFRD-PNC.SIF"; "SIERRA.SIF";
+                  "EXDATA.SIF"; "QFORPLAN.SIF"; "QGFRDXPN.SIF"; "VALUES.SIF"]
+          qpdata_i = readqps(pb_i, mpsformat=:fixed)
+      else
+          qpdata_i = readqps(pb_i)
+      end
+      qm = createQuadraticModel(qpdata_i, name=file_name[1:end-4])
+      push!(qms, qm)
+      if i==i_max
+        break
+      end
+      i += 1
+    end
+  end
+  return qms
+end
+
+function optimize_ripqp!(qms, ripqp_func :: Function, data, solver)
+  n_pb = length(qms)
+  for i=1:n_pb
+    qm = qms[i]
+    stats = ripqp_func(qm)
+    ldata = length(stats.solver_specific[:pddH])
+    data[1:ldata, i, solver] .= stats.solver_specific[:pddH]
   end
 end
 
@@ -198,12 +205,22 @@ solvers = [
   :ripqpTrimr,
   :ripqpTrimrK2_5,
   ]
+
+# compile
+pb_i = string(path_pb, "/", "AFIRO.SIF")
+qpdata_i = readqps(pb_i)
+qm = createQuadraticModel(qpdata_i, name="AFIRO")
+for solver in solvers
+  stats_compile = eval(solver)(qm)
+end
+
 n_solvers = length(solvers)
 data_solv = zeros(n_k, n_pb, n_solvers)
 N = ones(n_pb)
 
+qms = get_QuadraticModels(path_pb, n_pb)
 for is in 1: length(solvers)
-  optimize_ripqp!(path_pb, eval(solvers[is]), n_pb, data_solv, is)
+  optimize_ripqp!(qms, eval(solvers[is]), data_solv, is)
 end
 
 perf = data_profile(PlotsBackend(), data_solv, N, [string(solver) for solver in solvers], legend=:topright,
