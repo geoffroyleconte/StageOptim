@@ -224,6 +224,7 @@ N = ones(n_pb)
 qms = get_QuadraticModels(path_pb, n_pb)
 for is in 1: length(solvers)
   optimize_ripqp!(qms, eval(solvers[is]), data_solv, is)
+  println(string(solvers[i]), " done")
 end
 
 solvers_list = [string(solver) for solver in solvers]
