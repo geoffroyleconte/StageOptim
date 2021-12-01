@@ -197,15 +197,15 @@ n_k = 31
 n_pb = 1000
 solvers = [
   :ripqpLDL,
-  # :ripqpK1,
-  # :ripqpK2,
-  # :ripqpK2Jacobi,
-  # :ripqpK2_5,
+  :ripqpK1,
+  :ripqpK2,
+  :ripqpK2Jacobi,
+  :ripqpK2_5,
   :ripqpK2_5Jacobi,
-  # :ripqpK3,
-  # :ripqpK3_5,
-  # :ripqpTricg,
-  # :ripqpTricgK2_5,
+  :ripqpK3,
+  :ripqpK3_5,
+  :ripqpTricg,
+  :ripqpTricgK2_5,
   :ripqpTrimr,
   :ripqpTrimrK2_5,
   ]
