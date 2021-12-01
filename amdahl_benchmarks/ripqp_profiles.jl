@@ -194,7 +194,7 @@ function optimize_ripqp!(qms, ripqp_func :: Function, data, solver)
 end
 
 n_k = 31
-n_pb = 10
+n_pb = 1000
 solvers = [
   :ripqpLDL,
   # :ripqpK1,
