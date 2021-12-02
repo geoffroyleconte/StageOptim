@@ -29,7 +29,7 @@ end
 
 function ripqpLDL(qm)
   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
-    sp = RipQP.K2_5LDLParams(), 
+    sp = RipQP.K2LDLParams(), 
     solve_method=:IPF, history=true#, stepsize = stepsize,
     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
     ),
@@ -185,11 +185,15 @@ end
 
 function optimize_ripqp!(qms, ripqp_func :: Function, data, solver)
   n_pb = length(qms)
+  n_iter = size(data)[1]
   for i=1:n_pb
     qm = qms[i]
     stats = ripqp_func(qm)
     ldata = length(stats.solver_specific[:pddH])
     data[1:ldata, i, solver] .= stats.solver_specific[:pddH]
+    if ldata < n_iter
+      data[ldata+1:end, i, solver] .= stats.solver_specific[:pddH][end]
+    end
   end
 end
 
