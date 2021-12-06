@@ -1,5 +1,5 @@
 using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, BenchmarkProfiles, Plots
-using JLD, DelimitedFiles
+using JLD, DelimitedFiles, JLD2
 
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 using RipQP
@@ -222,7 +222,6 @@ for solver in solvers
 end
 
 n_solvers = length(solvers)
-stats_solv = Dict()
 
 function save_problems(file_path :: String, ripqp_func :: Function, qms, path_pb :: String)
   stats = solve_problems(ripqp_func, qms)
@@ -234,20 +233,12 @@ end
 
 qms = get_QuadraticModels(path_pb, n_pb)
 for is in 1: length(solvers)
-  save_problems(file_path, eval(solvers[is]), qms, path_pb)
+  save_problems(save_path, eval(solvers[is]), qms, path_pb)
   println(string(solvers[is]), " done")
 end
 
 solvers_list = [string(solver) for solver in solvers]
 
-# perf = data_profile(PlotsBackend(), data_solv, N, solvers_list, legend=:topright,
-#                     τ= 1.0e-3)
-# plot(perf, )
-# title!("data profile (Netlib problems)")
-
-# display("image/svg+xml", perf)
-
-save(string(save_path, "/test2.jld"), "data", data_solv)
 open(string(save_path, "/test2_solvs.txt"), "w") do io
   writedlm(io, solvers_list)
 end;
