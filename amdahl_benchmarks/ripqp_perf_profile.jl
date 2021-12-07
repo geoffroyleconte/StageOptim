@@ -108,9 +108,27 @@ function ripqpTrimr(qm)
                 itol = RipQP.InputTol(max_iter=50, max_time=30.0))
 end
 
+function ripqpGpmr(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K2StructuredParams(kmethod=:gpmr, atol_min=1.0e-10, rtol_min=1.0e-10), 
+                    solve_method=:IPF,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+end
+
 function ripqpTrimrK2_5(qm)
   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
                     sp = RipQP.K2_5StructuredParams(kmethod=:trimr, atol_min=1.0e-10, rtol_min=1.0e-10), 
+                    solve_method=:IPF,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+end
+
+function ripqpGpmrK2_5(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K2_5StructuredParams(kmethod=:gpmr, atol_min=1.0e-10, rtol_min=1.0e-10), 
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
@@ -211,6 +229,8 @@ solvers = [
   :ripqpTricgK2_5,
   :ripqpTrimr,
   :ripqpTrimrK2_5,
+  :ripqpGpmr,
+  :ripqpGpmrK2_5,
   ]
 
 pb_i = string(path_pb, "/", "AFIRO.SIF")

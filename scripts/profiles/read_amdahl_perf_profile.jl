@@ -11,7 +11,7 @@ for solver in solvers_list
 end
 println(solvers_list)
 
-perf = performance_profile(stats_solv, df->df.elapsed_time)
+perf = performance_profile(stats_solv, df->df.solution)
 # ylims!((0.0, 0.9))
 # plot(perf, )
 title!("data profile (Netlib problems)")
