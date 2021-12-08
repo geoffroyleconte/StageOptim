@@ -13,7 +13,7 @@ qm = QuadraticModel(readqps(string(path_pb, "\\QAFIRO.SIF"), mpsformat=:fixed))
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
 stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                         # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
-                        sp = RipQP.K2_5KrylovParams(uplo=:U, kmethod = :minres),
+                        sp = RipQP.K3_5StructuredParams(uplo=:U, kmethod = :trimr),
                         # sp = RipQP.K2KrylovParams(kmethod=:minres, preconditioner = :Identity,
                         # atol0 = 0., rtol0 = 0.1, atol_min=1.0e-10, rtol_min=1.0e-10), 
                         solve_method=:IPF, scaling = true, history=true, presolve=true,
