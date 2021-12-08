@@ -10,3 +10,5 @@ ripqpTricg
 ripqpTricgK2_5
 ripqpTrimr
 ripqpTrimrK2_5
+ripqpGpmr
+ripqpGpmrK2_5
