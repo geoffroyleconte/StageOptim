@@ -251,7 +251,7 @@ solvers = [
   # :ripqpGpmr,
   # :ripqpGpmrK2_5,
   :ripqpTricgK3_5,
-  :ripqpTrimrK3_5
+  :ripqpTrimrK3_5,
   ]
 
 pb_i = string(path_pb, "/", "QAFIRO.SIF")
