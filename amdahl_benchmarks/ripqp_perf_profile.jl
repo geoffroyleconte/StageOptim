@@ -5,11 +5,11 @@ using DelimitedFiles, JLD2
 using RipQP
 
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
-# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
-path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
+path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 # save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks"
-save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/test_qp1"
+save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/test1"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\irish-electricity.mps")))
 
@@ -34,7 +34,7 @@ function ripqpLDL(qm)
     solve_method=:IPF, #, stepsize = stepsize,
     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
     ),
-  itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+  itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpK1(qm)
@@ -43,7 +43,7 @@ function ripqpK1(qm)
                     solve_method=:IPF, #, stepsize = stepsize,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpK2(qm)
@@ -52,7 +52,7 @@ function ripqpK2(qm)
                     solve_method=:IPF, #, stepsize = stepsize,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpK2_5(qm)
@@ -61,7 +61,7 @@ function ripqpK2_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpK3(qm)
@@ -70,7 +70,7 @@ function ripqpK3(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpK3_5(qm)
@@ -79,7 +79,7 @@ function ripqpK3_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpTricg(qm)
@@ -88,7 +88,7 @@ function ripqpTricg(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpTricgK2_5(qm)
@@ -97,7 +97,7 @@ function ripqpTricgK2_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpTrimr(qm)
@@ -106,7 +106,7 @@ function ripqpTrimr(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpGpmr(qm)
@@ -115,7 +115,7 @@ function ripqpGpmr(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpTrimrK2_5(qm)
@@ -124,7 +124,7 @@ function ripqpTrimrK2_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpGpmrK2_5(qm)
@@ -133,7 +133,7 @@ function ripqpGpmrK2_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpTricgK3_5(qm)
@@ -142,7 +142,7 @@ function ripqpTricgK3_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpTrimrK3_5(qm)
@@ -151,7 +151,7 @@ function ripqpTrimrK3_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpK2Jacobi(qm)
@@ -160,7 +160,7 @@ function ripqpK2Jacobi(qm)
                     solve_method=:IPF, #, stepsize = stepsize,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function ripqpK2_5Jacobi(qm)
@@ -169,7 +169,7 @@ function ripqpK2_5Jacobi(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=50, max_time=30.0))
+                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
 end
 
 function get_QuadraticModels(path_pb :: String, n_pb :: Int)
@@ -177,30 +177,7 @@ function get_QuadraticModels(path_pb :: String, n_pb :: Int)
   i_max = n_pb
   i = 1
   for file_name in readdir(path_pb)
-    if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
-                                                    "CAPRI.SIF"; "CZPROB.SIF";
-                                                    "ETAMACRO.SIF"; "FINNIS.SIF";
-                                                    "FORPLAN.SIF"; "GREENBEA.SIF";
-                                                    "GREENBEB.SIF"; "MAROS.SIF";
-                                                    "NESM.SIF"; "PEROLD.SIF";
-                                                    "PILOT-JA.SIF"; "PILOT-WE.SIF";
-                                                    "PILOT.SIF"; "PILOT4.SIF";
-                                                    "PILOT87.SIF"; "PILOTNOV.SIF";
-                                                      "RECIPELP.SIF"; "SHELL.SIF";
-                                                    "SIERRA.SIF"; "STAIR.SIF";
-                                                    "STANDATA.SIF"; "STANDGUB.SIF";
-                                                    "STANDMPS.SIF"; "TUFF.SIF";
-                                                    "VTP-BASE.SIF"; "DTOC3.SIF";
-                                                    "HS35MOD.SIF";"QBORE3D.SIF";
-                                                    "QCAPRI.SIF"; "QETAMACR.SIF";
-                                                      "QFORPLAN.SIF"; "QPCSTAIR.SIF";
-                                                    "QPCSTAIR.SIF"; "QPILOTNO.SIF";
-                                                    "QRECIPE.SIF"; "QSHELL.SIF";
-                                                    "QSIERRA.SIF"; "QSTAIR.SIF";
-                                                    "QSTANDAT.SIF"; "UBH1.SIF";
-                                                    "YAO.SIF"]) # problems with fixed variables
-
-
+    if file_name[end-3:end] == ".SIF"
       println(file_name)
       pb_i = string(path_pb, "/", file_name)
       if file_name in ["BLEND.SIF"; "DFL001.SIF"; "FORPLAN.SIF"; "GFRD-PNC.SIF"; "SIERRA.SIF";
@@ -237,26 +214,26 @@ end
 n_pb = 1000
 solvers = [
   :ripqpLDL,
-  # :ripqpK1,
+  :ripqpK1,
   :ripqpK2,
-  # :ripqpK2Jacobi,
+  :ripqpK2Jacobi,
   :ripqpK2_5,
-  # :ripqpK2_5Jacobi,
+  :ripqpK2_5Jacobi,
   :ripqpK3,
   :ripqpK3_5,
-  # :ripqpTricg,
-  # :ripqpTricgK2_5,
-  # :ripqpTrimr,
-  # :ripqpTrimrK2_5,
-  # :ripqpGpmr,
-  # :ripqpGpmrK2_5,
+  :ripqpTricg,
+  :ripqpTricgK2_5,
+  :ripqpTrimr,
+  :ripqpTrimrK2_5,
+  :ripqpGpmr,
+  :ripqpGpmrK2_5,
   :ripqpTricgK3_5,
   :ripqpTrimrK3_5,
   ]
 
-pb_i = string(path_pb, "/", "QAFIRO.SIF")
+pb_i = string(path_pb, "/", "AFIRO.SIF")
 qpdata_i = readqps(pb_i)
-qm = createQuadraticModel(qpdata_i, name="QAFIRO")
+qm = createQuadraticModel(qpdata_i, name="AFIRO")
 for solver in solvers
   stats_compile = eval(solver)(qm)
 end
