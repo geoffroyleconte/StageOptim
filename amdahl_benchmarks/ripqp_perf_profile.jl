@@ -34,7 +34,7 @@ function ripqpLDL(qm)
     solve_method=:IPF, #, stepsize = stepsize,
     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
     ),
-  itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+  itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpK1(qm)
@@ -43,7 +43,7 @@ function ripqpK1(qm)
                     solve_method=:IPF, #, stepsize = stepsize,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpK2(qm)
@@ -52,7 +52,7 @@ function ripqpK2(qm)
                     solve_method=:IPF, #, stepsize = stepsize,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpK2_5(qm)
@@ -61,7 +61,7 @@ function ripqpK2_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpK3(qm)
@@ -70,7 +70,7 @@ function ripqpK3(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpK3_5(qm)
@@ -79,7 +79,7 @@ function ripqpK3_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpTricg(qm)
@@ -88,7 +88,7 @@ function ripqpTricg(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpTricgK2_5(qm)
@@ -97,7 +97,7 @@ function ripqpTricgK2_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpTrimr(qm)
@@ -106,7 +106,7 @@ function ripqpTrimr(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpGpmr(qm)
@@ -115,7 +115,7 @@ function ripqpGpmr(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpTrimrK2_5(qm)
@@ -124,7 +124,7 @@ function ripqpTrimrK2_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpGpmrK2_5(qm)
@@ -133,7 +133,7 @@ function ripqpGpmrK2_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpTricgK3_5(qm)
@@ -142,7 +142,7 @@ function ripqpTricgK3_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpTrimrK3_5(qm)
@@ -151,7 +151,7 @@ function ripqpTrimrK3_5(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpK2Jacobi(qm)
@@ -160,7 +160,7 @@ function ripqpK2Jacobi(qm)
                     solve_method=:IPF, #, stepsize = stepsize,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function ripqpK2_5Jacobi(qm)
@@ -169,7 +169,7 @@ function ripqpK2_5Jacobi(qm)
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
-                itol = RipQP.InputTol(max_iter=100, max_iter=300.0))
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
 function get_QuadraticModels(path_pb :: String, n_pb :: Int)
