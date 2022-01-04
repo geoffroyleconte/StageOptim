@@ -49,10 +49,30 @@ stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                      ))
 println(stats1)
 
-function predict_ripqp(α::AbstractVector{T}, x_pred, X, y, K_func) where {T}
-  sumpred = b_offset
-  for i=1:length(α)
-    sumpred += @views α[i] * y[i] * K_func(x_pred, X[i, :])
+n_dat_test = length(y_test)
+K_pred = zeros(n_dat_train)
+function update_Kpred!(K_pred::AbstractVector{T}, Kfunc::Function, x_pred::AbstractVector{T}, X_train::AbstractMatrix{T}) where T
+  for i=1:length(K_pred)
+    K_pred[i] = @views Kfunc(x_pred, X_train[i, :])
   end
-  return sign(sumpred)
 end
+
+function predict_sample(α::AbstractVector{T}, K_pred::AbstractVector{T}, Kfunc::Function, 
+                        x_pred::AbstractVector{T}, X_train::AbstractMatrix{T}, y_train::AbstractVector, b::T) where T
+  update_Kpred!(K_pred, Kfunc, x_pred, X_train)
+  K_pred .*= y_train .* α
+  return sign(sum(K_pred) + b) 
+end
+
+function predict_ripqp(α::AbstractVector{T}, Kfunc, X_train, y_train, X_test, b) where {T}
+  n_dat_test = size(X_test, 1)
+  y_test = zeros(n_dat_test)
+  K_pred = zeros(n_dat_train)
+  for i=1:n_dat_test
+    y_test[i] = @views predict_sample(α, K_pred, Kfunc, X_test[i, :], X_train, y_train, b)
+  end
+  return y_test
+end
+
+y_pred1 =  predict_ripqp(stats1.solution, Krbf, X_train, y_train, X_test, -stats1.multipliers[1])
+println("accuracy ripqp = " , sum(y_pred1 .== y_test) / n_dat_test)
