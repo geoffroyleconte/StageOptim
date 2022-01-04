@@ -44,7 +44,7 @@ stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                         solve_method=:IPF, scaling = true, history=false, presolve=false,
                         # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                         ),
-                     itol = RipQP.InputTol(max_iter=200, max_time=20.0,
+                     itol = RipQP.InputTol(max_iter=50, max_time=20.0,
                      ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ))
 println(stats1)
