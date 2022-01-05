@@ -18,7 +18,7 @@ end
 
 K_train = zeros(n_dat_train, n_dat_train)
 for i=1:n_dat_train
-  for j=1:n_dat_train
+  for j=1:i
     K_train[i, j] = @views Krbf(X_train[i,:], X_train[j,:])
   end
 end
@@ -34,14 +34,14 @@ opK = LinearOperator(Float64, nvar, nvar, true, true, (res, v, α, β) -> mulopK
 
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 
-qm = QuadraticModel(c, sparse(tril!(Diagonal(y_train) * K_train * Diagonal(y_train))), A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
-
+qm = QuadraticModel(c, Symmetric(tril!(Diagonal(y_train) * K_train * Diagonal(y_train)), :L), A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
+# qm = QuadraticModel(c, sparse(tril!(Diagonal(y_train) * K_train * Diagonal(y_train))), A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
 # qm = QuadraticModel(c, opK2, A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
 
 stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
-                        # sp = RipQP.K2KrylovParams(kmethod=:minres,
-                        # atol0 = 0.1, rtol0 = 0.1, atol_min=1.0e-10, rtol_min=1.0e-10), 
-                        solve_method=:IPF, scaling = true, history=false, presolve=false,
+                        # sp = RipQP.K2LDLParams(),
+                        sp = RipQP.K2LDLDenseParams(fact_alg = :bunchkaufman),
+                        solve_method=:IPF, scaling = false, history=false, presolve=false,
                         # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                         ),
                      itol = RipQP.InputTol(max_iter=50, max_time=20.0,
@@ -66,12 +66,12 @@ end
 
 function predict_ripqp(α::AbstractVector{T}, Kfunc, X_train, y_train, X_test, b) where {T}
   n_dat_test = size(X_test, 1)
-  y_test = zeros(n_dat_test)
+  y_pred = zeros(n_dat_test)
   K_pred = zeros(n_dat_train)
   for i=1:n_dat_test
-    y_test[i] = @views predict_sample(α, K_pred, Kfunc, X_test[i, :], X_train, y_train, b)
+    y_pred[i] = @views predict_sample(α, K_pred, Kfunc, X_test[i, :], X_train, y_train, b)
   end
-  return y_test
+  return y_pred
 end
 
 y_pred1 =  predict_ripqp(stats1.solution, Krbf, X_train, y_train, X_test, -stats1.multipliers[1])

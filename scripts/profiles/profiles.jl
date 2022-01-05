@@ -17,14 +17,16 @@ rip_multi_r = open_file(string(res_path, "\\ripqp_multi_r_lp.jld2"))
 rip_multi1 = open_file(string(res_path, "\\ripqp_multi_1_lp.jld2"));
 rip_minres1 = open_file(string(res_path, "\\ripqp_minres_1_lp.jld2"));
 rip_minres2 = open_file(string(res_path, "\\ripqp_minres_2_lp.jld2"));
+rip_monoIPFK22 = open_file(string(res_path, "\\ripqp_mono_IPFK2_2_lp.jld2")); # r, γ =  T(0.95), T(0.1)
+rip_monoIPFK23 = open_file(string(res_path, "\\ripqp_mono_IPFK2_3_lp.jld2")); # r, γ =  T(0.999), T(0.05), fix bug
 
 stats_lp = Dict(
                 :ripqp_mono1 => rip_mono1,
-                :ripqp_minres1 => rip_minres1,
-                :ripqp_minres2 => rip_minres2,
+                :rip_monoIPFK22 => rip_monoIPFK22,
+                :rip_monoIPFK23 => rip_monoIPFK23,
                 )
 
-cost = df -> df.iter + (df.status .!= :acceptable) * Inf + (df.elapsed_time .>= 10.) * Inf
+cost = df -> df.iter + (df.status .!= :acceptable) * Inf# + (df.elapsed_time .>= 10.) * Inf
 perf = performance_profile(stats_lp, cost,legend=:topright)
 title!("Performance profile (Netlib problems)")
 # savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\graphes\profiles\minres_net_iter_wrip.pdf")
