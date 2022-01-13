@@ -5,11 +5,12 @@ using DelimitedFiles, JLD2
 using RipQP
 
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
-path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
-# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
+# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 # save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks"
-save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/test2"
+# save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/test2"
+save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/test_qp2"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\irish-electricity.mps")))
 
@@ -154,6 +155,15 @@ function ripqpTrimrK3_5(qm)
                 itol = RipQP.InputTol(max_iter=100, max_time=300.0))
 end
 
+function ripqpGpmrK3_5(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K3_5StructuredParams(kmethod=:gpmr, atol_min=1.0e-10, rtol_min=1.0e-10), 
+                    solve_method=:IPF,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0))
+end
+
 function ripqpK2Jacobi(qm)
   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
                     sp = RipQP.K2KrylovParams(kmethod=:minres, preconditioner = :Jacobi, atol_min=1.0e-10, rtol_min=1.0e-10), 
@@ -214,26 +224,27 @@ end
 n_pb = 1000
 solvers = [
   :ripqpLDL,
-  :ripqpK1,
+  # :ripqpK1,
   :ripqpK2,
   :ripqpK2Jacobi,
   :ripqpK2_5,
   :ripqpK2_5Jacobi,
   :ripqpK3,
   :ripqpK3_5,
-  :ripqpTricg,
-  :ripqpTricgK2_5,
-  :ripqpTrimr,
-  :ripqpTrimrK2_5,
-  :ripqpGpmr,
-  :ripqpGpmrK2_5,
+  # :ripqpTricg,
+  # :ripqpTricgK2_5,
+  # :ripqpTrimr,
+  # :ripqpTrimrK2_5,
+  # :ripqpGpmr,
+  # :ripqpGpmrK2_5,
   :ripqpTricgK3_5,
   :ripqpTrimrK3_5,
+  :ripqpGpmrK3_5,
   ]
 
-pb_i = string(path_pb, "/", "AFIRO.SIF")
+pb_i = string(path_pb, "/", "QAFIRO.SIF")
 qpdata_i = readqps(pb_i)
-qm = createQuadraticModel(qpdata_i, name="AFIRO")
+qm = createQuadraticModel(qpdata_i, name="QAFIRO")
 for solver in solvers
   stats_compile = eval(solver)(qm)
 end

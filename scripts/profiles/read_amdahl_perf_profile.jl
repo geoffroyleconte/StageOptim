@@ -1,7 +1,7 @@
 using Plots, JLD2, BenchmarkProfiles, DelimitedFiles, DataFrames, SolverBenchmark
 
-path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test2"
-# path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test_qp1"
+# path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test2"
+path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test_qp2"
 solvers_list = Vector{String}(readdlm(string(path, "/test2_solvs.txt"))[:])
 stats_solv = Dict{Symbol, DataFrame}()
 for solver in solvers_list[[2, 4, 6, end-3, end-2]]

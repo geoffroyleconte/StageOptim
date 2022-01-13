@@ -35,12 +35,14 @@ opK = LinearOperator(Float64, nvar, nvar, true, true, (res, v, α, β) -> mulopK
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 
 qm = QuadraticModel(c, Symmetric(tril!(Diagonal(y_train) * K_train * Diagonal(y_train)), :L), A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
-# qm = QuadraticModel(c, sparse(tril!(Diagonal(y_train) * K_train * Diagonal(y_train))), A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
+qm2 = QuadraticModel(c, sparse(tril!(Diagonal(y_train) * K_train * Diagonal(y_train))), A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
 # qm = QuadraticModel(c, opK2, A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
 
 stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                         # sp = RipQP.K2LDLParams(),
-                        sp = RipQP.K2LDLDenseParams(fact_alg = :bunchkaufman),
+                        sp = RipQP.K2LDLDenseParams(fact_alg = :ldl, ρ0 = 0., δ0 = 0.),
+                        # sp = RipQP.K2_5KrylovParams(atol_min = 1e-6, rtol_min=1e-6,
+                        #                              kmethod=:minres, preconditioner=:Identity),
                         solve_method=:IPF, scaling = false, history=false, presolve=false,
                         # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                         ),
