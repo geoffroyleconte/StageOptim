@@ -71,7 +71,7 @@ end
 function ripqpK2_5(qm)
   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
                     sp = RipQP.K2_5KrylovParams(kmethod=:minres, preconditioner = :Identity, 
-                                                atol_min=1.0e-10, rtol_min=1.0e-10
+                                                atol_min=1.0e-10, rtol_min=1.0e-10,
                                                 ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
                                                 ), 
                     solve_method=:IPF,
