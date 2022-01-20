@@ -1,10 +1,11 @@
 using Plots, JLD2, BenchmarkProfiles, DelimitedFiles, DataFrames, SolverBenchmark
 
 # path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test2"
-path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test_qp2"
+# path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test_qp2"
+path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\gpmr_lp"
 solvers_list = Vector{String}(readdlm(string(path, "/test2_solvs.txt"))[:])
 stats_solv = Dict{Symbol, DataFrame}()
-for solver in solvers_list[[3, 5, 7, 8, end-1, end]]
+for solver in solvers_list[[1, 2, 3, 4, end]]
   file = jldopen(string(path, "/", string(solver), ".jld2"), "r")
   ripqp_stats = file["stats"];
   close(file)
@@ -18,7 +19,7 @@ function dfpdd(df)
     if df.pdd[i] === missing
       output[i] = Inf
     else 
-      output[i] = df.elapsed_time[i]
+      output[i] = df.absolute_iter_cnt[i]
     end
     if df.status[i] != :acceptable
       output[i] = Inf
@@ -30,8 +31,8 @@ end
 perf = performance_profile(stats_solv, dfpdd, legend=:bottomright)
 # ylims!((0.0, 0.9))
 # plot(perf, )
-# title!("iter perf profile (Netlib problems)")
-title!("time perf profile (Maros and Meszaros problems)")
+title!("time perf profile (Netlib problems)")
+# title!("time perf profile (Maros and Meszaros problems)")
 # title!("pdd perf profile (Netlib problems)")
 
 display("image/svg+xml", perf)
