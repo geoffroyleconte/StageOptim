@@ -217,7 +217,8 @@ end
 function ripqpTricgK3_5(qm)
   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
                     sp = RipQP.K3_5StructuredParams(kmethod=:tricg, atol_min=1.0e-10, rtol_min=1.0e-10
-                                                    ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),), 
+                                                    ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
+                                                    ), 
                     solve_method=:IPF,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                     ),
