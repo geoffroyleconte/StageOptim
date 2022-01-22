@@ -2,10 +2,10 @@ using Plots, JLD2, BenchmarkProfiles, DelimitedFiles, DataFrames, SolverBenchmar
 
 # path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test2"
 # path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test_qp2"
-path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\gpmr_lp"
+path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\lp1"
 solvers_list = Vector{String}(readdlm(string(path, "/test2_solvs.txt"))[:])
 stats_solv = Dict{Symbol, DataFrame}()
-for solver in solvers_list[[1, 2, 3, 4, end]]
+for solver in solvers_list[[2, 3, 4, 5, 6, 7, 9, 10, 11]]
   file = jldopen(string(path, "/", string(solver), ".jld2"), "r")
   ripqp_stats = file["stats"];
   close(file)

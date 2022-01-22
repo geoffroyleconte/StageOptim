@@ -14,7 +14,7 @@ qm = QuadraticModel(readqps(string(path_pb, "\\AFIRO.SIF"), mpsformat=:fixed))
 stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                         # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
                         # sp = RipQP.K2LDLParams(),
-                        sp = RipQP.K2StructuredParams(kmethod=:gpmr, mem=5), 
+                        sp = RipQP.K2StructuredParams(kmethod=:gpmr, mem=20), 
                         solve_method=:IPF, scaling = true, history=true, presolve=true,
                         # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                         ),
@@ -139,6 +139,7 @@ savefig(raw"C:\Users\Geoffroy Leconte\Documents\cours\TFE\code\results\performan
 
 # using QuadraticModels
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
+using LinearAlgebra, SparseArrays
 Q = [6. 2. 1.
      2. 5. 2.
      1. 2. 4.]
@@ -148,14 +149,12 @@ A = [1. 0. 1.
 b = [0.; 3]
 l = [0.;0;0]
 u = [Inf; Inf; Inf]
-QM = QuadraticModel(c, Q, A=A, lcon=b, ucon=b, lvar=l, uvar=u, c0=0., name="QM1");
+QM = QuadraticModel(c, sparse(tril(Q)), A=sparse(A), lcon=b, ucon=b, lvar=l, uvar=u, c0=0., name="QM1");
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\QuadraticModels.jl\src\QuadraticModels.jl")
 # QM = QuadraticModels.QuadraticModel(c, Q, A=A, lcon=[-3; -4], ucon=[-2.; Inf], lvar=l, uvar=u, c0=0., name="QM1");
 # stats1 = RipQP.ripqp(QM, iconf = RipQP.InputConfig(sp = RipQP.K2_5minresParams(preconditioner=:ActiveCLDL), solve_method=:PC),
 #                     itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )
-stats1 = RipQP.ripqp(QM, 
-                    iconf = RipQP.InputConfig(kc=0, sp = RipQP.K3_5KrylovParams(kmethod = :minres), solve_method = :IPF, scaling=false), 
-                    itol = RipQP.InputTol(max_iter=20))
+stats1 = RipQP.ripqp(QM)
 println(stats1)
 
 

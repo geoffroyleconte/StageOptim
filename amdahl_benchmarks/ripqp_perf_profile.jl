@@ -146,6 +146,30 @@ function ripqpTrimr(qm)
                                       ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
                                       ))
 end
+function ripqpTrimr_gsp(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K2StructuredParams(kmethod=:trimr, atol_min=1.0e-10, rtol_min=1.0e-10,
+                                                  ρ_min = 1e2 * sqrt(eps()), δ_min = 0.0,
+                                                  ), 
+                    solve_method=:IPF,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0,
+                                      ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
+                                      ))
+end
+function ripqpTrimrK2_5_gsp(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K2_5StructuredParams(kmethod=:trimr, atol_min=1.0e-10, rtol_min=1.0e-10,
+                                                  ρ_min = 1e2 * sqrt(eps()), δ_min = 0.0,
+                                                  ), 
+                    solve_method=:IPF,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0,
+                                      ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
+                                      ))
+end
 
 function ripqpGpmr(qm; mem = 20)
   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
@@ -159,18 +183,18 @@ function ripqpGpmr(qm; mem = 20)
                                       ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
                                       ))
 end
-# function ripqpGpmr_gsp(qm; mem = 20)
-#   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
-#                     sp = RipQP.K2StructuredParams(kmethod=:gpmr, atol_min=1.0e-10, rtol_min=1.0e-10, mem = mem,
-#                                                   ρ_min = 1e2 * sqrt(eps()), δ_min = 0.0,
-#                                                   ), 
-#                     solve_method=:IPF,
-#                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-#                     ),
-#                 itol = RipQP.InputTol(max_iter=100, max_time=300.0,
-#                                       ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
-#                                       ))
-# end
+function ripqpGpmr_gsp(qm; mem = 20)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K2StructuredParams(kmethod=:gpmr, atol_min=1.0e-10, rtol_min=1.0e-10, mem = mem,
+                                                  ρ_min = 1e2 * sqrt(eps()), δ_min = 0.0,
+                                                  ), 
+                    solve_method=:IPF,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0,
+                                      ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
+                                      ))
+end
 ripqpGpmr5(qm) = ripqpGpmr(qm, mem = 5)
 ripqpGpmr10(qm) = ripqpGpmr(qm, mem = 10)
 ripqpGpmr20(qm) = ripqpGpmr(qm, mem = 20)
@@ -201,18 +225,18 @@ function ripqpGpmrK2_5(qm)
                                       ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
                                       ))
 end
-# function ripqpGpmrK2_5_gsp(qm)
-#   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
-#                     sp = RipQP.K2_5StructuredParams(kmethod=:gpmr, atol_min=1.0e-10, rtol_min=1.0e-10,
-#                                                     ρ_min = 1e2 * sqrt(eps()), δ_min = 0.0,
-#                                                     ), 
-#                     solve_method=:IPF,
-#                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-#                     ),
-#                 itol = RipQP.InputTol(max_iter=100, max_time=300.0,
-#                                       ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
-#                                       ))
-# end
+function ripqpGpmrK2_5_gsp(qm)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                    sp = RipQP.K2_5StructuredParams(kmethod=:gpmr, atol_min=1.0e-10, rtol_min=1.0e-10,
+                                                    ρ_min = 1e2 * sqrt(eps()), δ_min = 0.0,
+                                                    ), 
+                    solve_method=:IPF,
+                    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                    ),
+                itol = RipQP.InputTol(max_iter=100, max_time=300.0,
+                                      ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
+                                      ))
+end
 
 function ripqpTricgK3_5(qm)
   return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
@@ -322,22 +346,24 @@ end
 
 n_pb = 1000
 solvers = [
-  :ripqpLDL,
-  :ripqpK1,
-  :ripqpK2,
-  :ripqpK2Jacobi,
-  :ripqpK2_5,
-  :ripqpK2_5Jacobi,
+  # :ripqpLDL,
+  # :ripqpK1,
+  # :ripqpK2,
+  # :ripqpK2Jacobi,
+  # :ripqpK2_5,
+  # :ripqpK2_5Jacobi,
   # :ripqpK3,
   # :ripqpK3_5,
-  :ripqpTricg,
-  :ripqpTricgK2_5,
+  # :ripqpTricg,
+  # :ripqpTricgK2_5,
   :ripqpTrimr,
   :ripqpTrimrK2_5,
+  :ripqpTrimr_gsp,
+  :ripqpTrimrK2_5_gsp,
   :ripqpGpmr,
-  # :ripqpGpmr_gsp,
+  :ripqpGpmr_gsp,
   :ripqpGpmrK2_5,
-  # :ripqpGpmrK2_5_gsp,
+  :ripqpGpmrK2_5_gsp,
   # :ripqpTricgK3_5,
   # :ripqpTrimrK3_5,
   # :ripqpGpmrK3_5,
