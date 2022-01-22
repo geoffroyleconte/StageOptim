@@ -1,0 +1,12 @@
+ripqpLDL
+ripqpK1
+ripqpK2
+ripqpK2Jacobi
+ripqpK2_5
+ripqpK2_5Jacobi
+ripqpTricg
+ripqpTricgK2_5
+ripqpTrimr
+ripqpTrimrK2_5
+ripqpGpmr
+ripqpGpmrK2_5
