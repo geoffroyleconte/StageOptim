@@ -1,0 +1,8 @@
+ripqpTrimr
+ripqpTrimrK2_5
+ripqpTrimr_gsp
+ripqpTrimrK2_5_gsp
+ripqpGpmr
+ripqpGpmr_gsp
+ripqpGpmrK2_5
+ripqpGpmrK2_5_gsp
