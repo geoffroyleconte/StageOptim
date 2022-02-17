@@ -46,7 +46,7 @@ solvers = [:K2_LDL]
 
 function push_solver!(
   fsolvers::Vector{Function},
-  solv_str::Symbol
+  solv_str::Symbol,
   formulation::Symbol,
   kmethod::Symbol,
   preconditioner::Symbol,
