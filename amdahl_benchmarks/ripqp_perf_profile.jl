@@ -4,12 +4,12 @@ using DelimitedFiles, JLD2
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 using RipQP
 
-# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
-path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 # path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
-# save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks"
-save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/lp2"
+save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks"
+# save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/lp2"
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/test_qp2"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\irish-electricity.mps")))
@@ -29,28 +29,7 @@ function zeros_logscale!(v, min_val)
   end
 end
 
-function K2_LDL(qm)
-  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
-    sp = RipQP.K2LDLParams(), 
-    solve_method=:IPF, #, stepsize = stepsize,
-    # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-    ),
-  itol = RipQP.InputTol(max_iter=100, max_time=300.0,
-                        ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
-                        ))
-end
-
-# init solvers list
-fsolvers = Vector{Function}(undef, 0)
-push!(fsolvers, K2_LDL)
-solvers = [:K2_LDL]
-
-function get_sp(
-  solv_str::Symbol,
-  formulation::Symbol,
-  kmethod::Symbol,
-  preconditioner::Symbol,
-)
+function get_sp(formulation::Symbol, kmethod::Symbol, preconditioner::Symbol)
   if kmethod ∈ [:tricg, :trimr, :gpmr, :lslq, :lsqr, :lsmr, :lnlq, :craig, :craigmr]
     sp = eval(formulation)(kmethod = kmethod,
                           atol_min=1.0e-10, rtol_min=1.0e-10,
@@ -67,121 +46,119 @@ function get_sp(
   return sp
 end
 
-function push_solver!(
-  fsolvers::Vector{Function},
-  solv_str::Symbol,
-  formulation::Symbol,
-  kmethod::Symbol,
-  preconditioner::Symbol,
-)
-  @eval function $solv_str(qm; sp = get_sp(solv_str, formulation, kmethod, preconditioner))
-    return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
-                      sp = sp, 
-                      solve_method=:IPF, #, stepsize = stepsize,
-                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                      ),
-                  itol = RipQP.InputTol(max_iter=100, max_time=300.0,
-                                        ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
-                                        ))
-  end
-  push!(fsolvers, eval(solv_str))
+function ripqp_generic_solver(qm, sp)
+  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+                     sp = sp, 
+                     solve_method=:IPF, #, stepsize = stepsize,
+                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                     ),
+                     itol = RipQP.InputTol(max_iter=100, max_time=300.0,
+                                           ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
+                                           ))
 end
 
+# init solvers list
+sps = []
+push!(sps, K2LDLParams())
+solvers = [:K2_LDL]
+c_solv = 1
 # K1
 for kmethod ∈ [:cg, :cg_lanczos, :cr, :diom, :fom, :gmres, :dqgmres]
-  solv_str = Symbol(:K1_, kmethod)
-  push_solver!(fsolvers, solv_str, :K1KrylovParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K1KrylovParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K1_, kmethod))
 end
 
 # K1.1 Structured
 for kmethod ∈ [:lslq, :lsqr, :lsmr]
-  solv_str = Symbol(:K1_1_, kmethod)
-  push_solver!(fsolvers, solv_str, :K1_1StructuredParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K1_1StructuredParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K1_1_, kmethod))
 end
 
 # K1.2 Structured
 for kmethod ∈ [:lnlq, :craig, :craigmr]
-  solv_str = Symbol(:K1_2_, kmethod)
-  push_solver!(fsolvers, solv_str, :K1_2StructuredParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K1_2StructuredParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K1_2_, kmethod))
 end
 
 # K2
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-  solv_str = Symbol(:K2_, kmethod)
-  push_solver!(fsolvers, solv_str, :K2KrylovParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K2KrylovParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K2_, kmethod))
 end
 
 # K2 Jacobi
 for kmethod ∈ [:minres, :minres_qlp, :symmlq]
   solv_str = Symbol(:K2Jacobi_, kmethod)
-  push_solver!(fsolvers, solv_str, :K2KrylovParams, kmethod, :Jacobi)
+  push!(sps, get_sp(:K2KrylovParams, kmethod, :Jacobi))
+  c_solv += 1
   push!(solvers, solv_str)
 end
 
 # K2 structured
 for kmethod ∈ [:tricg, :trimr, :gpmr]
-  solv_str = Symbol(:K2_, kmethod)
-  push_solver!(fsolvers, solv_str, :K2StructuredParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K2StructuredParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K2_, kmethod))
 end
 
 # K2.5
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-  solv_str = Symbol(:K2_5_, kmethod)
-  push_solver!(fsolvers, solv_str, :K2_5KrylovParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K2_5KrylovParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K2_5_, kmethod))
 end
 
 # K2.5 Jacobi
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-  solv_str = Symbol(:K2_5Jacobi_, kmethod)
-  push_solver!(fsolvers, solv_str, :K2_5KrylovParams, kmethod, :Jacobi)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K2_5KrylovParams, kmethod, :Jacobi))
+  c_solv += 1
+  push!(solvers, Symbol(:K2_5Jacobi_, kmethod))
 end
 
 # K2.5 Structured
 for kmethod ∈ [:tricg, :trimr, :gpmr]
-  solv_str = Symbol(:K2_5_, kmethod)
-  push_solver!(fsolvers, solv_str, :K2_5StructuredParams, kmethod, :Identity)
+  push!(sps, get_sp(:K2_5StructuredParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K2_5_, kmethod))
 end
 
 # K3
 for kmethod ∈ [:bilq, :bicgstab, :usymlq, :usymqr, :qmr, :diom, :fom, :gmres, :dqgmres]
-  solv_str = Symbol(:K3_, kmethod)
-  push_solver!(fsolvers, solv_str, :K3KrylovParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K3KrylovParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K3_, kmethod))
 end
 
 # K3S
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-  solv_str = Symbol(:K3S_, kmethod)
-  push_solver!(fsolvers, solv_str, :K3SKrylovParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K3SKrylovParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K3S_, kmethod))
 end
 
 # K3S Structured
 for kmethod ∈ [:tricg, :trimr, :gpmr]
-  solv_str = Symbol(:K3S_, kmethod)
-  push_solver!(fsolvers, solv_str, :K3SStructuredParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K3SStructuredParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K3S_, kmethod))
 end
 
 # K3.5
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-  solv_str = Symbol(:K3_5_, kmethod)
-  push_solver!(fsolvers, solv_str, :K3_5KrylovParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K3_5KrylovParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K3_5_, kmethod))
 end
 
 # K3.5 Structured
 for kmethod ∈ [:tricg, :trimr, :gpmr]
-  solv_str = Symbol(:K3_5_, kmethod)
-  push_solver!(fsolvers, solv_str, :K3_5StructuredParams, kmethod, :Identity)
-  push!(solvers, solv_str)
+  push!(sps, get_sp(:K3_5StructuredParams, kmethod, :Identity))
+  c_solv += 1
+  push!(solvers, Symbol(:K3_5_, kmethod))
 end
 
 function get_QuadraticModels(path_pb :: String, n_pb :: Int)
@@ -228,6 +205,14 @@ n_pb = 1000
 pb_i = string(path_pb, "/", "AFIRO.SIF")
 qpdata_i = readqps(pb_i)
 qm = createQuadraticModel(qpdata_i, name="AFIRO")
+
+fsolvers = Vector{Function}(undef, c_solv)
+for i=1:length(sps)
+  spi = sps[i]
+  solver_i(qm) = ripqp_generic_solver(qm, spi)
+  fsolvers[i] = solver_i
+end
+
 for solver in fsolvers
   stats_compile = solver(qm)
 end
