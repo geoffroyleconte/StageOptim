@@ -41,7 +41,8 @@ function K2_LDL(qm)
 end
 
 # init solvers list
-fsolvers = [K2_LDL]
+fsolvers = Vector{Function}(undef, 0)
+push!(fsolvers, K2_LDL)
 solvers = [:K2_LDL]
 
 function push_solver!(
