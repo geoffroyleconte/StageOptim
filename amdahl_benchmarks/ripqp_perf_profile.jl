@@ -115,7 +115,7 @@ end
 
 # K2 structured
 for kmethod ∈ [:tricg, :trimr, :gpmr]
-  str = Symbol(:K2_, kmethod)
+  solv_str = Symbol(:K2_, kmethod)
   push_solver!(fsolvers, solv_str, :K2StructuredParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
