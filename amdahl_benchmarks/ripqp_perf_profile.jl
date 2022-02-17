@@ -52,7 +52,7 @@ function push_solver!(
   kmethod::Symbol,
   preconditioner::Symbol,
 )
-  if kmethod ∈ [:tricg, trimr, :gpmr, :lslq, :lsqr, :lsmr, :lnlq, :craig, :craigmr]
+  if kmethod ∈ [:tricg, :trimr, :gpmr, :lslq, :lsqr, :lsmr, :lnlq, :craig, :craigmr]
     sp = eval(formulation)(kmethod = kmethod,
                            atol_min=1.0e-10, rtol_min=1.0e-10,
                            ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
