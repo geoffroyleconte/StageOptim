@@ -45,8 +45,7 @@ fsolvers = Vector{Function}(undef, 0)
 push!(fsolvers, K2_LDL)
 solvers = [:K2_LDL]
 
-function push_solver!(
-  fsolvers::Vector{Function},
+function get_sp(
   solv_str::Symbol,
   formulation::Symbol,
   kmethod::Symbol,
@@ -54,18 +53,28 @@ function push_solver!(
 )
   if kmethod ∈ [:tricg, :trimr, :gpmr, :lslq, :lsqr, :lsmr, :lnlq, :craig, :craigmr]
     sp = eval(formulation)(kmethod = kmethod,
-                           atol_min=1.0e-10, rtol_min=1.0e-10,
-                           ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
-                           mem = 20,
-                           )
+                          atol_min=1.0e-10, rtol_min=1.0e-10,
+                          ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
+                          mem = 20,
+                          )
   else
     sp = eval(formulation)(kmethod = kmethod, preconditioner = preconditioner, 
-                           atol_min=1.0e-10, rtol_min=1.0e-10,
-                           ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
-                           mem = 20,
-                           )
+                          atol_min=1.0e-10, rtol_min=1.0e-10,
+                          ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
+                          mem = 20,
+                          )
   end
-  @eval function $solv_str(qm; sp = sp)
+  return sp
+end
+
+function push_solver!(
+  fsolvers::Vector{Function},
+  solv_str::Symbol,
+  formulation::Symbol,
+  kmethod::Symbol,
+  preconditioner::Symbol,
+)
+  @eval function $solv_str(qm; sp = get_sp(solv_str, formulation, kmethod, preconditioner))
     return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
                       sp = sp, 
                       solve_method=:IPF, #, stepsize = stepsize,
