@@ -65,7 +65,7 @@ function push_solver!(
                            mem = 20,
                            )
   end
-  @eval function $solv_str(qm)
+  @eval function $solv_str(qm; sp = sp)
     return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
                       sp = sp, 
                       solve_method=:IPF, #, stepsize = stepsize,
