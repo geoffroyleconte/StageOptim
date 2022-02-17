@@ -14,11 +14,13 @@ qm = QuadraticModel(readqps(string(path_pb, "\\AFIRO.SIF"), mpsformat=:fixed))
 stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                         # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
                         # sp = RipQP.K2LDLParams(),
-                        sp = RipQP.K2StructuredParams(kmethod=:gpmr, mem=20), 
-                        solve_method=:IPF, scaling = true, history=true, presolve=true,
+                        sp = RipQP.K1_1StructuredParams(uplo = :L, kmethod=:lsqr, δ_min = 0.,
+                                # ρ0=0., δ0 = 0.,
+                                ), 
+                        solve_method=:IPF, scaling = true, history=true, presolve=false,
                         # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                         ),
-                     itol = RipQP.InputTol(max_iter=200, max_time=20.0,
+                     itol = RipQP.InputTol(max_iter=50, max_time=20.0,
                      ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ))
 println(stats1)
