@@ -80,97 +80,97 @@ end
 # K1
 for kmethod ∈ [:cg, :cg_lanczos, :cr, :diom, :fom, :gmres, :dqgmres]
   solv_str = Symbol(:K1_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K1KrylovParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K1KrylovParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K1.1 Structured
 for kmethod ∈ [:lslq, :lsqr, :lsmr]
   solv_str = Symbol(:K1_1_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K1_1StructuredParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K1_1StructuredParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K1.2 Structured
 for kmethod ∈ [:lnlq, :craig, :craigmr]
   solv_str = Symbol(:K1_2_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K1_2StructuredParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K1_2StructuredParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K2
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
   solv_str = Symbol(:K2_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K2KrylovParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K2KrylovParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K2 Jacobi
 for kmethod ∈ [:minres, :minres_qlp, :symmlq]
   solv_str = Symbol(:K2Jacobi_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K2KrylovParams, kmethod, :Jacobi)
+  push_solver!(fsolvers, solv_str, :K2KrylovParams, kmethod, :Jacobi)
   push!(solvers, solv_str)
 end
 
 # K2 structured
 for kmethod ∈ [:tricg, :trimr, :gpmr]
   str = Symbol(:K2_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K2StructuredParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K2StructuredParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K2.5
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
   solv_str = Symbol(:K2_5_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K2_5KrylovParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K2_5KrylovParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K2.5 Jacobi
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
   solv_str = Symbol(:K2_5Jacobi_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K2_5KrylovParams, kmethod, :Jacobi)
+  push_solver!(fsolvers, solv_str, :K2_5KrylovParams, kmethod, :Jacobi)
   push!(solvers, solv_str)
 end
 
 # K2.5 Structured
 for kmethod ∈ [:tricg, :trimr, :gpmr]
   solv_str = Symbol(:K2_5_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K2_5StructuredParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K2_5StructuredParams, kmethod, :Identity)
 end
 
 # K3
 for kmethod ∈ [:bilq, :bicgstab, :usymlq, :usymqr, :qmr, :diom, :fom, :gmres, :dqgmres]
   solv_str = Symbol(:K3_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K3KrylovParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K3KrylovParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K3S
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
   solv_str = Symbol(:K3S_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K3SKrylovParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K3SKrylovParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K3S Structured
 for kmethod ∈ [:tricg, :trimr, :gpmr]
   solv_str = Symbol(:K3S_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K3SStructuredParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K3SStructuredParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K3.5
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
   solv_str = Symbol(:K3_5_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K3_5KrylovParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K3_5KrylovParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
 # K3.5 Structured
 for kmethod ∈ [:tricg, :trimr, :gpmr]
   solv_str = Symbol(:K3_5_, kmethod)
-  push_solver!(fsolvers, solv_str, :RipQP.K3_5StructuredParams, kmethod, :Identity)
+  push_solver!(fsolvers, solv_str, :K3_5StructuredParams, kmethod, :Identity)
   push!(solvers, solv_str)
 end
 
