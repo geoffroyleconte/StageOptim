@@ -11,17 +11,22 @@ function createQuadraticModel(qpdata; name="qp_pb")
             c0=qpdata.c0, name=name)
 end
 
-path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
-path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
+# path_pb_lp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+path_pb_lp = "/home/gelecd/.julia/artifacts/545f8c5577a056981a21caf3f53bd7b59cf67410/optrove-netlib-lp-f83996fca937"
+# path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
+path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f23257b2/optrove-maros-meszaros-9adfb5707b1e"
 # path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 # path_pb_qp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
+# save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
+save_path = "/home/gelecd/code/docGL/amdahl_benchmarks/frontal22res"
+# save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
 pb = string(path_pb_lp, "/AFIRO.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, iconf = InputConfig(solve_method=:IPF), itol = InputTol(max_time=1200.))
+ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1200.))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=true))
 # ripqp_bm_multiref(QM) = ripqp(QM, iconf = InputConfig(mode=:multi, refinement=:multiref), itol = InputTol(max_time=1200.))
@@ -78,10 +83,6 @@ function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     return solve_problems(ripqp_func, problems)
 end
 
-
-save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
-# save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
-
 function save_problems(file_path :: String, ripqp_func :: Function, 
                        path_pb_lp :: String = path_pb_lp, path_pb_qp :: String = path_pb_qp)
 
@@ -97,9 +98,9 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-# tf = save_problems(string(save_path, "/ripqp_mono_2"), ripqp_bm_classic)
+tf = save_problems(string(save_path, "/ripqp_mono_sc1"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
-save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)
+# save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_ccorr_1"), ripqp_bm_cc)
 # save_problems(string(save_path, "/ripqp_multi"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp_multi_r"), ripqp_bm_multiref)

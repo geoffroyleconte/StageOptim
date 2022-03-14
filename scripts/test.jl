@@ -1,4 +1,4 @@
-using QPSReader, QuadraticModels, SolverCore, SolverBenchmark
+using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, SparseArrays
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 # using RipQP
 path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
@@ -14,15 +14,18 @@ qm = QuadraticModel(readqps(string(path_pb, "\\AFIRO.SIF"), mpsformat=:fixed))
 stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                         # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
                         # sp = RipQP.K2LDLParams(),
-                        sp = RipQP.K1_1StructuredParams(uplo = :L, kmethod=:lsqr, δ_min = 0.,
+                        sp = RipQP.K2KrylovParams(uplo = :L, kmethod=:minres, rhs_scale=true,# δ_min = 0.,
+                                 form_mat = false,# preconditioner = :Equilibration,
                                 # ρ0=0., δ0 = 0.,
                                 ), 
-                        solve_method=:IPF, scaling = true, history=true, presolve=false,
+                        solve_method=:PC, scaling = true, history=true, presolve=false,
                         # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                         ),
                      itol = RipQP.InputTol(max_iter=50, max_time=20.0,
                      ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
-                     ))
+                     ),
+                     display = true,
+                     )
 println(stats1)
 println(sum(stats1.solver_specific[:KresNormH]))
 
@@ -35,7 +38,7 @@ rhs_cc =  readdlm(string(save_path, "\\bug_minaresrhs_iter1_cc.rhs"), Float64)[:
 
 function riptest(qm)
     return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
-      sp = RipQP.K2LDLParams(), solve_method=:IPF, scaling = true, 
+      sp = RipQP.K2LDLParams(), solve_method=:PC, scaling = false, 
       ),
    itol = RipQP.InputTol(max_iter=150, max_time=10.0,
   #  ϵ_rc=1.0e-1, ϵ_rb=1.0e-1, ϵ_pdd=1.0e0,
@@ -203,63 +206,42 @@ K[p2,p2]
 p3 = Metis.partition(K, 3)
 K[p3, p3]
 
-using LinearAlgebra, SparseArrays, BenchmarkTools, CUDA
-CUDA.allowscalar(false)
-T = Float32
-n = 10000
-a = CUDA.rand(T, n)
-b = CUDA.rand(T, n)
-A = sprand(T, n, n, 0.2)
-Agpu = CUDA.CUSPARSE.CuSparseMatrixCSR(A)
-
-function bench_ldiv!(b, A, a)
-  ALT = UnitLowerTriangular(A)
-  CUDA.@sync begin
-    ldiv!(b, ALT, a)
-  end
+# Float16
+function QuadraticModel_T(qm, T)
+  return QuadraticModel(
+    Vector{T}(qm.data.c),
+    spzeros(T, qm.meta.nvar, qm.meta.nvar),
+    A = T.(qm.data.A),
+    lcon = Vector{T}(qm.meta.lcon),
+    ucon = Vector{T}(qm.meta.ucon),
+    lvar = Vector{T}(qm.meta.lvar),
+    uvar = Vector{T}(qm.meta.uvar),
+    x0 = zeros(T, qm.meta.nvar),
+  )
 end
-
-@benchmark bench_ldiv!(b, Agpu, a)
-
-function custom_mul!(res::AbstractVector{T}, A, v) where T
-  colptr = A.colptr
-  rowval = A.rowval
-  nzval = A.nzval
-  res .= zero(T)
-  @inbounds for j=1:size(A, 2)
-    for k = colptr[j]:(colptr[j+1]-1)
-      i = rowval[k]
-      res[i] += nzval[k] * v[j]
-    end
-  end
-  res
-end
-
-function custom_mul2!(res::AbstractVector{T}, A, v) where T
-  colptr = A.colptr
-  rowval = A.rowval
-  nzval = A.nzval
-  res .= zero(T)
-  @inbounds for j=1:size(A, 2)
-    @simd for k = colptr[j]:(colptr[j+1]-1)
-      i = rowval[k]
-      res[i] += nzval[k] * v[j]
-    end
-  end
-  res
-end
-
-# solve functions for a single rhs
-function ldl_lsolve!(n, x::AbstractVector{T}, Lp, Li, Lx) where T
-  @inbounds for j = 1:n
-    xj = x[j]
-    @inbounds for p = Lp[j]:(Lp[j + 1] - 1)
-      x[Li[p]] -= Lx[p] * xj
-    end
-  end
-  return x
-end
-function custom_ldiv!(res, A, b)
-  ldl_lsolve!(size(A, 2), b, A.colptr, A.rowval, A.nzval) 
-  res .= b
-end
+include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
+# using RipQP
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib_ps"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
+save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
+# qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
+qm = QuadraticModel(readqps(string(path_pb, "\\AFIRO.SIF"), mpsformat=:fixed))
+qm16 = QuadraticModel_T(qm, Float16)
+# stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
+#                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
+#                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
+stats1 = RipQP.ripqp(qm16, iconf = RipQP.InputConfig(
+                        # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
+                        sp = RipQP.K2LDLParams(),
+                        # sp = RipQP.K2KrylovParams(uplo = :L, kmethod=:gmres,# δ_min = 0.,
+                        #         # ρ0=0., δ0 = 0.,
+                        #         ), 
+                        solve_method=:IPF, scaling = true, history=true, presolve=false,
+                        # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                        ),
+                     itol = RipQP.InputTol(Float16, max_iter = 20),
+                     display = true,
+                     )
+println(stats1)

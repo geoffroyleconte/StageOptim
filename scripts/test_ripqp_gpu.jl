@@ -20,11 +20,38 @@ function QuadraticModelGPU(qps::QPSData; T = Float64)
   )
 end
 qm = QuadraticModelGPU(readqps(string(path_pb, "/AFIRO.SIF"), mpsformat=:fixed))
-# using RipQP
-include("/home/lecogeof/code/RipQP.jl/src/RipQP.jl")
+using RipQP
+# include("/home/lecogeof/code/RipQP.jl/src/RipQP.jl")
 stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
                         sp = RipQP.K2StructuredParams(kmethod=:gpmr), 
                         solve_method = :IPF, presolve = false, scaling = false),
                      itol = RipQP.InputTol(max_iter=50, max_time=100.0,
                      ϵ_rc=1.0e-2, ϵ_rb=1.0e-2, ϵ_pdd=1.0e-2,))
 # println(stats1)
+
+
+# dense gpu
+qm = QuadraticModel(readqps(string(path_pb, "/AFIRO.SIF"), mpsformat=:fixed))
+using NLPModelsModifiers
+qm = SlackModel(qm)
+qm_gpu = QuadraticModel(
+  CuVector{Float64}(qm.data.c),
+  CUDA.CUSPARSE.CuSparseMatrixCSC(spzeros(Float64, qm.meta.nvar, qm.meta.nvar)),
+  A = CUDA.CuMatrix{Float64}(qm.data.A),
+  lcon = CuVector{Float64}(qm.meta.lcon),
+  ucon = CuVector{Float64}(qm.meta.ucon),
+  lvar = CuVector{Float64}(qm.meta.lvar),
+  uvar = CuVector{Float64}(qm.meta.uvar),
+  x0 = CUDA.zeros(Float64, qm.meta.nvar),
+)
+
+qm_gpu = QuadraticModel(
+  CuVector{Float64}(qm.data.c),
+  CUDA.CUSPARSE.CuSparseMatrixCSC(spzeros(Float64, qm.meta.nvar, qm.meta.nvar)),
+  A = CUDA.CUSPARSE.CuSparseMatrixCSC(SparseMatrixCSC(qm.data.A)),
+  lcon = CuVector{Float64}(qm.meta.lcon),
+  ucon = CuVector{Float64}(qm.meta.ucon),
+  lvar = CuVector{Float64}(qm.meta.lvar),
+  uvar = CuVector{Float64}(qm.meta.uvar),
+  x0 = CUDA.zeros(Float64, qm.meta.nvar),
+)
