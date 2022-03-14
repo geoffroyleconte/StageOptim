@@ -26,7 +26,7 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1200.))
+ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=200.))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=true))
 # ripqp_bm_multiref(QM) = ripqp(QM, iconf = InputConfig(mode=:multi, refinement=:multiref), itol = InputTol(max_time=1200.))
