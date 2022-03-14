@@ -1,4 +1,5 @@
-res_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
+# res_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
+res_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\frontal22res"
 using DataFrames, SolverBenchmark, SolverTools, JLD2, Plots
 
 function open_file(path)
@@ -8,17 +9,17 @@ function open_file(path)
     return df_out
 end
 
-rip_mono = open_file(string(res_path, "\\G-2021-03_lp_mono.jld2"));
-rip_mono1 = open_file(string(res_path, "\\ripqp_mono_1_lp.jld2"));
-rip_multiK2 = open_file(string(res_path, "\\ripqp_multi_K2_lp.jld2"));
-rip_mono_c = open_file(string(res_path, "\\ripqp_ccorr_1_lp.jld2")); 
-rip_multi_z = open_file(string(res_path, "\\ripqp_multi_z_lp.jld2"))
-rip_multi_r = open_file(string(res_path, "\\ripqp_multi_r_lp.jld2"))
-rip_multi1 = open_file(string(res_path, "\\ripqp_multi_1_lp.jld2"));
-rip_minres1 = open_file(string(res_path, "\\ripqp_minres_1_lp.jld2"));
-rip_minres2 = open_file(string(res_path, "\\ripqp_minres_2_lp.jld2"));
-rip_monoIPFK22 = open_file(string(res_path, "\\ripqp_mono_IPFK2_2_lp.jld2")); # r, γ =  T(0.95), T(0.1)
-rip_monoIPFK23 = open_file(string(res_path, "\\ripqp_mono_IPFK2_3_lp.jld2")); # r, γ =  T(0.999), T(0.05), fix bug
+# rip_mono = open_file(string(res_path, "\\G-2021-03_lp_mono.jld2"));
+rip_mono1 = open_file(string(res_path, "\\ripqp_mono_sc1_lp.jld2"));
+# rip_multiK2 = open_file(string(res_path, "\\ripqp_multi_K2_lp.jld2"));
+# rip_mono_c = open_file(string(res_path, "\\ripqp_ccorr_1_lp.jld2")); 
+# rip_multi_z = open_file(string(res_path, "\\ripqp_multi_z_lp.jld2"))
+# rip_multi_r = open_file(string(res_path, "\\ripqp_multi_r_lp.jld2"))
+# rip_multi1 = open_file(string(res_path, "\\ripqp_multi_1_lp.jld2"));
+# rip_minres1 = open_file(string(res_path, "\\ripqp_minres_1_lp.jld2"));
+# rip_minres2 = open_file(string(res_path, "\\ripqp_minres_2_lp.jld2"));
+# rip_monoIPFK22 = open_file(string(res_path, "\\ripqp_mono_IPFK2_2_lp.jld2")); # r, γ =  T(0.95), T(0.1)
+# rip_monoIPFK23 = open_file(string(res_path, "\\ripqp_mono_IPFK2_3_lp.jld2")); # r, γ =  T(0.999), T(0.05), fix bug
 
 stats_lp = Dict(
                 :ripqp_mono1 => rip_mono1,
