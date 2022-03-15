@@ -37,7 +37,7 @@ ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=200.))
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
-    i_max = 10
+    i_max = 1000
     i = 1
     for file_name in readdir(path_pb)
          if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
