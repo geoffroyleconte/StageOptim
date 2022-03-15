@@ -11,8 +11,10 @@ function open_file(path)
 end
 
 # rip_mono = open_file(string(res_path, "\\G-2021-03_lp_mono.jld2"));
-rip_mono1 = open_file(string(res_path, "\\ripqp_mono_sc1_lp.jld2"))#, "r");
-rip_mono2 = open_file(string(res_path, "\\ripqp_mono_sc2_lp.jld2"));
+# rip_mono1 = open_file(string(res_path, "\\ripqp_mono_sc1_lp.jld2"))#, "r");
+# rip_mono2 = open_file(string(res_path, "\\ripqp_mono_sc2_lp.jld2"));
+rip_mono1 = CSV.read(string(save_path, "\\ripqp_mono_sc1_lp.csv"), DataFrame)
+rip_mono2 = CSV.read(string(save_path, "\\ripqp_mono_sc2_lp.csv"), DataFrame)
 # rip_multiK2 = open_file(string(res_path, "\\ripqp_multi_K2_lp.jld2"));
 # rip_mono_c = open_file(string(res_path, "\\ripqp_ccorr_1_lp.jld2")); 
 # rip_multi_z = open_file(string(res_path, "\\ripqp_multi_z_lp.jld2"))
