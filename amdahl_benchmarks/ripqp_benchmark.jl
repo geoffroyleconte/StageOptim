@@ -1,6 +1,7 @@
 using QuadraticModels, QPSReader
 using RipQP
-using JLD2
+# using JLD2
+using CSV
 using SolverBenchmark
 # include("/home/mgi.polymtl.ca/geleco/git_workspace/docGL/utils/K1QR.jl")
 
@@ -15,11 +16,11 @@ end
 path_pb_lp = "/home/gelecd/.julia/artifacts/545f8c5577a056981a21caf3f53bd7b59cf67410/optrove-netlib-lp-f83996fca937"
 # path_pb_qp = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f23257b2/optrove-maros-meszaros-9adfb5707b1e"
-# path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
-# path_pb_qp = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
+# path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+# path_pb_qp = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 save_path = "/home/gelecd/code/docGL/amdahl_benchmarks/frontal22res"
-# save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\StageOptim\\amdahl_benchmarks\\results"
+# save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
 pb = string(path_pb_lp, "/AFIRO.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
@@ -36,7 +37,7 @@ ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=200.))
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     problems = []
-    i_max = 1000
+    i_max = 10
     i = 1
     for file_name in readdir(path_pb)
          if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
@@ -87,18 +88,15 @@ function save_problems(file_path :: String, ripqp_func :: Function,
                        path_pb_lp :: String = path_pb_lp, path_pb_qp :: String = path_pb_qp)
 
     lp_classic =  optimize_ripqp(path_pb_lp, ripqp_func)
-    file_lp = jldopen(string(file_path, "_lp.jld2"), "w")
-    file_lp["stats"] = lp_classic
-    close(file_lp)
-    qp_classic = optimize_ripqp(path_pb_qp, ripqp_func)
-    file_qp = jldopen(string(file_path, "_qp.jld2"), "w")
-    file_qp["stats"] = qp_classic
-    close(file_qp)
+    CSV.write(string(file_path, "_lp.csv"), lp_classic)
+    qp_classic =  optimize_ripqp(path_pb_qp, ripqp_func)
+    CSV.write(string(file_path, "_qp.csv"), qp_classic)
     
     return Nothing
 end
 
-tf = save_problems(string(save_path, "/ripqp_mono_sc2"), ripqp_bm_classic)
+save_problems(string(save_path, "/ripqp_mono_sc2"), ripqp_bm_classic)
+# save_problems(string(save_path, "\\test"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_ccorr_1"), ripqp_bm_cc)
@@ -108,3 +106,5 @@ tf = save_problems(string(save_path, "/ripqp_mono_sc2"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_multi_z"), ripqp_bm_multizoom)
 # save_problems(string(save_path, "/ripqp_multi_K2"), ripqp_bm_multi)
 
+# df2_lp = CSV.read(string(save_path, "\\test_lp.csv"), DataFrame)
+# df2_qp = CSV.read(string(save_path, "\\test_qp.csv"), DataFrame)
