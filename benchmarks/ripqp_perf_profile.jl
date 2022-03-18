@@ -1,16 +1,19 @@
 using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, BenchmarkProfiles, Plots
-using DelimitedFiles, JLD2
+using DelimitedFiles, CSV
 
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 using RipQP
 
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
-path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+path_pb = "/home/gelecd/.julia/artifacts/545f8c5577a056981a21caf3f53bd7b59cf67410/optrove-netlib-lp-f83996fca937"
+# path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/netlib"
 # path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/marosmeszaros"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 # save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks"
-save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/lp2"
-# save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/test_qp2"
+# save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/lp2"
+# save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/test_lp2"
+save_path = "/home/gelecd/code/docGL/benchmarks/frontal22_results/prof1_lp"
+# save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test3"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\irish-electricity.mps")))
 
@@ -52,7 +55,7 @@ function ripqp_generic_solver(qm, sp)
                      solve_method=:IPF, #, stepsize = stepsize,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                      ),
-                     itol = RipQP.InputTol(max_iter=100, max_time=300.0,
+                     itol = RipQP.InputTol(max_iter=100, max_time=30.0,
                                            ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
                                            ))
 end
@@ -95,6 +98,13 @@ for kmethod ∈ [:minres, :minres_qlp, :symmlq]
   push!(sps, get_sp(:K2KrylovParams, kmethod, :Jacobi))
   global c_solv += 1
   push!(solvers, Symbol(:K2Jacobi_, kmethod))
+end
+
+# K2 Equilibration
+for kmethod ∈ [:minres, :minres_qlp, :symmlq]
+  push!(sps, get_sp(:K2KrylovParams, kmethod, :Equilibration))
+  global c_solv += 1
+  push!(solvers, Symbol(:K2Equilibration_, kmethod))
 end
 
 # K2 structured
@@ -220,21 +230,21 @@ end
 
 n_solvers = length(solvers)
 
-function save_problems(file_path :: String, ripqp_func :: Function, qms)
+function save_problems(file_path :: String, ripqp_func :: Function, solv_str::String, qms)
   stats = solve_problems(ripqp_func, qms)
-  file = jldopen(string(file_path, "/", string(ripqp_func), ".jld2"), "w")
-  file["stats"] = stats
-  close(file)
+  # file = jldopen(string(file_path, "/", solv_str, ".jld2"), "w")
+  # file["stats"] = stats
+  # close(file)
+  CSV.write(string(file_path, "/", solv_str, ".csv"), stats)
   return Nothing
 end
 
 qms = get_QuadraticModels(path_pb, n_pb)
+solvers_list = [string(solver) for solver in solvers]
 for is in 1: length(fsolvers)
-  save_problems(save_path, fsolvers[is], qms)
+  save_problems(save_path, fsolvers[is], solvers_list[is], qms)
   println(string(solvers[is]), " done")
 end
-
-solvers_list = [string(solver) for solver in solvers]
 
 open(string(save_path, "/test2_solvs.txt"), "w") do io
   writedlm(io, solvers_list)

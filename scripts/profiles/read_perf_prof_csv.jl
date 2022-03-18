@@ -1,14 +1,12 @@
-using Plots, JLD2, BenchmarkProfiles, DelimitedFiles, DataFrames, SolverBenchmark
+using Plots, CSV, BenchmarkProfiles, DelimitedFiles, DataFrames, SolverBenchmark
 
 # path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test2"
 # path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test_qp2"
-path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\gsp_lp"
+path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test3"
 solvers_list = Vector{String}(readdlm(string(path, "/test2_solvs.txt"))[:])
 stats_solv = Dict{Symbol, DataFrame}()
-for solver in solvers_list[[1, 2]]
-  file = jldopen(string(path, "/", string(solver), ".jld2"), "r")
-  ripqp_stats = file["stats"];
-  close(file)
+for solver in solvers_list[1:3]
+  ripqp_stats = CSV.read(string(path, "/", string(solver), ".csv"), DataFrame)
   stats_solv[Symbol(solver)] = ripqp_stats
 end
 println(solvers_list)
