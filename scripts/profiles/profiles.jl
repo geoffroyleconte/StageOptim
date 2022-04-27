@@ -1,5 +1,5 @@
 # res_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
-res_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\frontal22res"
+res_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\benchmarks\\frontal22_results\\bm1"
 using DataFrames, SolverBenchmark, SolverTools, Plots
 using JLD2
 using CSV
@@ -14,8 +14,9 @@ end
 # rip_mono = open_file(string(res_path, "\\G-2021-03_lp_mono.jld2"));
 # rip_mono1 = open_file(string(res_path, "\\ripqp_mono_sc1_lp.jld2"))#, "r");
 # rip_mono2 = open_file(string(res_path, "\\ripqp_mono_sc2_lp.jld2"));
-rip_mono1 = CSV.read(string(res_path, "\\ripqp_mono_sc1_qp.csv"), DataFrame)
-rip_mono2 = CSV.read(string(res_path, "\\ripqp_mono_sc2_qp.csv"), DataFrame)
+rip_mono1 = CSV.read(string(res_path, "\\ripqp_mono_sc1_lp.csv"), DataFrame)
+rip_mono2 = CSV.read(string(res_path, "\\ripqp_mono_sc2_lp.csv"), DataFrame)
+rip_mono3 = CSV.read(string(res_path, "\\ripqp_mono_wtimerout_lp.csv"), DataFrame)
 # rip_multiK2 = open_file(string(res_path, "\\ripqp_multi_K2_lp.jld2"));
 # rip_mono_c = open_file(string(res_path, "\\ripqp_ccorr_1_lp.jld2")); 
 # rip_multi_z = open_file(string(res_path, "\\ripqp_multi_z_lp.jld2"))
@@ -27,8 +28,9 @@ rip_mono2 = CSV.read(string(res_path, "\\ripqp_mono_sc2_qp.csv"), DataFrame)
 # rip_monoIPFK23 = open_file(string(res_path, "\\ripqp_mono_IPFK2_3_lp.jld2")); # r, γ =  T(0.999), T(0.05), fix bug
 
 stats_lp = Dict(
-                :ripqp_oldscale => rip_mono1,
+                # :ripqp_oldscale => rip_mono1,
                 :ripqp_newscale => rip_mono2,
+                :ripqp_to => rip_mono3,
                 # :rip_monoIPFK22 => rip_monoIPFK22,
                 # :rip_monoIPFK23 => rip_monoIPFK23,
                 )
