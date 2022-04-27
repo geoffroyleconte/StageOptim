@@ -91,19 +91,6 @@ function rm_ifix!(ifix, Qrows, Qcols, Qvals, c, c0, Arows, Acols, Avals,
             Qrows_rm_fix, Qcols_rm_fix, Qvals_rm_fix, c_rm_fix, x_rm_fix, ifix
 end
 
-function createQuadraticModel128(qpdata; name="qp_pb")
-    return QuadraticModel(convert(Array{Float128}, qps1.c), qpdata.qrows, qpdata.qcols,
-            convert(Array{Float128}, qps1.qvals),
-            Arows=qpdata.arows, Acols=qpdata.acols,
-            Avals=convert(Array{Float128}, qps1.avals),
-            lcon=convert(Array{Float128}, qps1.lcon),
-            ucon=convert(Array{Float128}, qps1.ucon),
-            lvar=convert(Array{Float128}, qps1.lvar),
-            uvar=convert(Array{Float128}, qps1.uvar),
-            c0=Float128(qpdata.c0), x0 = zeros(Float128, length(qps1.c)), name=name)
-end
-
-
 function tulip_presolve(qps, T)
     model = Tulip.Model{T}()
     Tulip.set_parameter(model, "BarrierIterationsLimit", 200)
@@ -181,12 +168,25 @@ function tulip_postsolve(model, QM, qps, stats)
                                   elapsed_time = stats.elapsed_time)
 end
 
+function createQuadraticModel128(qpdata; name="qp_pb")
+    return QuadraticModel(convert(Array{Float128}, qps1.c), qpdata.qrows, qpdata.qcols,
+            convert(Array{Float128}, qps1.qvals),
+            Arows=qpdata.arows, Acols=qpdata.acols,
+            Avals=convert(Array{Float128}, qps1.avals),
+            lcon=convert(Array{Float128}, qps1.lcon),
+            ucon=convert(Array{Float128}, qps1.ucon),
+            lvar=convert(Array{Float128}, qps1.lvar),
+            uvar=convert(Array{Float128}, qps1.uvar),
+            c0=Float128(qpdata.c0), x0 = zeros(Float128, length(qps1.c)), name=name)
+end
+
+
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_netlib"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\cours\\TFE\\code\\problemes_marosmeszaros"
 # qps1 = readqps(string(path_pb, "\\CAPRI.SIF"), mpsformat=:fixed)
 
-# qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
-qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
+qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
+# qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAlift.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAerWT.mps"))
 # qps1.qrows, qps1.qcols, qps1.qvals,

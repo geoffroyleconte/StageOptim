@@ -5,7 +5,7 @@ using Plots, CSV, BenchmarkProfiles, DelimitedFiles, DataFrames, SolverBenchmark
 path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\benchmarks\frontal22_results\prof1_lp"
 # solvers_list = Vector{String}(readdlm(string(path, "/test2_solvs.txt"))[:])
 stats_solv = Dict{Symbol, DataFrame}()
-for solver in readdir(path)[1:end-1][[9, 11, 12, 13, 14, 37]]
+for solver in readdir(path)[1:end-1][[9, 14]]
   # 3 , 4 , 9 , 13 (full reortho) , 14 , 17 , 21, 23 (full reortho), 24, 41 (full reortho) ,  
   ripqp_stats = CSV.read(string(path, "/", string(solver)), DataFrame)
   stats_solv[Symbol(solver[1:end-4])] = ripqp_stats
@@ -20,8 +20,8 @@ function dfstat(df)
     if df.pdd[i] === missing
       output[i] = Inf
     else 
-      # output[i] = df.absolute_iter_cnt[i]
-      output[i] = df.elapsed_time[i]
+      output[i] = df.absolute_iter_cnt[i]
+      # output[i] = df.elapsed_time[i]
     end
     if df.status[i] != "acceptable"
       output[i] = Inf
@@ -42,8 +42,8 @@ display("image/svg+xml", perf)
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\proposition_recherche\prop_rech_GL\images\perf_ksysts"
 # savefig(string(save_path, "/normal2.pdf"))
 
-select(stats_solv[:K2_LDL], [2, 3, 4, 6, 7, 8, 10, 11, 40, 41])
-df[!,:status] = convert.(String,df[!,:status])
-df[!,:name] = convert.(String,df[!,:name])
-table = pretty_table(df, backend = Val(:latex))
+# select(stats_solv[:K2_LDL], [2, 3, 4, 6, 7, 8, 10, 11, 40, 41])
+# df[!,:status] = convert.(String,df[!,:status])
+# df[!,:name] = convert.(String,df[!,:name])
+# table = pretty_table(df, backend = Val(:latex))
 # latexify(df)
