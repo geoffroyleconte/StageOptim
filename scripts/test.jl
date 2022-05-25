@@ -7,34 +7,36 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\AGG.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\AGG2.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
 TimerOutputs.enable_debug_timings(RipQP)
-reset_timer!()
-stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
-                        # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
-                        # sp = RipQP.K2LDLParams(),
-                        sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:gmres, rhs_scale=true, #δ0 = 0.,
-                              form_mat = true, equilibrate = true,
-                                preconditioner = 
-                                # RipQP.Identity(),
-                                  RipQP.LDLLowPrec(T = Float32, pos = :C, warm_start = true),
-                                ρ_min=1.0e-8, δ_min = 1.0e-8,
-                                atol_min = 1.0e-8, rtol_min = 1.0e-8,
-                                ), 
-                        solve_method=:IPF, scaling = true, history=true, presolve=false,
-                        # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                        ),
-                     itol = RipQP.InputTol(max_iter=50, max_time=20.0,
-                     ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
+reset_timer!(RipQP.to)
+stats1 = RipQP.ripqp(qm,
+                     # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
+                     sp = RipQP.K2LDLParams{Float32}(regul=:hybrid),
+                     sp2 = RipQP.K2KrylovParams(uplo = :U, kmethod=:dqgmres, rhs_scale=true, #δ0 = 0.,
+                          form_mat = true, equilibrate = true,
+                            preconditioner = 
+                            # RipQP.Identity(),
+                              RipQP.LDLLowPrec(T = Float32, pos = :C, warm_start = true),
+                            ρ_min=1.0e-8, δ_min = 1.0e-8,
+                            mem = 100,
+                            itmax = 20,
+                            atol_min = 1.0e-6, rtol_min = 1.0e-6,
+                            ), 
+                     solve_method=RipQP.IPF(), scaling = true, history=true, ps=false, mode=:multiref,
+                     perturb = true,
+                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
+                     itol = RipQP.InputTol(max_iter=200, max_time=20.0, max_iter32 = 30,
+                       ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ),
-                     display = false,
-                     )
+                     display = true,
+                   )
 println(stats1)
-TimerOutputs.complement!()
-print_timer()
+# TimerOutputs.complement!(RipQP.to)
+# show(RipQP.to, sortby = :firstexec)
 println(sum(stats1.solver_specific[:KresNormH]))
 
 print(aze+z)
