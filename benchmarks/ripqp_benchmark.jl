@@ -28,6 +28,7 @@ qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
 ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=200.))
+ripqp_bm_nops(QM) = ripqp(QM, ps=false, itol = InputTol(max_time=200.))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=true))
 # ripqp_bm_multiref(QM) = ripqp(QM, iconf = InputConfig(mode=:multi, refinement=:multiref), itol = InputTol(max_time=1200.))
@@ -96,6 +97,7 @@ function save_problems(file_path :: String, ripqp_func :: Function,
 end
 
 save_problems(string(save_path, "/ripqp_mono_classic_c"), ripqp_bm_classic)
+save_problems(string(save_path, "/ripqp_mono_classic"), ripqp_bm_nops)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)

@@ -7,7 +7,7 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\AGG.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\AFIRO.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
@@ -16,34 +16,35 @@ reset_timer!(RipQP.to)
 stats1 = RipQP.ripqp(qm,
                      # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
                     #  sp = RipQP.K3KrylovParams(
-                    #    uplo=:U, preconditioner = RipQP.BlockDiagK3S(), 
+                    #    uplo=:U, 
+                    #    preconditioner = RipQP.BlockDiagK3S(), 
                     #    kmethod = :gmres, ρ_min = 1.0e-7, δ_min = 1.0e-7,
                     #    atol0 = 0.1, rtol0 = 0.1, mem = 100,
-                    #    atol_min = 1.0e-5, rtol_min = 1.0e-5),
-                    sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:minres, rhs_scale=true, #δ0 = 0.,
-                    form_mat = true, equilibrate = true,
-                      # preconditioner = RipQP.LDL(T = Float32, pos = :L, warm_start = false),
-                      ρ_min=1.0e-6, δ_min = 1.0e-6,
-                      mem = 20,
-                      itmax = 0,
-                      atol_min = 1.0e-7, rtol_min = 1.0e-1,
-                      k3_resid = true,
-                      cb_only = true,
-                      ),   
+                    #    atol_min = 1.0e-3, rtol_min = 1.0e-3),
+                    # sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:minres_qlp, rhs_scale=true, #δ0 = 0.,
+                    # form_mat = true, equilibrate = true,
+                    #   # preconditioner = RipQP.LDL(T = Float32, pos = :L, warm_start = false),
+                    #   ρ_min=1.0e-6, δ_min = 1.0e-6,
+                    #   mem = 20,
+                    #   itmax = 0,
+                    #   atol_min = 1.0e-7, rtol_min = 1.0e-1,
+                    #   k3_resid = true,
+                    #   cb_only = true,
+                    #   ),   
                     #  sp2 = RipQP.K2KrylovParams(uplo = :U, kmethod=:dqgmres, rhs_scale=true, #δ0 = 0.,
                     #       form_mat = true, equilibrate = true,
                     #         preconditioner = 
                     #         # RipQP.Identity(),
-                    #           RipQP.LDLLowPrec(T = Float32, pos = :C, warm_start = true),
+                    #           RipQP.LDL(T = Float32, pos = :C, warm_start = true),
                     #         ρ_min=1.0e-8, δ_min = 1.0e-8,
                     #         mem = 100,
                     #         itmax = 20,
                     #         atol_min = 1.0e-6, rtol_min = 1.0e-6,
                     #         ), 
-                     solve_method=RipQP.IPF(), scaling = true, history=true, ps=false, mode=:mono,
+                     solve_method=RipQP.PC(), scaling = true, history=true, ps=true, mode=:mono,
                      perturb = false,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                     itol = RipQP.InputTol(max_iter=300, max_time=20.0, max_iter32 = 30,
+                     itol = RipQP.InputTol(max_iter=300, max_time=20.0, max_iter32 = 40,
                        ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ),
                      display = true,
@@ -61,12 +62,11 @@ rhs_aff = readdlm(string(save_path, "\\bug_minaresrhs_iter1_aff.rhs"), Float64)[
 rhs_cc =  readdlm(string(save_path, "\\bug_minaresrhs_iter1_cc.rhs"), Float64)[:] 
 
 function riptest(qm)
-    return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
-      sp = RipQP.K2LDLParams(), solve_method=:PC, scaling = false, 
-      ),
-   itol = RipQP.InputTol(max_iter=150, max_time=10.0,
+    return RipQP.ripqp(qm, display = false, sp = RipQP.K2LDLParams(), solve_method=RipQP.PC(), scaling = true, 
+    ps = false,
+   itol = RipQP.InputTol(max_iter=150, max_time=10.0),
   #  ϵ_rc=1.0e-1, ϵ_rb=1.0e-1, ϵ_pdd=1.0e0,
-   ))
+   )
 end
 
 function createQuadraticModel(qpdata; name="qp_pb")
@@ -181,13 +181,10 @@ u = [Inf; Inf; Inf]
 QM = QuadraticModel(c, SparseMatrixCOO(tril(Q)), A=SparseMatrixCOO(A), lcon=b, ucon=b, lvar=l, uvar=u, c0=0., name="QM1");
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\QuadraticModels.jl\src\QuadraticModels.jl")
 # QM = QuadraticModels.QuadraticModel(c, Q, A=A, lcon=[-3; -4], ucon=[-2.; Inf], lvar=l, uvar=u, c0=0., name="QM1");
-stats1 = RipQP.ripqp(QM, iconf = RipQP.InputConfig(
-                        sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:minres, rhs_scale=true,# δ_min = 0.,
-                        preconditioner = :LDLLowPrec,
-                        # ρ0=1.0e-1, δ0 = 1.0e-1,
-                        ), 
-                solve_method=:IPF, scaling = true, history=true, presolve=false, 
-                ), itol = RipQP.InputTol(max_time = 10.0, max_iter = 50))
+stats1 = RipQP.ripqp(QM,sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:minres, rhs_scale=true,equilibrate = false,
+                        form_mat = true),
+                solve_method=RipQP.IPF(), scaling = false, history=false, ps=false, 
+                itol = RipQP.InputTol(max_time = 20.0, max_iter = 50))
 # stats1 = RipQP.ripqp(QM)
 println(stats1)
 
