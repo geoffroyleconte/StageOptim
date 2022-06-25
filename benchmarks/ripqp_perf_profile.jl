@@ -12,7 +12,7 @@ path_pb = "/home/gelecd/.julia/artifacts/545f8c5577a056981a21caf3f53bd7b59cf6741
 # save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks"
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/lp2"
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/perf_profiles/test_lp2"
-save_path = "/home/gelecd/code/docGL/benchmarks/frontal22_results/prof1_lp"
+save_path = "/home/gelecd/code/docGL/benchmarks/frontal22_results/prof2_lp"
 # save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\amdahl_benchmarks\perf_profiles\test3"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\irish-electricity.mps")))
@@ -34,28 +34,27 @@ end
 
 function get_sp(formulation::Symbol, kmethod::Symbol, preconditioner::Symbol)
   if kmethod ∈ [:tricg, :trimr, :gpmr, :lslq, :lsqr, :lsmr, :lnlq, :craig, :craigmr]
-    sp = eval(formulation)(kmethod = kmethod,
-                          atol_min=1.0e-10, rtol_min=1.0e-10,
-                          ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
-                          mem = 20,
+    sp = eval(formulation)(kmethod = kmethod, atol0 = 0.1, rtol0 = 0.1,
+                          atol_min=1.0e-3, rtol_min=1.0e-1,
+                          ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
+                          mem = 100, k3_resid = true, cb_only = true,
                           )
   else
-    sp = eval(formulation)(kmethod = kmethod, preconditioner = preconditioner, 
-                          atol_min=1.0e-10, rtol_min=1.0e-10,
-                          ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
-                          mem = 20,
+    sp = eval(formulation)(kmethod = kmethod, preconditioner = preconditioner,
+                          atol0 = 0.1, rtol0 = 0.1,
+                          atol_min=1.0e-3, rtol_min=1.0e-1,
+                          ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
+                          mem = 100, k3_resid = true, cb_only = true,
                           )
   end
   return sp
 end
 
 function ripqp_generic_solver(qm, sp)
-  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
-                     sp = sp, 
-                     solve_method=:IPF, #, stepsize = stepsize,
+  return RipQP.ripqp(qm, display = false, sp = sp, solve_method = IPF(), 
+                     #, stepsize = stepsize,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                     ),
-                     itol = RipQP.InputTol(max_iter=100, max_time=30.0,
+                     itol = RipQP.InputTol(max_iter=200, max_time=30.0,
                                            ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4,
                                            ))
 end
@@ -66,7 +65,7 @@ push!(sps, K2LDLParams())
 solvers = [:K2_LDL]
 global c_solv = 1
 # K1
-for kmethod ∈ [:minres] # [:cg, :cg_lanczos, :cr, :diom, :fom, :gmres, :dqgmres]
+for kmethod ∈ [:minres, :cg, :cg_lanczos, :cr, :bicgstab, :qmr, :diom, :dqgmres, :gmres] #:fom,
   push!(sps, get_sp(:K1KrylovParams, kmethod, :Identity))
   global c_solv += 1
   push!(solvers, Symbol(:K1_, kmethod))
@@ -86,68 +85,68 @@ end
 #   push!(solvers, Symbol(:K1_2_, kmethod))
 # end
 
-# # K2
-# for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-#   push!(sps, get_sp(:K2KrylovParams, kmethod, :Identity))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K2_, kmethod))
-# end
+# K2
+for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres] #:fom,
+  push!(sps, get_sp(:K2KrylovParams, kmethod, :Identity))
+  global c_solv += 1
+  push!(solvers, Symbol(:K2_, kmethod))
+end
 
-# # K2 Jacobi
-# for kmethod ∈ [:minres, :minres_qlp, :symmlq]
-#   push!(sps, get_sp(:K2KrylovParams, kmethod, :Jacobi))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K2Jacobi_, kmethod))
-# end
+# K2 Jacobi
+for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres]
+  push!(sps, get_sp(:K2KrylovParams, kmethod, :Jacobi))
+  global c_solv += 1
+  push!(solvers, Symbol(:K2Jacobi_, kmethod))
+end
 
-# # K2 Equilibration
-# for kmethod ∈ [:minres, :minres_qlp, :symmlq]
-#   push!(sps, get_sp(:K2KrylovParams, kmethod, :Equilibration))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K2Equilibration_, kmethod))
-# end
+# K2 Equilibration
+for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres]
+  push!(sps, get_sp(:K2KrylovParams, kmethod, :Equilibration))
+  global c_solv += 1
+  push!(solvers, Symbol(:K2Equilibration_, kmethod))
+end
 
 # # K2 structured
-# for kmethod ∈ [:tricg, :trimr, :gpmr]
-#   push!(sps, get_sp(:K2StructuredParams, kmethod, :Identity))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K2_, kmethod))
-# end
+for kmethod ∈ [:tricg, :trimr] #, :gpmr
+  push!(sps, get_sp(:K2StructuredParams, kmethod, :Identity))
+  global c_solv += 1
+  push!(solvers, Symbol(:K2_, kmethod))
+end
 
 # # K2.5
-# for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-#   push!(sps, get_sp(:K2_5KrylovParams, kmethod, :Identity))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K2_5_, kmethod))
-# end
+for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres] #:fom, 
+  push!(sps, get_sp(:K2_5KrylovParams, kmethod, :Identity))
+  global c_solv += 1
+  push!(solvers, Symbol(:K2_5_, kmethod))
+end
 
 # # K2.5 Jacobi
-# for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-#   push!(sps, get_sp(:K2_5KrylovParams, kmethod, :Jacobi))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K2_5Jacobi_, kmethod))
-# end
+for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres] #:fom, 
+  push!(sps, get_sp(:K2_5KrylovParams, kmethod, :Jacobi))
+  global c_solv += 1
+  push!(solvers, Symbol(:K2_5Jacobi_, kmethod))
+end
 
 # # K2.5 Structured
-# for kmethod ∈ [:tricg, :trimr, :gpmr]
-#   push!(sps, get_sp(:K2_5StructuredParams, kmethod, :Identity))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K2_5_, kmethod))
-# end
+for kmethod ∈ [:tricg, :trimr] #, :gpmr
+  push!(sps, get_sp(:K2_5StructuredParams, kmethod, :Identity))
+  global c_solv += 1
+  push!(solvers, Symbol(:K2_5_, kmethod))
+end
 
 # # K3
-# for kmethod ∈ [:bilq, :bicgstab, :usymlq, :usymqr, :qmr, :diom, :fom, :gmres, :dqgmres]
-#   push!(sps, get_sp(:K3KrylovParams, kmethod, :Identity))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K3_, kmethod))
-# end
+for kmethod ∈ [:bilq, :bicgstab, :usymlq, :usymqr, :qmr, :diom, :dqgmres, :gmres] # :fom, 
+  push!(sps, get_sp(:K3KrylovParams, kmethod, :Identity))
+  global c_solv += 1
+  push!(solvers, Symbol(:K3_, kmethod))
+end
 
 # # K3S
-# for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-#   push!(sps, get_sp(:K3SKrylovParams, kmethod, :Identity))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K3S_, kmethod))
-# end
+for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres] #:fom, 
+  push!(sps, get_sp(:K3SKrylovParams, kmethod, :Identity))
+  global c_solv += 1
+  push!(solvers, Symbol(:K3S_, kmethod))
+end
 
 # # K3S Structured
 # for kmethod ∈ [:tricg, :trimr, :gpmr]
@@ -157,11 +156,11 @@ end
 # end
 
 # # K3.5
-# for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :fom, :gmres, :dqgmres]
-#   push!(sps, get_sp(:K3_5KrylovParams, kmethod, :Identity))
-#   global c_solv += 1
-#   push!(solvers, Symbol(:K3_5_, kmethod))
-# end
+for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres]# :fom,
+  push!(sps, get_sp(:K3_5KrylovParams, kmethod, :Identity))
+  global c_solv += 1
+  push!(solvers, Symbol(:K3_5_, kmethod))
+end
 
 # # K3.5 Structured
 # for kmethod ∈ [:tricg, :trimr, :gpmr]
@@ -246,6 +245,6 @@ for is in 1: length(fsolvers)
   println(string(solvers[is]), " done")
 end
 
-# open(string(save_path, "/test2_solvs.txt"), "w") do io
-#   writedlm(io, solvers_list)
-# end;
+open(string(save_path, "/test2_solvs.txt"), "w") do io
+  writedlm(io, solvers_list)
+end;

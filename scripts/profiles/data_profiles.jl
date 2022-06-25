@@ -24,34 +24,30 @@ function zeros_logscale!(v, min_val)
 end
 
 function ripqpLDL(qm)
-  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
-    sp = RipQP.K2LDLParams(), 
-    solve_method=:IPF, history=true#, stepsize = stepsize,
+  return RipQP.ripqp(qm, display = false, sp = RipQP.K2LDLParams(), 
+    solve_method=:IPF, history=true,#, stepsize = stepsize,
     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-    ),
   itol = RipQP.InputTol(max_iter=30, max_time=20.0))
 end
 
 function ripqpK1(qm)
-  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+  return RipQP.ripqp(qm, display = false, 
                     sp = RipQP.K1KrylovParams(kmethod=:cg, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
-                    solve_method=:IPF, history=true#, stepsize = stepsize,
+                    solve_method=:IPF, history=true, #, stepsize = stepsize,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                    ),
                 itol = RipQP.InputTol(max_iter=30, max_time=20.0))
 end
 
 function ripqpK2(qm)
-  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+  return RipQP.ripqp(qm, display = false,
                     sp = RipQP.K2KrylovParams(kmethod=:minres, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
-                    solve_method=:IPF, history=true#, stepsize = stepsize,
+                    solve_method=:IPF, history=true,#, stepsize = stepsize,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                    ),
                 itol = RipQP.InputTol(max_iter=30, max_time=20.0))
 end
 
 function ripqpK2_5(qm)
-  return RipQP.ripqp(qm, display = false, iconf = RipQP.InputConfig(
+  return RipQP.ripqp(qm, display = false,
                     sp = RipQP.K2_5KrylovParams(kmethod=:minres, preconditioner = :Identity, atol_min=1.0e-10, rtol_min=1.0e-10), 
                     solve_method=:IPF, history=true,
                     # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 

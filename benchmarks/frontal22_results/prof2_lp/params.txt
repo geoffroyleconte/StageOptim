@@ -1,0 +1,1 @@
+lp1, tol pdd, rb, rc, to 1.0e-4, all regu_min params to 1.0e2, 30.0s max, 200 iter, mem=100

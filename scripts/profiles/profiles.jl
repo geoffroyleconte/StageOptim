@@ -35,7 +35,7 @@ stats_lp = Dict(
                 # :rip_monoIPFK23 => rip_monoIPFK23,
                 )
 
-cost = df -> df.elapsed_time + (df.status .== :acceptable) * Inf# + (df.elapsed_time .>= 10.) * Inf
+cost = df -> df.absolute_iter_cnt + (df.status .== :acceptable) * Inf# + (df.elapsed_time .>= 10.) * Inf
 perf = performance_profile(stats_lp, cost,legend=:bottomright)
 title!("Performance profile (Maros Meszaros problems)")
 # savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\graphes\profiles\minres_net_iter_wrip.pdf")
