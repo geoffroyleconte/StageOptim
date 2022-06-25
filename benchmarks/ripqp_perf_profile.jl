@@ -32,7 +32,7 @@ function zeros_logscale!(v, min_val)
   end
 end
 
-function get_sp(formulation::Symbol, kmethod::Symbol, preconditioner::Symbol)
+function get_sp(formulation::Symbol, kmethod::Symbol, preconditioner)
   if kmethod ∈ [:tricg, :trimr, :gpmr, :lslq, :lsqr, :lsmr, :lnlq, :craig, :craigmr]
     sp = eval(formulation)(kmethod = kmethod, atol0 = 0.1, rtol0 = 0.1,
                           atol_min=1.0e-3, rtol_min=1.0e-1,
@@ -66,7 +66,7 @@ solvers = [:K2_LDL]
 global c_solv = 1
 # K1
 for kmethod ∈ [:minres, :cg, :cg_lanczos, :cr, :bicgstab, :qmr, :diom, :dqgmres, :gmres] #:fom,
-  push!(sps, get_sp(:K1KrylovParams, kmethod, :Identity))
+  push!(sps, get_sp(:K1KrylovParams, kmethod, Identity()))
   global c_solv += 1
   push!(solvers, Symbol(:K1_, kmethod))
 end
@@ -87,63 +87,63 @@ end
 
 # K2
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres] #:fom,
-  push!(sps, get_sp(:K2KrylovParams, kmethod, :Identity))
+  push!(sps, get_sp(:K2KrylovParams, kmethod, Identity()))
   global c_solv += 1
   push!(solvers, Symbol(:K2_, kmethod))
 end
 
 # K2 Jacobi
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres]
-  push!(sps, get_sp(:K2KrylovParams, kmethod, :Jacobi))
+  push!(sps, get_sp(:K2KrylovParams, kmethod, Jacobi()))
   global c_solv += 1
   push!(solvers, Symbol(:K2Jacobi_, kmethod))
 end
 
 # K2 Equilibration
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres]
-  push!(sps, get_sp(:K2KrylovParams, kmethod, :Equilibration))
+  push!(sps, get_sp(:K2KrylovParams, kmethod, Equilibration()))
   global c_solv += 1
   push!(solvers, Symbol(:K2Equilibration_, kmethod))
 end
 
 # # K2 structured
 for kmethod ∈ [:tricg, :trimr] #, :gpmr
-  push!(sps, get_sp(:K2StructuredParams, kmethod, :Identity))
+  push!(sps, get_sp(:K2StructuredParams, kmethod, Identity()))
   global c_solv += 1
   push!(solvers, Symbol(:K2_, kmethod))
 end
 
 # # K2.5
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres] #:fom, 
-  push!(sps, get_sp(:K2_5KrylovParams, kmethod, :Identity))
+  push!(sps, get_sp(:K2_5KrylovParams, kmethod, Identity()))
   global c_solv += 1
   push!(solvers, Symbol(:K2_5_, kmethod))
 end
 
 # # K2.5 Jacobi
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres] #:fom, 
-  push!(sps, get_sp(:K2_5KrylovParams, kmethod, :Jacobi))
+  push!(sps, get_sp(:K2_5KrylovParams, kmethod, Jacobi()))
   global c_solv += 1
   push!(solvers, Symbol(:K2_5Jacobi_, kmethod))
 end
 
 # # K2.5 Structured
 for kmethod ∈ [:tricg, :trimr] #, :gpmr
-  push!(sps, get_sp(:K2_5StructuredParams, kmethod, :Identity))
+  push!(sps, get_sp(:K2_5StructuredParams, kmethod, Identity()))
   global c_solv += 1
   push!(solvers, Symbol(:K2_5_, kmethod))
 end
 
 # # K3
-for kmethod ∈ [:bilq, :bicgstab, :usymlq, :usymqr, :qmr, :diom, :dqgmres, :gmres] # :fom, 
-  push!(sps, get_sp(:K3KrylovParams, kmethod, :Identity))
+for kmethod ∈ [:bicgstab, :qmr, :diom, :dqgmres, :gmres] # :fom, 
+  push!(sps, get_sp(:K3KrylovParams, kmethod, Identity()))
   global c_solv += 1
   push!(solvers, Symbol(:K3_, kmethod))
 end
 
 # # K3S
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres] #:fom, 
-  push!(sps, get_sp(:K3SKrylovParams, kmethod, :Identity))
+  push!(sps, get_sp(:K3SKrylovParams, kmethod, Identity()))
   global c_solv += 1
   push!(solvers, Symbol(:K3S_, kmethod))
 end
@@ -157,7 +157,7 @@ end
 
 # # K3.5
 for kmethod ∈ [:minres, :minres_qlp, :symmlq, :diom, :dqgmres, :gmres]# :fom,
-  push!(sps, get_sp(:K3_5KrylovParams, kmethod, :Identity))
+  push!(sps, get_sp(:K3_5KrylovParams, kmethod, Identity()))
   global c_solv += 1
   push!(solvers, Symbol(:K3_5_, kmethod))
 end
