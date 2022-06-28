@@ -7,7 +7,7 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\AFIRO.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\BANDM.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
@@ -15,12 +15,12 @@ TimerOutputs.enable_debug_timings(RipQP)
 reset_timer!(RipQP.to)
 stats1 = RipQP.ripqp(qm,
                      # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
-                     sp = RipQP.K3SKrylovParams(
+                     sp = RipQP.K2KrylovParams(
                        uplo=:L, 
-                      #  preconditioner = RipQP.Equilibration(), 
-                       kmethod = :gmres, ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
-                       atol0 = 0.1, rtol0 = 0.1, mem = 300,
-                       atol_min = 1.0e-3, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
+                       preconditioner = RipQP.Equilibration(), 
+                       kmethod = :minres, ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
+                       atol0 = 1.0e-1, rtol0 = 1.0e-1, mem = 300,
+                       atol_min = 1.0e-4, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
                     # sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:minres_qlp, rhs_scale=true, #δ0 = 0.,
                     # form_mat = true, equilibrate = true,
                     #   # preconditioner = RipQP.LDL(T = Float32, pos = :L, warm_start = false),
@@ -41,10 +41,10 @@ stats1 = RipQP.ripqp(qm,
                     #         itmax = 20,
                     #         atol_min = 1.0e-6, rtol_min = 1.0e-6,
                     #         ), 
-                     solve_method=RipQP.IPF(), scaling = true, history=false, ps=true, mode=:mono,
+                     solve_method=RipQP.IPF(), scaling = true, history=true, ps=true, mode=:mono,
                      perturb = false,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                     itol = RipQP.InputTol(max_iter=300, max_time=20.0, max_iter32 = 40,
+                     itol = RipQP.InputTol(max_iter=100, max_time=20.0, max_iter32 = 40,
                        ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ),
                      display = true,

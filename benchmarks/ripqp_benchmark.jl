@@ -27,8 +27,13 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=200.))
-ripqp_bm_nops(QM) = ripqp(QM, ps=false, itol = InputTol(max_time=200.))
+# ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=200.))
+ripqp_bm_equi_qlp(QM) = ripqp(QM, ps=true, display = false,
+    sp = K2KrylovParams(uplo=:L, preconditioner = Equilibration(), 
+                        kmethod = :minres_qlp, ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
+                        atol0 = 1.0e-1, rtol0 = 1.0e-1, mem = 100,
+                        atol_min = 1.0e-3, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
+        itol = InputTol(max_iter=400, ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4, max_time=3600.))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=true))
 # ripqp_bm_multiref(QM) = ripqp(QM, iconf = InputConfig(mode=:multi, refinement=:multiref), itol = InputTol(max_time=1200.))
@@ -96,8 +101,8 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/ripqp_mono_classic_c"), ripqp_bm_classic)
-save_problems(string(save_path, "/ripqp_mono_classic"), ripqp_bm_nops)
+save_problems(string(save_path, "/ripqp_equi_minres_qlp"), ripqp_bm_equi_qlp)
+# save_problems(string(save_path, "/ripqp_mono_classic"), ripqp_bm_nops)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)
