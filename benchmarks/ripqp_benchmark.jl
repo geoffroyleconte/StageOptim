@@ -46,30 +46,7 @@ function optimize_ripqp(path_pb :: String, ripqp_func :: Function)
     i_max = 1000
     i = 1
     for file_name in readdir(path_pb)
-         if file_name[end-3:end] == ".SIF" && !(file_name in["80BAU3B.SIF" ; "BORE3D.SIF";
-                                                         "CAPRI.SIF"; "CZPROB.SIF";
-                                                         "ETAMACRO.SIF"; "FINNIS.SIF";
-                                                         "FORPLAN.SIF"; "GREENBEA.SIF";
-                                                         "GREENBEB.SIF"; "MAROS.SIF";
-                                                         "NESM.SIF"; "PEROLD.SIF";
-                                                          "PILOT-JA.SIF"; "PILOT-WE.SIF";
-                                                          "PILOT.SIF"; "PILOT4.SIF";
-                                                          "PILOT87.SIF"; "PILOTNOV.SIF";
-                                                           "RECIPELP.SIF"; "SHELL.SIF";
-                                                          "SIERRA.SIF"; "STAIR.SIF";
-                                                          "STANDATA.SIF"; "STANDGUB.SIF";
-                                                         "STANDMPS.SIF"; "TUFF.SIF";
-                                                         "VTP-BASE.SIF"; "DTOC3.SIF";
-                                                          "HS35MOD.SIF";"QBORE3D.SIF";
-                                                         "QCAPRI.SIF"; "QETAMACR.SIF";
-                                                           "QFORPLAN.SIF"; "QPCSTAIR.SIF";
-                                                         "QPCSTAIR.SIF"; "QPILOTNO.SIF";
-                                                         "QRECIPE.SIF"; "QSHELL.SIF";
-                                                         "QSIERRA.SIF"; "QSTAIR.SIF";
-                                                         "QSTANDAT.SIF"; "UBH1.SIF";
-                                                         "YAO.SIF"]) # problems with fixed variables
-
-
+         if file_name[end-3:end] == ".SIF" 
              println(file_name)
              pb_i = string(path_pb, "/", file_name)
              if file_name in ["BLEND.SIF"; "DFL001.SIF"; "FORPLAN.SIF"; "GFRD-PNC.SIF"; "SIERRA.SIF";

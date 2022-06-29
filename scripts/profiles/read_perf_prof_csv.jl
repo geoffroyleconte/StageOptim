@@ -9,9 +9,11 @@ for solver in readdir(path)[1:end-1][[23,30, 31]]
   ripqp_stats = CSV.read(string(path, "/", string(solver)), DataFrame)
   stats_solv[Symbol(solver[1:end-4])] = ripqp_stats
 end
+stats_solv[:K2_minresqlp_equi_full] = CSV.read(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\benchmarks\frontal22_results\bm1\ripqp_equi_minres_qlp_lp.csv", DataFrame)
 for i in 1:length(readdir(path))
   println((i, readdir(path)[i]))
 end
+println((length(readdir(path))+1, "ripqp_equi_minres_qlp_lp.csv"))
 
 function dfstat(df)
   output = zeros(length(df.pdd))

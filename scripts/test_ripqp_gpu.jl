@@ -35,13 +35,13 @@ function QuadraticModelGPUCOO(qps::QPSData; T = Float64)
   )
 end
 # qm = QuadraticModelGPU(readqps(string(path_pb, "/AFIRO.SIF"), mpsformat=:fixed))
-qm = QuadraticModelGPUCOO(readqps(string(path_pb, "/AFIRO.SIF"), mpsformat=:fixed))
+qm = QuadraticModelGPUCOO(readqps(string(path_pb, "/AGG.SIF"), mpsformat=:fixed))
 using RipQP
 # # include("/home/lecogeof/code/RipQP.jl/src/RipQP.jl")
 stats1 = RipQP.ripqp(qm, 
-                     sp = RipQP.K2KrylovGPUParams(kmethod=:minres, uplo = :U, preconditioner = RipQP.LDLGPU(T = Float32)), 
+                     sp = RipQP.K2KrylovGPUParams(kmethod=:minres, uplo = :U, preconditioner = RipQP.LDLGPU(T = Float32), verbose = 0), 
                      solve_method = IPF(), ps = false, scaling = false,
-                     itol = RipQP.InputTol(max_iter=50, max_time=100.0, ϵ_rc=1.0e-2, ϵ_rb=1.0e-2, ϵ_pdd=1.0e-2))
+                     itol = RipQP.InputTol(max_iter=50, max_time=100.0, ϵ_rc=1.0e-4, ϵ_rb=1.0e-4, ϵ_pdd=1.0e-4))
 # println(stats1)
 # stats1 = RipQP.ripqp(qm, 
 #                      sp = RipQP.K2KrylovGPUParams(kmethod=:minres, uplo = :U, equilibrate = false), 
