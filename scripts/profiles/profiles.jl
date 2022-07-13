@@ -14,13 +14,13 @@ end
 # rip_mono = open_file(string(res_path, "\\G-2021-03_lp_mono.jld2"));
 # rip_mono1 = open_file(string(res_path, "\\ripqp_mono_sc1_lp.jld2"))#, "r");
 # rip_mono2 = open_file(string(res_path, "\\ripqp_mono_sc2_lp.jld2"));
-rip_mono1 = CSV.read(string(res_path, "\\ripqp_mono_classic_lp.csv"), DataFrame)
-rip_mono2 = CSV.read(string(res_path, "\\ripqp_mono_classic_c_lp.csv"), DataFrame)
-ripqp_eq = CSV.read(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\benchmarks\frontal22_results\bm1\ripqp_equi_minres_qlp_lp.csv", DataFrame)
+rip_mono = CSV.read(string(res_path, "\\ripqp_mono2_qp.csv"), DataFrame)
+rip_multi = CSV.read(string(res_path, "\\ripqp_multi2_qp.csv"), DataFrame)
+rip_multiref = CSV.read(string(res_path, "\\ripqp_multiref2_qp.csv"), DataFrame)
+rip_multizoom = CSV.read(string(res_path, "\\ripqp_multizoom2_qp.csv"), DataFrame)
+# ripqp_eq = CSV.read(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\benchmarks\frontal22_results\bm1\ripqp_equi_minres_qlp_lp.csv", DataFrame)
 # rip_multiK2 = open_file(string(res_path, "\\ripqp_multi_K2_lp.jld2"));
 # rip_mono_c = open_file(string(res_path, "\\ripqp_ccorr_1_lp.jld2")); 
-# rip_multi_z = open_file(string(res_path, "\\ripqp_multi_z_lp.jld2"))
-# rip_multi_r = open_file(string(res_path, "\\ripqp_multi_r_lp.jld2"))
 # rip_multi1 = open_file(string(res_path, "\\ripqp_multi_1_lp.jld2"));
 # rip_minres1 = open_file(string(res_path, "\\ripqp_minres_1_lp.jld2"));
 # rip_minres2 = open_file(string(res_path, "\\ripqp_minres_2_lp.jld2"));
@@ -30,9 +30,12 @@ ripqp_eq = CSV.read(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\
 stats_lp = Dict(
                 # :ripqp_classic => rip_mono1,
                 # :ripqp_newscale => rip_mono2,
-                :K2LDL => rip_mono1,
+                :mono => rip_mono,
+                :multi => rip_multi,
+                # :multiref => rip_multiref,
+                # :multizoom => rip_multizoom,
                 # :ripqp2 => rip_mono2,
-                :K2Equilibration_minresqlp => ripqp_eq,
+                # :K2Equilibration_minresqlp => ripqp_eq,
                 # :rip_monoIPFK22 => rip_monoIPFK22,
                 # :rip_monoIPFK23 => rip_monoIPFK23,
                 )
@@ -44,7 +47,7 @@ function dfstat(df)
       output[i] = Inf
     else 
     #   output[i] = df.absolute_iter_cnt[i]
-      output[i] = df.elapsed_time[i]
+      output[i] = df.relative_iter_cnt[i]
     end
     if df.status[i] != "first_order"
       output[i] = Inf
@@ -55,9 +58,10 @@ end
 
 # cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
 perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
-title!("Performance profile (Netlib problems)")
+# title!("Performance profile (Netlib problems)")
+title!("Performance profile (Maros and Meszaros problems)")
 display("image/svg+xml", perf)
-# savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\graphes\profiles\minres_net_iter_wrip.pdf")
+# savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\graphes\profiles\mono_vs_multi_iter_qp.pdf")
 
 ################################ QP #####################
 # rip_mono = open_file(string(res_path, "\\G-2021-03_qp_mono.jld2"));

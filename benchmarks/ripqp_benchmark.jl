@@ -27,7 +27,7 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=400.))
+ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1000.))
 # ripqp_bm_equi_qlp(QM) = ripqp(QM, ps=true, display = false,
 #     sp = K2KrylovParams(uplo=:L, preconditioner = Equilibration(), 
 #                         kmethod = :minres_qlp, ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
@@ -36,9 +36,9 @@ ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=400.))
 #         itol = InputTol(max_iter=400, ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4, max_time=3600.))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=true))
-ripqp_bm_multiref(QM) = ripqp(QM, mode=:multiref, itol = InputTol(max_time=400.))
-ripqp_bm_multizoom(QM) = ripqp(QM, mode=:multizoom, itol = InputTol(max_time=400.))
-ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_time=400.))
+ripqp_bm_multiref(QM) = ripqp(QM, mode=:multiref, itol = InputTol(max_time=1000.))
+ripqp_bm_multizoom(QM) = ripqp(QM, mode=:multizoom, itol = InputTol(max_time=1000.))
+ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_time=1000.))
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
 #                             itol = InputTol(max_iter=400, max_time=10.) )#,
 
