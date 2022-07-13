@@ -1,0 +1,5 @@
+[deps]
+LLSModels = "39f5bc3e-5160-4bf8-ac48-504fd2534d24"
+LinearOperators = "5c8ed15e-5a4c-59e4-a42b-c7e8811fb125"
+QuadraticModels = "f468eda6-eac5-11e8-05a5-ff9e497bcd19"
+RipQP = "1e40b3f8-35eb-4cd8-8edd-3e515bb9de08"

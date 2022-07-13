@@ -16,6 +16,7 @@ end
 # rip_mono2 = open_file(string(res_path, "\\ripqp_mono_sc2_lp.jld2"));
 rip_mono1 = CSV.read(string(res_path, "\\ripqp_mono_classic_lp.csv"), DataFrame)
 rip_mono2 = CSV.read(string(res_path, "\\ripqp_mono_classic_c_lp.csv"), DataFrame)
+ripqp_eq = CSV.read(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\benchmarks\frontal22_results\bm1\ripqp_equi_minres_qlp_lp.csv", DataFrame)
 # rip_multiK2 = open_file(string(res_path, "\\ripqp_multi_K2_lp.jld2"));
 # rip_mono_c = open_file(string(res_path, "\\ripqp_ccorr_1_lp.jld2")); 
 # rip_multi_z = open_file(string(res_path, "\\ripqp_multi_z_lp.jld2"))
@@ -29,15 +30,33 @@ rip_mono2 = CSV.read(string(res_path, "\\ripqp_mono_classic_c_lp.csv"), DataFram
 stats_lp = Dict(
                 # :ripqp_classic => rip_mono1,
                 # :ripqp_newscale => rip_mono2,
-                :ripqp1 => rip_mono1,
-                :ripqp2 => rip_mono2,
+                :K2LDL => rip_mono1,
+                # :ripqp2 => rip_mono2,
+                :K2Equilibration_minresqlp => ripqp_eq,
                 # :rip_monoIPFK22 => rip_monoIPFK22,
                 # :rip_monoIPFK23 => rip_monoIPFK23,
                 )
 
-cost = df -> df.absolute_iter_cnt + (df.status .== :acceptable) * Inf# + (df.elapsed_time .>= 10.) * Inf
-perf = performance_profile(stats_lp, cost,legend=:bottomright)
-title!("Performance profile (Maros Meszaros problems)")
+function dfstat(df)
+  output = zeros(length(df.pdd))
+  for i=1:length(df.pdd)
+    if df.pdd[i] === missing
+      output[i] = Inf
+    else 
+    #   output[i] = df.absolute_iter_cnt[i]
+      output[i] = df.elapsed_time[i]
+    end
+    if df.status[i] != "first_order"
+      output[i] = Inf
+    end
+  end
+  return output
+end
+
+# cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
+perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
+title!("Performance profile (Netlib problems)")
+display("image/svg+xml", perf)
 # savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\graphes\profiles\minres_net_iter_wrip.pdf")
 
 ################################ QP #####################

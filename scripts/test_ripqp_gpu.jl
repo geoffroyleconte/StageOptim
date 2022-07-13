@@ -1,4 +1,4 @@
-using QPSReader, QuadraticModels, SolverCore, CUDA, LinearAlgebra
+using QPSReader, QuadraticModels, SolverCore, CUDA, LinearAlgebra, DoubleFloats
 CUDA.allowscalar(false)
 path_pb = "/home/lecogeof/datasets/problemes_netlib"
 # path_pb = "/home/lecogeof/datasets/problemes_netlib/problemes_marosmeszaros"
@@ -21,7 +21,7 @@ function QuadraticModelGPU(qps::QPSData; T = Float64)
 end
 function QuadraticModelGPUCOO(qps::QPSData; T = Float64)
   x0 = CUDA.zeros(T, qps.nvar)
-  Ti = (T == Float64) ? Int64 : Int32
+  Ti = (T == Float32) ? Int32 : Int64
   QuadraticModel(
     CuVector{T}(qps.c),
     CuSparseMatrixCOO{T, Ti}(CuVector(qps.qrows), CuVector(qps.qcols), CuVector(qps.qvals), (qps.nvar, qps.nvar), length(qps.qrows)),
@@ -35,13 +35,14 @@ function QuadraticModelGPUCOO(qps::QPSData; T = Float64)
   )
 end
 # qm = QuadraticModelGPU(readqps(string(path_pb, "/AFIRO.SIF"), mpsformat=:fixed))
-qm = QuadraticModelGPUCOO(readqps(string(path_pb, "/AGG.SIF"), mpsformat=:fixed))
+T = Double64
+qm = QuadraticModelGPUCOO(readqps(string(path_pb, "/AGG.SIF"), mpsformat=:fixed), T = T)
 using RipQP
 # # include("/home/lecogeof/code/RipQP.jl/src/RipQP.jl")
 stats1 = RipQP.ripqp(qm, 
                      sp = RipQP.K2KrylovGPUParams(kmethod=:minres, uplo = :U, preconditioner = RipQP.LDLGPU(T = Float32), verbose = 0), 
                      solve_method = IPF(), ps = false, scaling = false,
-                     itol = RipQP.InputTol(max_iter=50, max_time=100.0, ϵ_rc=1.0e-4, ϵ_rb=1.0e-4, ϵ_pdd=1.0e-4))
+                     itol = RipQP.InputTol(T, max_iter=50, max_time=100.0, ϵ_rc=T(1.0e-4), ϵ_rb=T(1.0e-4), ϵ_pdd=T(1.0e-4)))
 # println(stats1)
 # stats1 = RipQP.ripqp(qm, 
 #                      sp = RipQP.K2KrylovGPUParams(kmethod=:minres, uplo = :U, equilibrate = false), 

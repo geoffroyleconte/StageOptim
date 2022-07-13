@@ -27,17 +27,18 @@ qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 stats =  ripqp(qm)  # compile code
 
-# ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=200.))
-ripqp_bm_equi_qlp(QM) = ripqp(QM, ps=true, display = false,
-    sp = K2KrylovParams(uplo=:L, preconditioner = Equilibration(), 
-                        kmethod = :minres_qlp, ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
-                        atol0 = 1.0e-1, rtol0 = 1.0e-1, mem = 100,
-                        atol_min = 1.0e-3, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
-        itol = InputTol(max_iter=400, ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4, max_time=3600.))
+ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=400.))
+# ripqp_bm_equi_qlp(QM) = ripqp(QM, ps=true, display = false,
+#     sp = K2KrylovParams(uplo=:L, preconditioner = Equilibration(), 
+#                         kmethod = :minres_qlp, ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
+#                         atol0 = 1.0e-1, rtol0 = 1.0e-1, mem = 100,
+#                         atol_min = 1.0e-3, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
+#         itol = InputTol(max_iter=400, ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4, max_time=3600.))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=true))
-# ripqp_bm_multiref(QM) = ripqp(QM, iconf = InputConfig(mode=:multi, refinement=:multiref), itol = InputTol(max_time=1200.))
-# ripqp_bm_multi(QM) = ripqp(QM, iconf = InputConfig(mode=:multi), itol = InputTol(max_time=1200.))
+ripqp_bm_multiref(QM) = ripqp(QM, mode=:multiref, itol = InputTol(max_time=400.))
+ripqp_bm_multizoom(QM) = ripqp(QM, mode=:multizoom, itol = InputTol(max_time=400.))
+ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_time=400.))
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
 #                             itol = InputTol(max_iter=400, max_time=10.) )#,
 
@@ -78,15 +79,14 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/ripqp_equi_minres_qlp"), ripqp_bm_equi_qlp)
-# save_problems(string(save_path, "/ripqp_mono_classic"), ripqp_bm_nops)
+save_problems(string(save_path, "/ripqp_multiref2"), ripqp_bm_multiref)
+save_problems(string(save_path, "/ripqp_multizoom2"), ripqp_bm_multizoom)
+save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
+save_problems(string(save_path, "/ripqp_mono2"), ripqp_bm_classic)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_ccorr_1"), ripqp_bm_cc)
-# save_problems(string(save_path, "/ripqp_multi"), ripqp_bm_multi)
-# save_problems(string(save_path, "/ripqp_multi_r"), ripqp_bm_multiref)
-# save_problems(string(save_path, "/ripqp_mono_z"), ripqp_bm_zoom)
 # save_problems(string(save_path, "/ripqp_multi_z"), ripqp_bm_multizoom)
 # save_problems(string(save_path, "/ripqp_multi_K2"), ripqp_bm_multi)
 

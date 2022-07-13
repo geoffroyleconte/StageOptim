@@ -207,10 +207,9 @@ Fb = mulopFFTT!(zeros(n, n), aFFT2, X, Y, Δξ, Δη, ξs, ηs)
 qm = QuadraticModel(c, LinearOperator(spzeros(T, nvar, nvar)), A = opAmat, 
                     lcon = lcon, ucon = ucon, lvar = lvar, uvar = uvar)
 
-stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
-                     sp = RipQP.K1KrylovParams(uplo=:L, kmethod = :minres, preconditioner=:Identity),
-                     solve_method=:IPF, scaling = false, history=false, presolve=false),
-                     itol = RipQP.InputTol(ϵ_pdd = 1.0e-4, max_time=600., max_iter=30))
+stats1 = RipQP.ripqp(qm, sp = RipQP.K1KrylovParams(uplo=:L, kmethod = :minres),
+                     solve_method=RipQP.IPF(), scaling = false, history=false, ps=false,
+                     itol = RipQP.InputTol(ϵ_pdd = 1.0e-4, max_time=60., max_iter=30))
 
 datap = zeros(n, n)
 c = 1

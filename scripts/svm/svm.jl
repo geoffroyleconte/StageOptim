@@ -38,14 +38,13 @@ qm = QuadraticModel(c, Symmetric(tril!(Diagonal(y_train) * K_train * Diagonal(y_
 qm2 = QuadraticModel(c, sparse(tril!(Diagonal(y_train) * K_train * Diagonal(y_train))), A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
 # qm = QuadraticModel(c, opK2, A=A, lcon = b, ucon = b, lvar = lvar, uvar = uvar)
 
-stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(
+stats1 = RipQP.ripqp(qm,
                         # sp = RipQP.K2LDLParams(),
                         sp = RipQP.K2LDLDenseParams(fact_alg = :ldl, ρ0 = 0., δ0 = 0.),
                         # sp = RipQP.K2_5KrylovParams(atol_min = 1e-6, rtol_min=1e-6,
                         #                              kmethod=:minres, preconditioner=:Identity),
-                        solve_method=:IPF, scaling = false, history=false, presolve=false,
+                        solve_method=RipQP.IPF(), scaling = false, history=false, presolve=false,
                         # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                        ),
                      itol = RipQP.InputTol(max_iter=50, max_time=20.0,
                      ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ))

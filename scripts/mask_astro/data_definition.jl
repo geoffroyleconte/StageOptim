@@ -8,7 +8,7 @@ import Base.isless
 isless(a::Idx2D, b::Idx2D) = a.idx[2] < b.idx[2]
 
 T = Float64
-n = 20 # domain discretization parameter
+n = 500 # domain discretization parameter
 ρ0 = T(4)
 ρ1 = T(20)
 sqrtϵ = T(1.0e-5)

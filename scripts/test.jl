@@ -7,7 +7,7 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\BANDM.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\AFIRO.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
@@ -15,36 +15,32 @@ TimerOutputs.enable_debug_timings(RipQP)
 reset_timer!(RipQP.to)
 stats1 = RipQP.ripqp(qm,
                      # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
-                     sp = RipQP.K2KrylovParams(
-                       uplo=:L, 
-                       preconditioner = RipQP.Equilibration(), 
-                       kmethod = :minres, ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
-                       atol0 = 1.0e-1, rtol0 = 1.0e-1, mem = 300,
-                       atol_min = 1.0e-4, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
-                    # sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:minres_qlp, rhs_scale=true, #δ0 = 0.,
-                    # form_mat = true, equilibrate = true,
-                    #   # preconditioner = RipQP.LDL(T = Float32, pos = :L, warm_start = false),
-                    #   ρ_min=1.0e-6, δ_min = 1.0e-6,
-                    #   mem = 20,
-                    #   itmax = 0,
-                    #   atol_min = 1.0e-7, rtol_min = 1.0e-1,
-                    #   k3_resid = true,
-                    #   cb_only = true,
-                    #   ),   
-                    #  sp2 = RipQP.K2KrylovParams(uplo = :U, kmethod=:dqgmres, rhs_scale=true, #δ0 = 0.,
-                    #       form_mat = true, equilibrate = true,
-                    #         preconditioner = 
-                    #         # RipQP.Identity(),
-                    #           RipQP.LDL(T = Float32, pos = :C, warm_start = true),
+                    #  sp = RipQP.K2KrylovParams(
+                    #    uplo=:L, 
+                    #    preconditioner = RipQP.Equilibration(), 
+                    #    kmethod = :minres, ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
+                    #    atol0 = 1.0e-1, rtol0 = 1.0e-1, mem = 300,
+                    #    atol_min = 1.0e-4, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
+                    sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:minres_qlp, rhs_scale=true, #δ0 = 0.,
+                    form_mat = true, equilibrate = true,
+                      # preconditioner = RipQP.Equilibration(),
+                      ρ_min=1.0e-7, δ_min = 1.0e-7,
+                      mem = 20,
+                      itmax = 0,
+                      atol_min = 1.0e-8, rtol_min = 1.0e-8,
+                      # k3_resid = true,
+                      # cb_only = true,
+                      ),   
+                    #  sp = RipQP.K3SKrylovParams(uplo = :U, kmethod=:minres, rhs_scale=true, #δ0 = 0.,
+                    #         preconditioner = RipQP.BlockDiagK3S(),
                     #         ρ_min=1.0e-8, δ_min = 1.0e-8,
                     #         mem = 100,
-                    #         itmax = 20,
                     #         atol_min = 1.0e-6, rtol_min = 1.0e-6,
                     #         ), 
-                     solve_method=RipQP.IPF(), scaling = true, history=true, ps=true, mode=:mono,
+                     solve_method=RipQP.IPF(γ=0.1), scaling = true, history=true, ps=true, mode=:mono, kc=0,
                      perturb = false,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                     itol = RipQP.InputTol(max_iter=100, max_time=20.0, max_iter32 = 40,
+                     itol = RipQP.InputTol(max_iter=45, max_time=100.0, max_iter32 = 40,
                        ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ),
                      display = true,
@@ -181,7 +177,7 @@ u = [Inf; Inf; Inf]
 QM = QuadraticModel(c, SparseMatrixCOO(tril(Q)), A=SparseMatrixCOO(A), lcon=b, ucon=b, lvar=l, uvar=u, c0=0., name="QM1");
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\QuadraticModels.jl\src\QuadraticModels.jl")
 # QM = QuadraticModels.QuadraticModel(c, Q, A=A, lcon=[-3; -4], ucon=[-2.; Inf], lvar=l, uvar=u, c0=0., name="QM1");
-stats1 = RipQP.ripqp(QM,sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:minres, rhs_scale=true,equilibrate = false,
+stats1 = RipQP.ripqp(QM,sp = RipQP.K2KrylovParams(uplo = :L, kmethod=:minres, rhs_scale=true,equilibrate = false,
                         form_mat = true),
                 solve_method=RipQP.IPF(), scaling = false, history=false, ps=false, 
                 itol = RipQP.InputTol(max_time = 20.0, max_iter = 50))
