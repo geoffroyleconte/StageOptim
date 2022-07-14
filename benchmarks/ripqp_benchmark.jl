@@ -79,10 +79,10 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/ripqp_multiref2"), ripqp_bm_multiref)
-save_problems(string(save_path, "/ripqp_multizoom2"), ripqp_bm_multizoom)
-save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
-save_problems(string(save_path, "/ripqp_mono2"), ripqp_bm_classic)
+save_problems(string(save_path, "/ripqp_multiref3"), ripqp_bm_multiref)
+save_problems(string(save_path, "/ripqp_multizoom3"), ripqp_bm_multizoom)
+# save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
+# save_problems(string(save_path, "/ripqp_mono2"), ripqp_bm_classic)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)

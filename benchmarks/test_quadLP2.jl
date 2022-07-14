@@ -28,14 +28,15 @@ Tlow = Float64
 stats1 = ripqp(qm1, 
   mode = :multi,
   Timulti = Tlow,
-  sp = K2LDLParams(regul = :hybrid, ρ_min=1.0e-8, δ_min = 1.0e-8), # solve in Float64
+  sp = K2LDLParams(regul = :hybrid, ρ_min=1.0e-10, δ_min = 1.0e-10), # solve in Float64
   sp3 = K2KrylovParams{T}( # solve in Float128
     uplo = :U,
-    kmethod=:minres_qlp,
+    kmethod=:gmres,
     form_mat = true,
     equilibrate = true,
-    itmax = 10,
-    preconditioner = LDL(T = Tlow, warm_start = true, pos = :L),
+    itmax = 100,
+    mem = 100,
+    preconditioner = LDL(T = Tlow, warm_start = true),
     ρ_min=T(1.0e-16),
     δ_min = T(1.0e-19),
     atol_min = T(1.0e-16),
@@ -48,7 +49,7 @@ stats1 = ripqp(qm1,
     ϵ_rb = T(1e-40), # very small to see what residuals can be reached
     max_iter = 300,
     max_time = 70000.0,
-    max_iter64 = 200,
+    max_iter64 = 20,
   ),
   display = true,
 )
