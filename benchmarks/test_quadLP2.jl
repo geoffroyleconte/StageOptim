@@ -55,7 +55,7 @@ stats1 = ripqp(qm1,
     atol_min = T(1.0e-20),
     rtol_min = T(1.0e-20),
   ),
-  solve_method=IPF(γ = 0.12),
+  solve_method=IPF(),
   ps=false,
   itol = InputTol(
     T,
@@ -63,7 +63,7 @@ stats1 = ripqp(qm1,
     # ϵ_rb64 = T(1e-20), # very small to see what residuals can be reached
     max_iter = 700,
     max_time = 70000.0,
-    max_iter64 = 200,
+    max_iter64 = 150,
   ),
   display = true,
 )
