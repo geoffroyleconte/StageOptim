@@ -79,8 +79,8 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/ripqp_multiref4"), ripqp_bm_multiref)
-save_problems(string(save_path, "/ripqp_multizoom4"), ripqp_bm_multizoom)
+save_problems(string(save_path, "/ripqp_multiref5"), ripqp_bm_multiref)
+save_problems(string(save_path, "/ripqp_multizoom5"), ripqp_bm_multizoom)
 # save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp_mono2"), ripqp_bm_classic)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
