@@ -1,13 +1,13 @@
 using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, SparseArrays, TimerOutputs
 # using RipQP
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib_ps"
-# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\AFIRO.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\QAFIRO.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
@@ -21,16 +21,16 @@ stats1 = RipQP.ripqp(qm,
                     #    kmethod = :minres, ρ_min = 1e2 * sqrt(eps()), δ_min = 1e2 * sqrt(eps()),
                     #    atol0 = 1.0e-1, rtol0 = 1.0e-1, mem = 300,
                     #    atol_min = 1.0e-4, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
-                    # sp = RipQP.K2KrylovParams(uplo = :U, kmethod=:dqgmres, rhs_scale=true, #δ0 = 0.,
+                    # sp = RipQP.K2KrylovParams(uplo = :U, kmethod = :gmres, rhs_scale=true, #δ0 = 0.,
                     # form_mat = true, equilibrate = true,
-                    #   preconditioner = RipQP.LDL(T = Float32),
-                    #   ρ_min=1.0e-7, δ_min = 1.0e-7,
-                    #   mem = 20,
-                    #   itmax = 0,
-                    #   atol_min = 1.0e-8, rtol_min = 1.0e-8,
-                    #   # k3_resid = true,
-                    #   # cb_only = true,
-                    #   ),   
+                      # preconditioner = RipQP.LDL(),
+                      # ρ_min=1.0e-7, δ_min = 1.0e-7,
+                      # mem = 20,
+                      # itmax = 0,
+                      # atol_min = 1.0e-8, rtol_min = 1.0e-8,
+                      # k3_resid = true,
+                      # cb_only = true,
+                      # ),   
                     #  sp = RipQP.K3SKrylovParams(uplo = :U, kmethod=:minres, rhs_scale=true, #δ0 = 0.,
                     #         preconditioner = RipQP.BlockDiagK3S(),
                     #         ρ_min=1.0e-8, δ_min = 1.0e-8,

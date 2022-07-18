@@ -16,12 +16,14 @@ end
 # rip_mono2 = open_file(string(res_path, "\\ripqp_mono_sc2_lp.jld2"));
 rip_mono = CSV.read(string(res_path, "\\ripqp_mono2_lp.csv"), DataFrame)
 rip_multi = CSV.read(string(res_path, "\\ripqp_multi2_lp.csv"), DataFrame)
-rip_multiref2 = CSV.read(string(res_path, "\\ripqp_multiref2_lp.csv"), DataFrame) # multi old v
-rip_multizoom2 = CSV.read(string(res_path, "\\ripqp_multizoom2_lp.csv"), DataFrame) # multi old v
-rip_multiref4 = CSV.read(string(res_path, "\\ripqp_multiref4_lp.csv"), DataFrame) # old v start pts
-rip_multizoom4 = CSV.read(string(res_path, "\\ripqp_multizoom4_lp.csv"), DataFrame)
-rip_multiref5 = CSV.read(string(res_path, "\\ripqp_multiref5_lp.csv"), DataFrame) # old v start pts + s_l
-rip_multizoom5 = CSV.read(string(res_path, "\\ripqp_multizoom5_lp.csv"), DataFrame) # 
+rip_multiref2 = CSV.read(string(res_path, "\\ripqp_multiref2_qp.csv"), DataFrame) # multi old v
+rip_multizoom2 = CSV.read(string(res_path, "\\ripqp_multizoom2_qp.csv"), DataFrame) # multi old v
+rip_multiref4 = CSV.read(string(res_path, "\\ripqp_multiref4_qp.csv"), DataFrame) # old v start pts
+rip_multizoom4 = CSV.read(string(res_path, "\\ripqp_multizoom4_qp.csv"), DataFrame)
+rip_multiref5 = CSV.read(string(res_path, "\\ripqp_multiref5_qp.csv"), DataFrame) # old v start pts + s_l
+rip_multizoom5 = CSV.read(string(res_path, "\\ripqp_multizoom5_qp.csv"), DataFrame) # 
+rip_multiref6 = CSV.read(string(res_path, "\\ripqp_multiref6_qp.csv"), DataFrame) # new w start pt
+rip_multizoom6 = CSV.read(string(res_path, "\\ripqp_multizoom6_lp.csv"), DataFrame) # 
 # ripqp_eq = CSV.read(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\docGL\benchmarks\frontal22_results\bm1\ripqp_equi_minres_qlp_lp.csv", DataFrame)
 # rip_multiK2 = open_file(string(res_path, "\\ripqp_multi_K2_lp.jld2"));
 # rip_mono_c = open_file(string(res_path, "\\ripqp_ccorr_1_lp.jld2")); 
@@ -35,13 +37,18 @@ stats_lp = Dict(
                 # :ripqp_classic => rip_mono1,
                 # :ripqp_newscale => rip_mono2,
                 # :mono => rip_mono,
-                # :multi => rip_multi,
+                :multi => rip_multi,
                 # :multiref => rip_multiref,
                 # :multizoom => rip_multizoom,
                 # :multiref2 => rip_multiref2,
                 # :multizoom2 => rip_multizoom2,
-                :multizoom4 => rip_multizoom4,
-                :multizoom5 => rip_multizoom5,
+                # :multizoom4 => rip_multizoom4,
+                # :multizoom5 => rip_multizoom5,
+                :multizoom => rip_multizoom6,
+                # :multiref6 => rip_multiref6,
+                # :multiref5 => rip_multiref5,
+                # :multiref4 => rip_multiref4,
+                # :multizoom6 => rip_multizoom6,
                 # :ripqp2 => rip_mono2,
                 # :K2Equilibration_minresqlp => ripqp_eq,
                 # :rip_monoIPFK22 => rip_monoIPFK22,
@@ -69,7 +76,7 @@ perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
 title!("Performance profile (Netlib problems)")
 # title!("Performance profile (Maros and Meszaros problems)")
 display("image/svg+xml", perf)
-# savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\graphes\profiles\mono_vs_multi_iter_qp.pdf")
+# savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\graphes\profiles\multizoom_iter_lp.pdf")
 
 ################################ QP #####################
 # rip_mono = open_file(string(res_path, "\\G-2021-03_qp_mono.jld2"));
