@@ -1,0 +1,1 @@
+describe params for article

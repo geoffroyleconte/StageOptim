@@ -1,5 +1,6 @@
 using QuadraticModels, QPSReader
-using RipQP
+# using RipQP
+using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
 # using JLD2
 using CSV
 using SolverBenchmark
@@ -19,15 +20,23 @@ path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f232
 # path_pb_lp = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
 # path_pb_qp = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
-save_path = "/home/gelecd/code/docGL/benchmarks/frontal22_results/bm1"
+save_path = "/home/gelecd/code/docGL/benchmarks/frontal22_results/ripqp_paper"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
 pb = string(path_pb_lp, "/AFIRO.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
-stats =  ripqp(qm)  # compile code
 
-ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1000.))
+# ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1000.))
+# cplex2_nops(QM) = cplex(QM, presolve=0, crossover=2, display=0)
+cplex2(QM) = cplex(QM, crossover=2, display=0)
+stats = cplex2(qm)  # compile code
+# gurobi2_nops(QM) = gurobi(QM, presolve=0, crossover=0, display=0, threads=1)
+gurobi2(QM) = gurobi(QM, crossover=0, display=0, threads=1)
+stats = gurobi2(qm)  # compile code
+# xpress2_nops(QM) = xpress(QM, presolve=0, crossover=0)
+xpress2(QM) = xpress(QM, crossover=0)
+stats = xpress2(qm)  # compile code
 # ripqp_bm_equi_qlp(QM) = ripqp(QM, ps=true, display = false,
 #     sp = K2KrylovParams(uplo=:L, preconditioner = Equilibration(), 
 #                         kmethod = :minres_qlp, ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
@@ -36,9 +45,9 @@ ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1000.))
 #         itol = InputTol(max_iter=400, ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4, max_time=3600.))
 # ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
 # ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=true))
-ripqp_bm_multiref(QM) = ripqp(QM, mode=:multiref, itol = InputTol(max_time=1000.))
-ripqp_bm_multizoom(QM) = ripqp(QM, mode=:multizoom, itol = InputTol(max_time=1000.))
-ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_time=1000.))
+# ripqp_bm_multiref(QM) = ripqp(QM, mode=:multiref, itol = InputTol(max_time=1000.))
+# ripqp_bm_multizoom(QM) = ripqp(QM, mode=:multizoom, itol = InputTol(max_time=1000.))
+# ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_time=1000.))
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
 #                             itol = InputTol(max_iter=400, max_time=10.) )#,
 
@@ -79,8 +88,9 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/ripqp_multiref7"), ripqp_bm_multiref)
-save_problems(string(save_path, "/ripqp_multizoom7"), ripqp_bm_multizoom)
+save_problems(string(save_path, "/gurobi1"), gurobi2)
+save_problems(string(save_path, "/cplex1"), cplex2)
+save_problems(string(save_path, "/xpress1"), xpress2)
 # save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp_mono2"), ripqp_bm_classic)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)

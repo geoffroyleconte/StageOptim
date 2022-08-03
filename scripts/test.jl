@@ -1,13 +1,13 @@
 using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, SparseArrays, TimerOutputs
 # using RipQP
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
-# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib_ps"
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\QAFIRO.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\BEACONFD.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
@@ -22,14 +22,14 @@ stats1 = RipQP.ripqp(qm,
                     #    atol0 = 1.0e-1, rtol0 = 1.0e-1, mem = 300,
                     #    atol_min = 1.0e-4, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
                     # sp = RipQP.K2KrylovParams(uplo = :U, kmethod = :gmres, rhs_scale=true, #δ0 = 0.,
-                    # form_mat = true, equilibrate = true,
-                      # preconditioner = RipQP.LDL(),
-                      # ρ_min=1.0e-7, δ_min = 1.0e-7,
-                      # mem = 20,
-                      # itmax = 0,
-                      # atol_min = 1.0e-8, rtol_min = 1.0e-8,
-                      # k3_resid = true,
-                      # cb_only = true,
+                    # form_mat = true, equilibrate = false,
+                    #   preconditioner = RipQP.LDL(T = Float64),
+                    #   ρ_min=1.0e-10, δ_min = 1.0e-10,
+                    #   mem = 200,
+                    #   itmax = 200,
+                    #   atol_min = 1.0e-12, rtol_min = 1.0e-12,
+                      # # k3_resid = true,
+                      # # cb_only = true,
                       # ),   
                     #  sp = RipQP.K3SKrylovParams(uplo = :U, kmethod=:minres, rhs_scale=true, #δ0 = 0.,
                     #         preconditioner = RipQP.BlockDiagK3S(),
@@ -37,7 +37,7 @@ stats1 = RipQP.ripqp(qm,
                     #         mem = 100,
                     #         atol_min = 1.0e-6, rtol_min = 1.0e-6,
                     #         ), 
-                     solve_method=RipQP.PC(), scaling = true, history=true, ps=true, mode=:multiref, kc=0,
+                     solve_method=RipQP.PC(), scaling = true, history=true, ps=true, mode=:mono, kc=0,
                      perturb = false,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                      itol = RipQP.InputTol(max_iter=200, max_time=100.0, max_iter32 = 40,
@@ -58,11 +58,13 @@ rhs_aff = readdlm(string(save_path, "\\bug_minaresrhs_iter1_aff.rhs"), Float64)[
 rhs_cc =  readdlm(string(save_path, "\\bug_minaresrhs_iter1_cc.rhs"), Float64)[:] 
 
 function riptest(qm)
-    return RipQP.ripqp(qm, display = false, sp = RipQP.K2LDLParams(), solve_method=RipQP.PC(), scaling = true, 
-    ps = false,
-   itol = RipQP.InputTol(max_iter=150, max_time=10.0),
+    stats = RipQP.ripqp(qm, display = false, sp = RipQP.K2LDLParams(), solve_method=RipQP.PC(), scaling = true, 
+    ps = true,
+   itol = RipQP.InputTol(max_iter=150, max_time=3.0),
   #  ϵ_rc=1.0e-1, ϵ_rb=1.0e-1, ϵ_pdd=1.0e0,
    )
+   println(maximum(qm.data.A' * stats.multipliers + stats.multipliers_L - stats.multipliers_U - qm.data.c))
+   return stats
 end
 
 function createQuadraticModel(qpdata; name="qp_pb")
