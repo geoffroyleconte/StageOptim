@@ -27,7 +27,7 @@ pb = string(path_pb_lp, "/AFIRO.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 
-ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_time=1200.))
+ripqp_bm_classic(QM) = ripqp(QM, itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp_bm_classic(qm)
 # cplex2_nops(QM) = cplex(QM, presolve=0, crossover=2, display=0)
 # cplex2(QM) = cplex(QM, crossover=2, display=0)
@@ -93,7 +93,7 @@ end
 # save_problems(string(save_path, "/cplex1"), cplex2)
 # save_problems(string(save_path, "/xpress1"), xpress2)
 # save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
-save_problems(string(save_path, "/ripqp1"), ripqp_bm_classic)
+save_problems(string(save_path, "/ripqp2"), ripqp_bm_classic)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)

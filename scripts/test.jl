@@ -1,4 +1,4 @@
-using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, SparseArrays, TimerOutputs
+using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, SparseArrays, TimerOutputs, LinearAlgebra
 # using RipQP
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
@@ -7,7 +7,7 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\80BAU3B.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\STANDGUB.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
@@ -40,12 +40,14 @@ stats1 = RipQP.ripqp(qm,
                      solve_method=RipQP.PC(), scaling = true, history=true, ps=true, mode=:mono, kc=0,
                      perturb = false,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                     itol = RipQP.InputTol(max_iter=200, max_time=100.0, max_iter32 = 40,
+                     itol = RipQP.InputTol(max_iter=800, max_time=100.0, max_iter32 = 40,
                        ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ),
                      display = true,
                    )
 println(stats1)
+println(maximum(-(Symmetric(qm.data.H, :L) * stats1.solution) + (qm.data.A' * stats1.multipliers) + 
+    stats1.multipliers_L - stats1.multipliers_U - qm.data.c))
 # TimerOutputs.complement!(RipQP.to)
 # show(RipQP.to, sortby = :firstexec)
 println(sum(stats1.solver_specific[:KresNormH]))
@@ -63,7 +65,8 @@ function riptest(qm)
    itol = RipQP.InputTol(max_iter=150, max_time=3.0),
   #  ϵ_rc=1.0e-1, ϵ_rb=1.0e-1, ϵ_pdd=1.0e0,
    )
-   println(maximum(qm.data.A' * stats.multipliers + stats.multipliers_L - stats.multipliers_U - qm.data.c))
+   println(maximum(-(Symmetric(qm.data.H, :L) * stats.solution) + (qm.data.A' * stats.multipliers) + 
+    stats.multipliers_L - stats.multipliers_U - qm.data.c))
    return stats
 end
 
