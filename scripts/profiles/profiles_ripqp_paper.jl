@@ -15,22 +15,26 @@ gurobi1_lp = CSV.read(string(res_path, "\\gurobi1_lp.csv"), DataFrame)
 cplex1_lp = CSV.read(string(res_path, "\\cplex1_lp.csv"), DataFrame)
 xpress1_lp = CSV.read(string(res_path, "\\xpress1_lp.csv"), DataFrame)
 ripqp1_lp = CSV.read(string(res_path, "\\ripqp1_lp.csv"), DataFrame)
+ripqp2_lp = CSV.read(string(res_path, "\\ripqp2_lp.csv"), DataFrame)
 
 stats_lp = Dict(
                 :gurobi1 => gurobi1_lp,
                 :cplex1 => cplex1_lp,
-                # :xpress1 => xpress1_lp,
-                :ripqp1 => ripqp1_lp,
+                :xpress1 => xpress1_lp,
+                # :ripqp1 => ripqp1_lp,
+                :ripqp2 => ripqp2_lp,
                 )
 
 gurobi1_qp = CSV.read(string(res_path, "\\gurobi1_qp.csv"), DataFrame)
 cplex1_qp = CSV.read(string(res_path, "\\cplex1_qp.csv"), DataFrame)
 ripqp1_qp = CSV.read(string(res_path, "\\ripqp1_qp.csv"), DataFrame)
+ripqp2_qp = CSV.read(string(res_path, "\\ripqp2_qp.csv"), DataFrame)
 
 stats_qp = Dict(
                 :gurobi1 => gurobi1_qp,
                 :cplex1 => cplex1_qp,
-                :ripqp1 => ripqp1_qp,
+                # :ripqp1 => ripqp1_qp,
+                :ripqp2 => ripqp2_qp,
                 )
 
 function dfstat(df)
@@ -49,7 +53,7 @@ function dfstat(df)
   return output
 end
 
-# cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
+cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
 # perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
 # title!("Performance profile (Netlib problems)")
 perf = performance_profile(stats_qp, dfstat,legend=:bottomright)
