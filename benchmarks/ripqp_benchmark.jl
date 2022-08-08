@@ -1,6 +1,6 @@
 using QuadraticModels, QPSReader
-using RipQP
-# using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
+# using RipQP
+using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
 # using JLD2
 using CSV
 using SolverBenchmark
@@ -89,9 +89,9 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/gurobi_nops1"), gurobi2)
-save_problems(string(save_path, "/cplex_nops1"), cplex2)
-save_problems(string(save_path, "/xpress_nops1"), xpress2)
+save_problems(string(save_path, "/gurobi_nops1"), gurobi2_nops)
+save_problems(string(save_path, "/cplex_nops1"), cplex2_nops)
+save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
 # save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp_nops1"), ripqp_nops)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
