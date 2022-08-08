@@ -37,7 +37,6 @@ gurobi2_nops(QM) = gurobi(QM, presolve=0, crossover=0, display=0, threads=1)
 stats = gurobi2_nops(qm)  # compile code
 xpress2_nops(QM) = xpress(QM, presolve=0, crossover=0)
 # xpress2(QM) = xpress(QM, crossover=0)
-stats = xpress2_nops(qm)  # compile code
 # ripqp_bm_equi_qlp(QM) = ripqp(QM, ps=true, display = false,
 #     sp = K2KrylovParams(uplo=:L, preconditioner = Equilibration(), 
 #                         kmethod = :minres_qlp, ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
@@ -91,6 +90,7 @@ end
 
 save_problems(string(save_path, "/gurobi_nops1"), gurobi2_nops)
 save_problems(string(save_path, "/cplex_nops1"), cplex2_nops)
+stats = xpress2_nops(qm)  # compile code
 save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
 # save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp_nops1"), ripqp_nops)
