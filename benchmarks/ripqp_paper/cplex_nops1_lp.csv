@@ -1,115 +1,115 @@
 id,name,nvar,ncon,nequ,status,objective,elapsed_time,iter,dual_feas,primal_feas,neval_obj,neval_grad,neval_cons,neval_cons_lin,neval_cons_nln,neval_jcon,neval_jgrad,neval_jac,neval_jac_lin,neval_jac_nln,neval_jprod,neval_jprod_lin,neval_jprod_nln,neval_jtprod,neval_jtprod_lin,neval_jtprod_nln,neval_hess,neval_hprod,neval_jhess,neval_jhprod,neval_residual,neval_jac_residual,neval_jprod_residual,neval_jtprod_residual,neval_hess_residual,neval_jhess_residual,neval_hprod_residual,extrainfo
-1,25FV47,1571,821,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-2,80BAU3B,9799,2262,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-3,ADLITTLE,97,56,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-4,AFIRO,32,27,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-5,AGG,163,488,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-6,AGG2,302,516,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-7,AGG3,302,516,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-8,BANDM,472,305,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-9,BEACONFD,262,173,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-10,BLEND,83,74,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-11,BNL1,1175,643,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-12,BNL2,3489,2324,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-13,BOEING1,384,351,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-14,BOEING2,143,166,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-15,BORE3D,315,233,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-16,BRANDY,249,220,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-17,CAPRI,353,271,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-18,CRE-A,4067,3516,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-19,CRE-B,72447,9648,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-20,CRE-C,3678,3068,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-21,CRE-D,69980,8926,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-22,CYCLE,2857,1903,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-23,CZPROB,3523,929,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-24,D2Q06C,5167,2171,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-25,D6CUBE,6184,415,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-26,DEGEN2,534,444,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-27,DEGEN3,1818,1503,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-28,DFL001,12230,6071,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-29,E226,282,223,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-30,ETAMACRO,688,400,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-31,FFFFF800,854,524,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-32,FINNIS,614,497,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-33,FIT1D,1026,24,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-34,FIT1P,1677,627,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-35,FIT2D,10500,25,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-36,FIT2P,13525,3000,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-37,FORPLAN,421,161,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-38,GANGES,1681,1309,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-39,GFRD-PNC,1092,616,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-40,GREENBEA,5405,2392,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-41,GREENBEB,5405,2392,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-42,GROW15,645,300,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-43,GROW22,946,440,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-44,GROW7,301,140,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-45,ISRAEL,142,174,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-46,KB2,41,43,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-47,KEN-07,3602,2426,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-48,KEN-11,21349,14694,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-49,KEN-13,42659,28632,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-50,KEN-18,154699,105127,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-51,LOTFI,308,153,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-52,MAROS-R7,9408,3136,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-53,MAROS,1443,846,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-54,MODSZK1,1620,687,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-55,NESM,2923,662,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-56,OSA-07,23949,1118,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-57,OSA-14,52460,2337,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-58,OSA-30,100024,4350,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-59,OSA-60,232966,10280,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-60,PDS-02,7535,2953,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-61,PDS-06,28655,9881,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-62,PDS-10,48763,16558,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-63,PDS-20,105728,33874,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-64,PEROLD,1376,625,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-65,PILOT-JA,1988,940,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-66,PILOT-WE,2789,722,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-67,PILOT,3652,1441,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-68,PILOT4,1000,410,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-69,PILOT87,4883,2030,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-70,PILOTNOV,2172,975,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-71,QAP12,8856,3192,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-72,QAP15,22275,6330,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-73,QAP8,1632,912,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-74,RECIPELP,180,91,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-75,SC105,103,105,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-76,SC205,203,205,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-77,SC50A,48,50,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-78,SC50B,48,50,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-79,SCAGR25,500,471,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-80,SCAGR7,140,129,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-81,SCFXM1,457,330,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-82,SCFXM2,914,660,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-83,SCFXM3,1371,990,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-84,SCORPION,358,388,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-85,SCRS8,1169,490,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-86,SCSD1,760,77,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-87,SCSD6,1350,147,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-88,SCSD8,2750,397,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-89,SCTAP1,480,300,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-90,SCTAP2,1880,1090,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-91,SCTAP3,2480,1480,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-92,SEBA,1028,515,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-93,SHARE1B,225,117,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-94,SHARE2B,79,96,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-95,SHELL,1775,536,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-96,SHIP04L,2118,402,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-97,SHIP04S,1458,402,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-98,SHIP08L,4283,778,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-99,SHIP08S,2387,778,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-100,SHIP12L,5427,1151,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-101,SHIP12S,2763,1151,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-102,SIERRA,2036,1227,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-103,STAIR,467,356,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-104,STANDATA,1075,359,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-105,STANDGUB,1184,361,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-106,STANDMPS,1075,467,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-107,STOCFOR1,111,117,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-108,STOCFOR2,2031,2157,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-109,STOCFOR3,15695,16675,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-110,TRUSS,8806,1000,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-111,TUFF,587,333,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-112,VTP-BASE,203,198,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-113,WOOD1P,2594,244,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
-114,WOODW,8405,1098,0,exception,Inf,Inf,0,Inf,Inf,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ErrorException(""type GenericExecutionStats has no field counters"")"
+1,25FV47,1571,821,0,acceptable,5501.846004222347,0.066305478,18,2.038294155681797e-8,1.1368683772161603e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+2,80BAU3B,9799,2262,0,acceptable,987224.197675913,0.25612541,34,7.789364309118696e-8,1.474500328121232e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+3,ADLITTLE,97,56,0,acceptable,225494.9632715691,0.001935307,12,8.741388910493697e-7,2.1815659172543042e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+4,AFIRO,32,27,0,acceptable,-464.75314205212675,0.000648548,7,1.0240780445869291e-10,2.478670340794944e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+5,AGG,163,488,0,acceptable,-3.599176703672045e7,0.008389778,20,1.3470632609369204e-8,2.6193447411060333e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+6,AGG2,302,516,0,acceptable,-2.0239252355583068e7,0.017710893,21,1.5933433165238774e-10,1.759243089242747e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+7,AGG3,302,516,0,acceptable,1.0312115935212431e7,0.018444926,22,1.2732925824820995e-11,2.9103830456733704e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+8,BANDM,472,305,0,acceptable,-158.6280184484375,0.009191558,13,1.8179235894422163e-11,1.0745412407968066e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+9,BEACONFD,262,173,0,acceptable,33592.485807328725,0.003266556,10,5.839329020318473e-12,1.1155520951433573e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+10,BLEND,83,74,0,acceptable,-30.812149845622532,0.002118711,11,2.197808601778206e-11,7.105427357601002e-15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+11,BNL1,1175,643,0,acceptable,1977.6295615517863,0.059479661,41,1.286489137442004e-9,1.9895196601282805e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+12,BNL2,3489,2324,0,acceptable,1811.236549201762,0.175882226,29,1.1998402271728992e-10,2.2737367544323206e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+13,BOEING1,384,351,0,acceptable,-335.21356227887026,0.015110693,18,3.7012520825996376e-10,3.5697667044587433e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+14,BOEING2,143,166,0,acceptable,-315.01872801630657,0.00435734,12,6.228351168147128e-14,6.537412504945286e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+15,BORE3D,315,233,0,acceptable,1373.080395988488,0.003549205,15,1.4142642612569034e-10,9.094947017729282e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+16,BRANDY,249,220,0,acceptable,1518.5098967424642,0.007743046,15,1.8731072248812097e-10,1.979896961612578e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+17,CAPRI,353,271,0,acceptable,2690.012913958303,0.01016857,17,7.353103281069116e-12,9.094947017729282e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+18,CRE-A,4067,3516,0,acceptable,2.3595407158113066e7,0.142558619,30,3.2884599932003766e-8,6.3806737671257e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+19,CRE-B,72447,9648,0,acceptable,2.3129639890060015e7,1.281251083,38,2.0372681319713593e-10,1.3873346915715956e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+20,CRE-C,3678,3068,0,acceptable,2.5275116141180623e7,0.1322306,34,1.0459189070388675e-10,7.918877589231047e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+21,CRE-D,69980,8926,0,acceptable,2.445496986809085e7,0.981135037,36,4.322009772295132e-8,2.6648395266129326e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+22,CYCLE,2857,1903,0,acceptable,-5.226393009405384,0.11442158,25,4.481137683143288e-13,5.4569682106375694e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+23,CZPROB,3523,929,0,acceptable,2.1851966996014263e6,0.020681041,17,1.533834392830613e-9,7.979179513756223e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+24,D2Q06C,5167,2171,0,acceptable,122784.21083264315,0.289015999,26,2.5502888689743486e-10,2.9103830456733704e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+25,D6CUBE,6184,415,0,acceptable,315.49166723795594,0.111222143,13,1.0840169317738457e-9,5.395997191642366e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+26,DEGEN2,534,444,0,acceptable,-1435.178000183157,0.024731079,13,2.7602808927440492e-11,1.354472090042691e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+27,DEGEN3,1818,1503,0,acceptable,-987.2940000692128,0.206585519,15,8.384404281969182e-13,9.199895197678901e-15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+28,DFL001,12230,6071,0,acceptable,1.1266396050299972e7,5.245101301,25,2.7079542633146048e-5,5.522169874953678e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+29,E226,282,223,0,acceptable,-11.638929066294804,0.010687074,18,2.428847054036787e-12,2.234593709370031e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+30,ETAMACRO,688,400,0,acceptable,-755.7152294232792,0.02313967,21,5.143022008269327e-9,1.3723410219237936e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+31,FFFFF800,854,524,0,acceptable,555679.5659987206,0.025561005,21,4.298212717826899e-8,4.3655745685100555e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+32,FINNIS,614,497,0,acceptable,172791.06718784303,0.013314929,17,1.900686746575745e-8,1.8189894035458565e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+33,FIT1D,1026,24,0,acceptable,-9146.378053064334,0.019774778,13,3.514410984450933e-13,2.9589940666906345e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+34,FIT1P,1677,627,0,acceptable,9146.378092475674,0.032600468,15,1.1282763807685114e-6,4.6916018428904773e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+35,FIT2D,10500,25,0,acceptable,-68464.29319183463,0.211398436,16,6.274536445971535e-12,1.715960706860642e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+36,FIT2P,13525,3000,0,acceptable,68464.2935007916,0.251397281,24,2.7466739993542433e-10,1.076884645517064e-7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+37,FORPLAN,421,161,0,infeasible,5.620498763025136e7,0.005250193,6,5120.0,7.152557373046875e-7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+38,GANGES,1681,1309,0,acceptable,-109585.73612890254,0.0359435,16,6.394884621840902e-13,1.2732925824820995e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+39,GFRD-PNC,1092,616,0,acceptable,6.902236016375336e6,0.015567457,20,3.974491846747696e-9,1.4551915228366852e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+40,GREENBEA,5405,2392,0,acceptable,-7.255524706511259e7,0.288129291,48,6.957634468562901e-9,7.156012672328595e-9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+41,GREENBEB,5405,2392,0,acceptable,-4.302260135275292e6,0.181753729,29,1.633041173398908e-6,8.44124770082999e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+42,GROW15,645,300,0,acceptable,-1.068709417327975e8,0.016652724,11,2.1987617560004225e-9,0.0008463894482702017,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+43,GROW22,946,440,0,acceptable,-1.6083433663188812e8,0.02521543,12,1.9998044886726518e-10,0.00013995487825013697,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+44,GROW7,301,140,0,acceptable,-4.778781186301438e7,0.007071031,10,4.845817636045524e-10,0.00022756407270208,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+45,ISRAEL,142,174,0,acceptable,-896644.8214047094,0.009681147,15,1.6259761537185113e-6,1.8754572029356991e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+46,KB2,41,43,0,acceptable,-1749.9001297378318,0.001328594,11,2.582574154530448e-10,4.547473508864641e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+47,KEN-07,3602,2426,0,acceptable,-6.795204433070135e8,0.034368225,15,7.1668182499706745e-9,9.094947017729282e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+48,KEN-11,21349,14694,0,acceptable,-6.972382246926534e9,0.366711297,19,1.4832949091214687e-8,5.4569682106375694e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+49,KEN-13,42659,28632,0,acceptable,-1.0257394790501122e10,1.288126557,25,1.1568772606551647e-9,1.3642420526593924e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+50,KEN-18,154699,105127,0,acceptable,-5.2217025273761444e10,7.338813185,28,1.911906991809434e-10,6.002665031701326e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+51,LOTFI,308,153,0,acceptable,-25.264706040241897,0.004170584,14,3.7282069792476946e-13,4.029144173587685e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+52,MAROS-R7,9408,3136,0,acceptable,1.497185166484862e6,0.649696693,9,9.678924328682115e-13,2.2216901130499674e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+53,MAROS,1443,846,0,acceptable,-58063.74363306101,0.031275645,16,3.718682251019345e-9,4.656612873077393e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+54,MODSZK1,1620,687,0,acceptable,320.61973050054985,0.035624395,24,8.739675649849232e-13,1.4551915228366852e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+55,NESM,2923,662,0,acceptable,1.4401976536555791e7,0.201834343,77,9.314680937677622e-8,1.7047591636953907e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+56,OSA-07,23949,1118,0,acceptable,535722.5189338517,0.128478157,19,1.8189894035458565e-12,8.751380238820912e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+57,OSA-14,52460,2337,0,acceptable,1.1064628459925486e6,0.286215146,23,2.0463630789890885e-12,1.1196018275565307e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+58,OSA-30,100024,4350,0,acceptable,2.14213987607638e6,0.608608599,34,1.8189894035458565e-12,7.914716875390651e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+59,OSA-60,232966,10280,0,acceptable,4.04407252913005e6,1.39183662,38,2.7284841053187847e-12,3.974262188789943e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+60,PDS-02,7535,2953,0,acceptable,2.885786234130359e10,0.172698082,26,4.887697286903858e-7,1.8189894035458565e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+61,PDS-06,28655,9881,0,acceptable,2.7761036669125465e10,1.680416459,36,4.891044227406383e-7,7.275957614183426e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+62,PDS-10,48763,16558,0,acceptable,2.672709442690244e10,6.822738475,41,3.2582074709353037e-6,1.4551915228366852e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+63,PDS-20,105728,33874,0,acceptable,2.3821658453618965e10,27.463971159,44,1.4692806189486873e-6,1.4551915228366852e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+64,PEROLD,1376,625,0,acceptable,-9380.755234399892,0.102096654,41,6.870992386165398e-10,1.2779896342845088e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+65,PILOT-JA,1988,940,0,acceptable,-6113.136414239395,0.184226676,42,6.923528417246416e-11,2.1501258095474839e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+66,PILOT-WE,2789,722,0,acceptable,-2.7201075252383547e6,0.122505872,51,5.929905455559492e-9,2.3283064365386963e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+67,PILOT,3652,1441,0,acceptable,-557.4897243083506,0.715743339,34,4.583351392861701e-9,3.573870418829557e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+68,PILOT4,1000,410,0,acceptable,-2581.139255823845,0.071842301,49,5.632591033365642e-10,3.300800077618685e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+69,PILOT87,4883,2030,0,acceptable,301.71034771278573,1.923966491,31,4.1645660905269624e-11,3.637978807091713e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+70,PILOTNOV,2172,975,0,acceptable,-4497.276188230927,0.10254804,21,2.8256619266642247e-10,8.731149137020111e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+71,QAP12,8856,3192,0,acceptable,522.8943564598173,0.235626306,13,3.410605131648481e-13,1.968911145233676e-16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+72,QAP15,22275,6330,0,acceptable,1040.9940468125383,1.430539348,14,4.092726157978177e-12,2.7755575615628914e-16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+73,QAP8,1632,912,0,acceptable,203.500000086302,0.009968266,8,1.1546319456101628e-14,1.6653345369377348e-16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+74,RECIPELP,180,91,0,acceptable,-266.61599727071257,0.001654964,7,1.761700119118359e-9,4.547473508864641e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+75,SC105,103,105,0,acceptable,-52.2020612116418,0.002381874,12,8.257283745649602e-16,1.1368683772161603e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+76,SC205,203,205,0,acceptable,-52.20206113718474,0.003775491,12,2.0961010704922955e-13,1.1368683772161603e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+77,SC50A,48,50,0,acceptable,-64.57507705803728,0.001284105,10,1.1479706074624119e-13,5.684341886080802e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+78,SC50B,48,50,0,acceptable,-69.99999999990389,0.001081566,8,8.1601392309949e-15,2.842170943040401e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+79,SCAGR25,500,471,0,acceptable,-1.475343306085223e7,0.010001021,16,1.3382642612947807e-9,1.8189894035458565e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+80,SCAGR7,140,129,0,acceptable,-2.331389826703615e6,0.002820479,14,3.974336804879884e-10,9.094947017729282e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+81,SCFXM1,457,330,0,acceptable,18416.759028535012,0.012422426,15,2.029487689014786e-12,2.2239987629291136e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+82,SCFXM2,914,660,0,acceptable,36660.2615761208,0.026255927,17,1.8770762721942447e-10,2.3021584638627246e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+83,SCFXM3,1371,990,0,acceptable,54901.254550175945,0.039967906,17,2.6547652964836743e-12,1.2292389328649733e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+84,SCORPION,358,388,0,acceptable,1878.1248228753873,0.007089399,11,7.22138793207705e-10,3.3306690738754696e-16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+85,SCRS8,1169,490,0,acceptable,904.2969538636443,0.018102214,18,8.810729923425242e-13,4.5600979937412284e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+86,SCSD1,760,77,0,acceptable,8.666666674513444,0.00459536,10,2.6645352591003757e-15,6.2620830842038465e-15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+87,SCSD6,1350,147,0,acceptable,50.50000008040227,0.00874981,11,3.552713678800501e-15,2.77701430598711e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+88,SCSD8,2750,397,0,acceptable,905.0000065212129,0.015782708,9,3.6359182331580087e-10,8.199502977894137e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+89,SCTAP1,480,300,0,acceptable,1412.2500001065039,0.007937904,15,3.211653165635653e-11,1.5987211554602254e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+90,SCTAP2,1880,1090,0,acceptable,1724.8071428616481,0.027714078,12,1.2896350654045818e-12,1.4835355166553654e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+91,SCTAP3,2480,1480,0,acceptable,1424.000000506891,0.037840465,12,1.0334844091630657e-11,1.0428765604819278e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+92,SEBA,1028,515,0,infeasible,40497.4371286345,0.001379719,4,1.375,2.2737367544323206e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+93,SHARE1B,225,117,0,acceptable,-76589.3179382381,0.005241045,18,3.596007103201515e-10,7.862751436486711e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+94,SHARE2B,79,96,0,acceptable,-415.732241659542,0.00341029,18,6.461461588003203e-9,2.2737367544323206e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+95,SHELL,1775,536,0,acceptable,1.2088253461796103e9,0.022123197,17,2.2690187506668735e-8,9.094947017729282e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+96,SHIP04L,2118,402,0,acceptable,1.7933245391425635e6,0.0110631,12,1.8189894035458565e-12,6.217248937900877e-15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+97,SHIP04S,1458,402,0,acceptable,1.798714700515739e6,0.008039523,12,1.8189894035458565e-12,1.1926478369943424e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+98,SHIP08L,4283,778,0,acceptable,1.909055211574284e6,0.022532538,16,1.8189894035458565e-12,4.180415415049833e-15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+99,SHIP08S,2387,778,0,acceptable,1.9200982106847258e6,0.011551781,11,1.425096343155019e-7,5.852033697882475e-15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+100,SHIP12L,5427,1151,0,acceptable,1.4701879193371413e6,0.029260858,17,1.8189894035458565e-12,3.7969627442180354e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+101,SHIP12S,2763,1151,0,acceptable,1.4892361344259875e6,0.013378975,14,1.8189894035458565e-12,1.3322676295501878e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+102,SIERRA,2036,1227,0,acceptable,1.5394362182162438e7,0.049489955,20,6.415443434580696e-10,6.755974126467623e-11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+103,STAIR,467,356,0,acceptable,-251.2669509893628,0.025584961,16,1.6731965118976788e-10,1.1368683772161603e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+104,STANDATA,1075,359,0,acceptable,1257.6995030044745,0.005468379,8,1.4210854715202004e-14,8.591117280203153e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+105,STANDGUB,1184,361,0,acceptable,1257.6995030044743,0.005348181,8,1.4210854715202004e-14,8.591117280203153e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+106,STANDMPS,1075,467,0,acceptable,1406.0175001512162,0.017101525,20,6.252776074688882e-13,1.4439885016100155e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+107,STOCFOR1,111,117,0,acceptable,-41131.97621196909,0.001968902,9,6.195762125571491e-9,4.19093233803631e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+108,STOCFOR2,2031,2157,0,acceptable,-39024.408536636096,0.053627922,16,7.716494110354688e-12,8.552593900032713e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+109,STOCFOR3,15695,16675,0,acceptable,-39976.78394199894,1.271598082,53,2.4790365316107454e-9,9.094947017729282e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+110,TRUSS,8806,1000,0,acceptable,458815.84718864976,0.118976433,17,5.502442945726216e-11,1.1607400534752632e-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+111,TUFF,587,333,0,acceptable,0.2921477653171587,0.014761556,15,5.496471333632513e-15,2.2737367544323206e-13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+112,VTP-BASE,203,198,0,acceptable,129831.4625566921,0.001541052,8,9.682483747478755e-10,1.0800249583553523e-12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+113,WOOD1P,2594,244,0,acceptable,1.44290241160131,0.087367644,13,5.329070518200751e-15,1.829341799569617e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+114,WOODW,8405,1098,0,acceptable,1.3044763334791203,0.067827115,21,2.915445662665661e-13,2.842170943040401e-14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
