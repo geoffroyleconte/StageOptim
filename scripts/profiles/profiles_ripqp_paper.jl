@@ -19,16 +19,18 @@ cplex_nops1_lp = CSV.read(string(res_path, "\\cplex_nops1_lp.csv"), DataFrame)
 xpress_nops1_lp = CSV.read(string(res_path, "\\xpress_nops1_lp.csv"), DataFrame)
 ripqp1_lp = CSV.read(string(res_path, "\\ripqp1_lp.csv"), DataFrame)
 ripqp2_lp = CSV.read(string(res_path, "\\ripqp2_lp.csv"), DataFrame)
+ripqp_nops1_lp = CSV.read(string(res_path, "\\ripqp_nops1_lp.csv"), DataFrame)
 
 stats_lp = Dict(
-                :gurobi1 => gurobi1_lp,
-                :cplex1 => cplex1_lp,
+                # :gurobi1 => gurobi1_lp,
+                # :cplex1 => cplex1_lp,
                 # :xpress1 => xpress1_lp,
-                :gurobi_nops1 => gurobi_nops1_lp,
-                :cplex_nops1 => cplex_nops1_lp,
+                # :gurobi_nops1 => gurobi_nops1_lp,
+                # :cplex_nops1 => cplex_nops1_lp,
                 # :xpress_nops1 => xpress_nops1_lp,
                 # :ripqp1 => ripqp1_lp,
                 :ripqp2 => ripqp2_lp,
+                :ripqp_nops1 => ripqp_nops1_lp,
                 )
 
 gurobi1_qp = CSV.read(string(res_path, "\\gurobi1_qp.csv"), DataFrame)
@@ -37,6 +39,7 @@ gurobi_nops1_qp = CSV.read(string(res_path, "\\gurobi_nops1_qp.csv"), DataFrame)
 cplex_nops1_qp = CSV.read(string(res_path, "\\cplex_nops1_qp.csv"), DataFrame)
 ripqp1_qp = CSV.read(string(res_path, "\\ripqp1_qp.csv"), DataFrame)
 ripqp2_qp = CSV.read(string(res_path, "\\ripqp2_qp.csv"), DataFrame)
+ripqp_nops1_qp = CSV.read(string(res_path, "\\ripqp_nops1_qp.csv"), DataFrame)
 
 stats_qp = Dict(
                 :gurobi1 => gurobi1_qp,
@@ -45,6 +48,7 @@ stats_qp = Dict(
                 :cplex_nops1 => cplex_nops1_qp,
                 # :ripqp1 => ripqp1_qp,
                 :ripqp2 => ripqp2_qp,
+                :ripqp_nops1 => ripqp_nops1_qp,
                 )
 
 function dfstat(df)
@@ -64,9 +68,9 @@ function dfstat(df)
 end
 
 cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
-# perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
-# title!("Performance profile (Netlib problems)")
-perf = performance_profile(stats_qp, dfstat,legend=:bottomright)
-title!("Performance profile (Maros and Meszaros problems)")
+perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
+title!("Performance profile (Netlib problems)")
+# perf = performance_profile(stats_qp, dfstat,legend=:bottomright)
+# title!("Performance profile (Maros and Meszaros problems)")
 display("image/svg+xml", perf)
 # savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\graphes\profiles\multizoom_iter_lp.pdf")
