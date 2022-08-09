@@ -1,6 +1,6 @@
 using QuadraticModels, QPSReader
-# using RipQP
-using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
+using RipQP
+# using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
 # using JLD2
 using CSV
 using SolverBenchmark
@@ -27,16 +27,19 @@ pb = string(path_pb_lp, "/AFIRO.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 
-# ripqp_nops(QM) = ripqp(QM, ps = false, itol = InputTol(max_iter = 800, max_time=1200.))
-# stats = ripqp_nops(qm)
-cplex2_nops(QM) = cplex(QM, presolve=0, crossover=2, display=0)
+ripqp2(QM) = ripqp(QM, itol = InputTol(max_iter = 800, max_time=1200.))
+stats = ripqp2(qm)
+ripqp_nops(QM) = ripqp(QM, ps = false, itol = InputTol(max_iter = 800, max_time=1200.))
+stats = ripqp_nops(qm)
+# cplex2_nops(QM) = cplex(QM, presolve=0, crossover=2, display=0)
 # cplex2(QM) = cplex(QM, crossover=2, display=0)
-stats = cplex2_nops(qm)  # compile code
-gurobi2_nops(QM) = gurobi(QM, presolve=0, crossover=0, display=0, threads=1)
+# stats = cplex2_nops(qm)  # compile code
+# gurobi2_nops(QM) = gurobi(QM, presolve=0, crossover=0, display=0, threads=1)
 # gurobi2(QM) = gurobi(QM, crossover=0, display=0, threads=1)
-stats = gurobi2_nops(qm)  # compile code
-xpress2_nops(QM) = xpress(QM, presolve=0, crossover=0)
+# stats = gurobi2_nops(qm)  # compile code
+# xpress2_nops(QM) = xpress(QM, presolve=0, crossover=0)
 # xpress2(QM) = xpress(QM, crossover=0)
+# stats = xpress2_nops(qm)  # compile code
 # ripqp_bm_equi_qlp(QM) = ripqp(QM, ps=true, display = false,
 #     sp = K2KrylovParams(uplo=:L, preconditioner = Equilibration(), 
 #                         kmethod = :minres_qlp, ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
@@ -88,12 +91,12 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/gurobi_nops1"), gurobi2_nops)
-save_problems(string(save_path, "/cplex_nops1"), cplex2_nops)
-stats = xpress2_nops(qm)  # compile code
-save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
+# save_problems(string(save_path, "/gurobi_nops1"), gurobi2_nops)
+# save_problems(string(save_path, "/cplex_nops1"), cplex2_nops)
+# save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
 # save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
-# save_problems(string(save_path, "/ripqp_nops1"), ripqp_nops)
+save_problems(string(save_path, "/ripqp2"), ripqp2)
+save_problems(string(save_path, "/ripqp_nops1"), ripqp_nops)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)
