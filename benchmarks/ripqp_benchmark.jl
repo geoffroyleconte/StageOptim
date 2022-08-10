@@ -31,29 +31,19 @@ qm = createQuadraticModel(qpdata)
 # stats = ripqp2(qm)
 # ripqp_nops(QM) = ripqp(QM, ps = false, itol = InputTol(max_iter = 800, max_time=1200.))
 # stats = ripqp_nops(qm)
-cplex2_nops(QM) = cplex(QM, presolve=0, crossover=2, display=0, threads=1)
-cplex2(QM) = cplex(QM, crossover=2, display=0, threads=1)
-stats = cplex2_nops(qm)  # compile code
-stats = cplex2(qm)  # compile code
-gurobi2_nops(QM) = gurobi(QM, presolve=0, crossover=0, display=0, threads=1)
-gurobi2(QM) = gurobi(QM, crossover=0, display=0, threads=1)
-stats = gurobi2_nops(qm)  # compile code
-stats = gurobi2(qm)  # compile code
-xpress2_nops(QM) = xpress(QM, presolve=0, crossover=0, threads=1)
-xpress2(QM) = xpress(QM, crossover=0, threads=1)
-stats = xpress2_nops(qm)  # compile code
-stats = xpress2(qm)  # compile code
-# ripqp_bm_equi_qlp(QM) = ripqp(QM, ps=true, display = false,
-#     sp = K2KrylovParams(uplo=:L, preconditioner = Equilibration(), 
-#                         kmethod = :minres_qlp, ρ_min = 1e1 * sqrt(eps()), δ_min = 1e1 * sqrt(eps()),
-#                         atol0 = 1.0e-1, rtol0 = 1.0e-1, mem = 100,
-#                         atol_min = 1.0e-3, rtol_min = 1.0e-1, k3_resid = true, cb_only = true),
-#         itol = InputTol(max_iter=400, ϵ_pdd = 1.0e-4, ϵ_rb = 1.0e-4, ϵ_rc = 1.0e-4, max_time=3600.))
-# ripqp_bm_cc(QM) = ripqp(QM, iconf = InputConfig(kc=-1), itol = InputTol(max_time=1200.))
-# ripqp_bm_presolve(QM) =  ripqp(QM, itol = InputTol(max_time=1200.), iconf = InputConfig(presolve=true, scaling=true))
-# ripqp_bm_multiref(QM) = ripqp(QM, mode=:multiref, itol = InputTol(max_time=1000.))
-# ripqp_bm_multizoom(QM) = ripqp(QM, mode=:multizoom, itol = InputTol(max_time=1000.))
-# ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_time=1000.))
+# cplex2_nops(QM) = cplex(QM, presolve=0, crossover=2, display=0, threads=1)
+# cplex2(QM) = cplex(QM, crossover=2, display=0, threads=1)
+# stats = cplex2_nops(qm)  # compile code
+# stats = cplex2(qm)  # compile code
+# gurobi2_nops(QM) = gurobi(QM, presolve=0, crossover=0, display=0, threads=1)
+# gurobi2(QM) = gurobi(QM, crossover=0, display=0, threads=1)
+# stats = gurobi2_nops(qm)  # compile code
+# stats = gurobi2(qm)  # compile code
+# xpress2_nops(QM) = xpress(QM, presolve=0, crossover=0, threads=1)
+# xpress2(QM) = xpress(QM, crossover=0, threads=1)
+# stats = xpress2_nops(qm)  # compile code
+# stats = xpress2(qm)  # compile code
+ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_time=1200.))
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
 #                             itol = InputTol(max_iter=400, max_time=10.) )#,
 
@@ -94,13 +84,13 @@ function save_problems(file_path :: String, ripqp_func :: Function,
     return Nothing
 end
 
-save_problems(string(save_path, "/gurobi_nops1"), gurobi2_nops)
-save_problems(string(save_path, "/gurobi1"), gurobi2)
-save_problems(string(save_path, "/cplex_nops1"), cplex2_nops)
-save_problems(string(save_path, "/cplex1"), cplex2)
-save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
-save_problems(string(save_path, "/xpress1"), xpress2)
-# save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
+# save_problems(string(save_path, "/gurobi_nops1"), gurobi2_nops)
+# save_problems(string(save_path, "/gurobi1"), gurobi2)
+# save_problems(string(save_path, "/cplex_nops1"), cplex2_nops)
+# save_problems(string(save_path, "/cplex1"), cplex2)
+# save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
+# save_problems(string(save_path, "/xpress1"), xpress2)
+save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp2"), ripqp2)
 # save_problems(string(save_path, "/ripqp_nops1"), ripqp_nops)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
