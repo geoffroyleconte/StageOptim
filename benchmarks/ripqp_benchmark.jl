@@ -1,6 +1,6 @@
 using QuadraticModels, QPSReader
-# using RipQP
-using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
+using RipQP
+# using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
 # using JLD2
 using CSV
 using SolverBenchmark
