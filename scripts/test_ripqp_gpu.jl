@@ -35,7 +35,7 @@ function QuadraticModelGPUCOO(qps::QPSData; T = Float64)
   )
 end
 # qm = QuadraticModelGPU(readqps(string(path_pb, "/AFIRO.SIF"), mpsformat=:fixed))
-T = Double64
+T = Float64
 qm = QuadraticModelGPUCOO(readqps(string(path_pb, "/AGG.SIF"), mpsformat=:fixed), T = T)
 using RipQP
 # # include("/home/lecogeof/code/RipQP.jl/src/RipQP.jl")
