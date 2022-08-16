@@ -4,6 +4,7 @@ using RipQP
 # using JLD2
 using CSV
 using SolverBenchmark
+using HSL
 # include("/home/mgi.polymtl.ca/geleco/git_workspace/docGL/utils/K1QR.jl")
 
 function createQuadraticModel(qpdata; name="qp_pb")
@@ -27,10 +28,10 @@ pb = string(path_pb_lp, "/AFIRO.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 
-ripqp2(QM) = ripqp(QM, itol = InputTol(max_iter = 800, max_time=1200.))
+ripqp2(QM) = ripqp(QM, sp = K2LDLParams(fact_alg = HSLMA57Fact()), itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp2(qm)
-ripqp_nops(QM) = ripqp(QM, ps = false, itol = InputTol(max_iter = 800, max_time=1200.))
-stats = ripqp_nops(qm)
+# ripqp_nops(QM) = ripqp(QM, ps = false, itol = InputTol(max_iter = 800, max_time=1200.))
+# stats = ripqp_nops(qm)
 # cplex2_nops(QM) = cplex(QM, presolve=0, crossover=2, display=0, threads=1)
 # cplex2(QM) = cplex(QM, crossover=2, display=0, threads=1)
 # stats = cplex2_nops(qm)  # compile code
@@ -91,8 +92,8 @@ end
 # save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
 # save_problems(string(save_path, "/xpress1"), xpress2)
 # save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
-save_problems(string(save_path, "/ripqp3"), ripqp2)
-save_problems(string(save_path, "/ripqp_nops1"), ripqp_nops)
+save_problems(string(save_path, "/ripqp_ma571"), ripqp2)
+# save_problems(string(save_path, "/ripqp_nops1"), ripqp_nops)
 # save_problems(string(save_path, "\\test"), ripqp_bm_classic)
 # save_problems(string(save_path, "/ripqp_presolve_1"), ripqp_bm_presolve)
 # save_problems(string(save_path, "/ripqp_mono_IPFK2_3"), ripqp_bm_classic)
