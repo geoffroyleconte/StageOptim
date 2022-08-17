@@ -28,7 +28,9 @@ pb = string(path_pb_lp, "/AFIRO.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 
-ripqp2(QM) = ripqp(QM, sp = K2LDLParams(fact_alg = HSLMA57Fact()), itol = InputTol(max_iter = 800, max_time=1200.))
+ripqp2(QM) = ripqp(QM, 
+                    sp = K2LDLParams(ρ_min = sqrt(eps()), δ_min = sqrt(eps()), fact_alg = HSLMA57Fact()),
+                    itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp2(qm)
 # ripqp_nops(QM) = ripqp(QM, ps = false, itol = InputTol(max_iter = 800, max_time=1200.))
 # stats = ripqp_nops(qm)
