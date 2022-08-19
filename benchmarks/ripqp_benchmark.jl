@@ -23,13 +23,12 @@ path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f232
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 save_path = "/home/gelecd/code/docGL/benchmarks/ripqp_paper"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
-pb = string(path_pb_qp, "/QSEBA.SIF")
+pb = string(path_pb_lp, "/25FV47.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 
-ripqp1(QM) = ripqp(QM, 
-                    sp = K2LDLParams(ρ_min = sqrt(eps()), δ_min = sqrt(eps())),
+ripqp1(QM) = ripqp(QM, sp = K2LDLParams(),
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp1(qm)
 ripqpma57(QM) = ripqp(QM, 
@@ -41,11 +40,11 @@ ripqpma57_nosqd(QM) = ripqp(QM,
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqpma57_nosqd(qm)
 ripqpqdldl(QM) = ripqp(QM, 
-                    sp = K2LDLParams(ρ_min = sqrt(eps()), δ_min = sqrt(eps()), fact_alg = QDLDLFact()),
+                    sp = K2LDLParams(fact_alg = QDLDLFact()),
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqpqdldl(qm)
 ripqpcholmod(QM) = ripqp(QM, 
-                    sp = K2LDLParams(ρ_min = sqrt(eps()), δ_min = sqrt(eps()), fact_alg = CholmodFact()),
+                    sp = K2LDLParams(fact_alg = CholmodFact()),
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqpcholmod(qm)
 # ripqp_nops(QM) = ripqp(QM, ps = false, itol = InputTol(max_iter = 800, max_time=1200.))
