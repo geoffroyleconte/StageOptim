@@ -20,6 +20,8 @@ xpress_nops1_lp = CSV.read(string(res_path, "\\xpress_nops1_lp.csv"), DataFrame)
 ripqp1_lp = CSV.read(string(res_path, "\\ripqp1_lp.csv"), DataFrame) # comparison other ldl solver
 ripqp_ma57_lp = CSV.read(string(res_path, "\\ripqp_ma571_lp.csv"), DataFrame)
 ripqp_ma57nosqd_lp = CSV.read(string(res_path, "\\ripqp_ma57nosqd1_lp.csv"), DataFrame)
+ripqp_ma57_lp2 = CSV.read(string(res_path, "\\ripqp_ma572_lp.csv"), DataFrame)
+ripqp_ma57nosqd_lp2 = CSV.read(string(res_path, "\\ripqp_ma57nosqd2_lp.csv"), DataFrame)
 ripqp_qdldl_lp = CSV.read(string(res_path, "\\ripqp_qdldl1_lp.csv"), DataFrame)
 ripqp_cholmod_lp = CSV.read(string(res_path, "\\ripqp_cholmod1_lp.csv"), DataFrame)
 ripqp2_lp = CSV.read(string(res_path, "\\ripqp2_lp.csv"), DataFrame)
@@ -37,14 +39,15 @@ stats_lp = Dict(
                 # :cplex_nops1 => cplex_nops1_lp,
                 # :xpress_nops1 => xpress_nops1_lp,
                 # :ripqp1 => ripqp3_lp,
-                :ripqp => ripqp1_lp,
+                :ripqp_ldlfact => ripqp1_lp,
                 # :ripqp_multi => ripqp_multi1_lp,
                 # :ripqp_nops1 => ripqp_nops1_lp,
-                :ripqp_ma57 => ripqp_ma57_lp,
-                :ripqp => filter(x -> x.id ∉ easy_pbs_lp, ripqp1_lp),
-                :ripqp_ma57 => filter(x -> x.id ∉ easy_pbs_lp, ripqp_ma57_lp),
-                # :ripqp_ma57nosqd => ripqp_ma57nosqd_lp,
-                # :ripqp_qdldl => ripqp_qdldl_lp,
+                # :ripqp_ma57 => ripqp_ma57_lp2,
+                # :ripqp => filter(x -> x.id ∉ easy_pbs_lp, ripqp1_lp),
+                # :ripqp_qdldl => filter(x -> x.id ∉ easy_pbs_lp, ripqp_qdldl_lp),
+                # :ripqp_ma57 => filter(x -> x.id ∉ easy_pbs_lp, ripqp_ma57_lp2),
+                # :ripqp_ma57nosqd => ripqp_ma57nosqd_lp2,
+                :ripqp_qdldl => ripqp_qdldl_lp,
                 # :ripqp_cholmod => ripqp_cholmod_lp,
                 # :ripqp_cc => ripqp_cc1_lp,
                 )
@@ -58,6 +61,8 @@ xpress_nops1_qp = CSV.read(string(res_path, "\\xpress_nops1_qp.csv"), DataFrame)
 ripqp1_qp = CSV.read(string(res_path, "\\ripqp1_qp.csv"), DataFrame)
 ripqp_ma57_qp = CSV.read(string(res_path, "\\ripqp_ma571_qp.csv"), DataFrame)
 ripqp_ma57nosqd_qp = CSV.read(string(res_path, "\\ripqp_ma57nosqd1_qp.csv"), DataFrame)
+ripqp_ma57_qp2 = CSV.read(string(res_path, "\\ripqp_ma572_qp.csv"), DataFrame)
+ripqp_ma57nosqd_qp2 = CSV.read(string(res_path, "\\ripqp_ma57nosqd2_qp.csv"), DataFrame)
 ripqp_qdldl_qp = CSV.read(string(res_path, "\\ripqp_qdldl1_qp.csv"), DataFrame)
 ripqp_cholmod_qp = CSV.read(string(res_path, "\\ripqp_cholmod1_qp.csv"), DataFrame)
 ripqp2_qp = CSV.read(string(res_path, "\\ripqp2_qp.csv"), DataFrame)
@@ -66,6 +71,7 @@ ripqp_multi1_qp = CSV.read(string(res_path, "\\ripqp_multi1_qp.csv"), DataFrame)
 ripqp_nops1_qp = CSV.read(string(res_path, "\\ripqp_nops1_qp.csv"), DataFrame)
 ripqp_cc1_qp = CSV.read(string(res_path, "\\ripqp_cc1_qp.csv"), DataFrame)
 
+easy_pbs_qp = findall(ripqp1_qp.elapsed_time .≤ 1.0)
 stats_qp = Dict(
                 # :gurobi => gurobi1_qp,
                 # :cplex => cplex1_qp,
@@ -73,11 +79,15 @@ stats_qp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_qp,
                 # :cplex_nops1 => cplex_nops1_qp,
                 # :xpress_nops1 => xpress_nops1_qp,
-                # :ripqp1 => ripqp3_qp,
-                :ripqp => ripqp1_qp,
-                :ripqp_ma57 => ripqp_ma57_qp,
+                :ripqp_ldl => ripqp1_qp,
+                # :ripqp_ldlfact => ripqp1_qp,
+                # :ripqp_ma57 => ripqp_ma57_qp,
+                # :ripqp_ma57 => ripqp_ma57_qp2,
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_qp,
-                # :ripqp_qdldl => ripqp_qdldl_qp,
+                :ripqp_qdldl => ripqp_qdldl_qp,
+                # :ripqp => filter(x -> x.id ∉ easy_pbs_qp, ripqp1_qp),
+                # :ripqp_qdldl => filter(x -> x.id ∉ easy_pbs_qp, ripqp_qdldl_qp),
+                # :ripqp_ma57 => filter(x -> x.id ∉ easy_pbs_qp, ripqp_ma57_qp2),
                 # :ripqp_cholmod => ripqp_cholmod_qp,
                 # :ripqp_multi => ripqp_multi1_qp,
                 # :ripqp_nops1 => ripqp_nops1_qp,
@@ -90,7 +100,7 @@ function dfstat(df)
     if df.primal_feas[i] === missing
       output[i] = Inf
     else 
-    #   output[i] = df.absolute_iter_cnt[i]
+      # output[i] = df.iter[i]
       output[i] = df.elapsed_time[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
@@ -101,9 +111,9 @@ function dfstat(df)
 end
 
 cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
-perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
-title!("Performance profile (Netlib problems)")
-# perf = performance_profile(stats_qp, dfstat,legend=:bottomright)
-# title!("Performance profile (Maros and Meszaros problems)")
+# perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
+# title!("Performance profile (Netlib problems)")
+perf = performance_profile(stats_qp, dfstat,legend=:bottomright)
+title!("Performance profile (Maros and Meszaros problems)")
 display("image/svg+xml", perf)
 # savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\qp_nops2.pdf")

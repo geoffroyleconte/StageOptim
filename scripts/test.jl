@@ -15,7 +15,7 @@ qm = QuadraticModel(readqps(string(path_pb, "\\25FV47.SIF"), mpsformat=:fixed))
 TimerOutputs.enable_debug_timings(RipQP)
 reset_timer!(RipQP.to)
 stats1 = RipQP.ripqp(qm, 
-                    sp = RipQP.K2LDLParams(fact_alg = RipQP.CholmodFact()),
+                    sp = RipQP.K2LDLParams(fact_alg = RipQP.LDLFact()),
                      # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
                     #  sp = RipQP.K2KrylovParams(
                     #    uplo=:L, 
@@ -39,7 +39,7 @@ stats1 = RipQP.ripqp(qm,
                     #         mem = 100,
                     #         atol_min = 1.0e-6, rtol_min = 1.0e-6,
                     #         ), 
-                     solve_method=RipQP.PC(), scaling = true, history=true, ps=true, mode=:mono, kc=0,
+                     solve_method=RipQP.PC(), scaling = true, history=true, ps=true, mode=:multi, kc=0,
                      perturb = false,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
                      itol = RipQP.InputTol(max_iter=100, max_time=100.0, max_iter32 = 40,
