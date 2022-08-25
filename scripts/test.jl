@@ -2,13 +2,13 @@ using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, SparseArrays, Tim
 using QDLDL
 # using RipQP
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib_ps"
-# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\25FV47.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\QAFIRO.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
@@ -67,8 +67,8 @@ function riptest(qm)
    itol = RipQP.InputTol(max_iter=150, max_time=3.0),
   #  ϵ_rc=1.0e-1, ϵ_rb=1.0e-1, ϵ_pdd=1.0e0,
    )
-   println(maximum(-(Symmetric(qm.data.H, :L) * stats.solution) + (qm.data.A' * stats.multipliers) + 
-    stats.multipliers_L - stats.multipliers_U - qm.data.c))
+  #  println(maximum(-(Symmetric(qm.data.H, :L) * stats.solution) + (qm.data.A' * stats.multipliers) + 
+  #   stats.multipliers_L - stats.multipliers_U - qm.data.c))
    return stats
 end
 
@@ -184,8 +184,7 @@ u = [Inf; Inf; Inf]
 QM = QuadraticModel(c, SparseMatrixCOO(tril(Q)), A=SparseMatrixCOO(A), lcon=b, ucon=b, lvar=l, uvar=u, c0=0., name="QM1");
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\QuadraticModels.jl\src\QuadraticModels.jl")
 # QM = QuadraticModels.QuadraticModel(c, Q, A=A, lcon=[-3; -4], ucon=[-2.; Inf], lvar=l, uvar=u, c0=0., name="QM1");
-stats1 = RipQP.ripqp(QM,sp = RipQP.K2KrylovParams(uplo = :L, kmethod=:minres, rhs_scale=true,equilibrate = false,
-                        form_mat = true),
+stats1 = RipQP.ripqp(QM,
                 solve_method=RipQP.IPF(), scaling = false, history=false, ps=false, 
                 itol = RipQP.InputTol(max_time = 20.0, max_iter = 50))
 # stats1 = RipQP.ripqp(QM)

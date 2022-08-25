@@ -17,7 +17,8 @@ function createQuadraticModel_T(qpdata; T = Float128, name="qp_pb")
 end
 
 # qps1 = readqps(string(path_pb, "CYCLE.SIF"))
-qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
+# qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
+qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
 
@@ -54,7 +55,7 @@ stats1 = ripqp(qm1, mode = :multi, Timulti = Tlow,
     rtol_min = T(1.0e-30),
   ),
   solve_method=IPF(),
-  ps=false,
+  ps=true,
   itol = InputTol(
     T,
     ϵ_rb = T(1e-40), # very small to see what residuals can be reached
@@ -98,7 +99,7 @@ stats1 = ripqp(qm1,
     rtol_min = T(1.0e-30),
   ),
   solve_method=IPF(),
-  ps=false,
+  ps=true,
   itol = InputTol(
     T,
     ϵ_rb = T(1e-40), # very small to see what residuals can be reached

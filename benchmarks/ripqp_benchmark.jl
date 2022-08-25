@@ -32,13 +32,13 @@ qm = createQuadraticModel(qpdata)
 #                     itol = InputTol(max_iter = 800, max_time=1200.))
 # stats = ripqp1(qm)
 ripqpma57(QM) = ripqp(QM,
-                    sp = K2LDLParams(ρ_min = sqrt(eps()), δ_min = sqrt(eps()), fact_alg = HSLMA57Fact()),
-                    itol = InputTol(max_iter = 800, max_time=1200.))
-stats = ripqpma57(qm)
-ripqpma572(QM) = ripqp(QM,
                     sp = K2LDLParams(fact_alg = HSLMA57Fact()),
                     itol = InputTol(max_iter = 800, max_time=1200.))
-stats = ripqpma572(qm)
+stats = ripqpma57(qm)
+ripqpma57_multi(QM) = ripqp(QM, mode = :multi,
+                    sp = K2LDLParams(fact_alg = HSLMA57Fact()),
+                    itol = InputTol(max_iter = 800, max_time=1200.))
+stats = ripqpma57_multi(qm)
 # ripqpma57_nosqd(QM) = ripqp(QM, 
 #                     sp = K2LDLParams(ρ_min = sqrt(eps()), δ_min = sqrt(eps()), fact_alg = HSLMA57Fact(sqd=false)),
 #                     itol = InputTol(max_iter = 800, max_time=1200.))
@@ -115,7 +115,7 @@ end
 # save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp1"), ripqp1)
 save_problems(string(save_path, "/ripqp_ma571"), ripqpma57)
-save_problems(string(save_path, "/ripqp_ma572"), ripqpma572)
+save_problems(string(save_path, "/ripqp_ma57_multi1"), ripqpma57_multi)
 # save_problems(string(save_path, "/ripqp_ma57nosqd2"), ripqpma57_nosqd)
 # save_problems(string(save_path, "/ripqp_qdldl1"), ripqpqdldl)
 # save_problems(string(save_path, "/ripqp_cholmod1"), ripqpcholmod)
