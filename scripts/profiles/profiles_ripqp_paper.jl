@@ -19,6 +19,7 @@ cplex_nops1_lp = CSV.read(string(res_path, "\\cplex_nops1_lp.csv"), DataFrame)
 xpress_nops1_lp = CSV.read(string(res_path, "\\xpress_nops1_lp.csv"), DataFrame)
 ripqp1_lp = CSV.read(string(res_path, "\\ripqp1_lp.csv"), DataFrame) # comparison other ldl solver
 ripqp_ma57_lp = CSV.read(string(res_path, "\\ripqp_ma571_lp.csv"), DataFrame)
+ripqp_ma57_multi_lp = CSV.read(string(res_path, "\\ripqp_ma57_multi1_lp.csv"), DataFrame)
 ripqp_ma57nosqd_lp = CSV.read(string(res_path, "\\ripqp_ma57nosqd1_lp.csv"), DataFrame)
 ripqp_ma57_lp2 = CSV.read(string(res_path, "\\ripqp_ma572_lp.csv"), DataFrame) # regu comm dhab
 ripqp_ma57nosqd_lp2 = CSV.read(string(res_path, "\\ripqp_ma57nosqd2_lp.csv"), DataFrame)
@@ -39,17 +40,19 @@ stats_lp = Dict(
                 # :cplex_nops1 => cplex_nops1_lp,
                 # :xpress_nops1 => xpress_nops1_lp,
                 # :ripqp1 => ripqp1_lp,
-                :ripqp_ldlfact => ripqp1_lp,
+                # :ripqp_ldlfact => ripqp1_lp,
                 # :ripqp_multi => ripqp_multi1_lp,
                 # :ripqp_nops1 => ripqp_nops1_lp,
                 # :ripqp_ma57 => ripqp_ma57_lp,
-                :ripqp_ma572 => ripqp_ma57_lp2,
+                 :ripqp_ma57 => ripqp_ma57_lp,
+                 :ripqp_ma57_multi => ripqp_ma57_multi_lp,
+                # :ripqp_ma572 => ripqp_ma57_lp2,
                 # :ripqp => filter(x -> x.id ∉ easy_pbs_lp, ripqp1_lp),
                 # :ripqp_qdldl => filter(x -> x.id ∉ easy_pbs_lp, ripqp_qdldl_lp),
                 # :ripqp_ma57 => filter(x -> x.id ∉ easy_pbs_lp, ripqp_ma57_lp2),
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_lp2,
-                :ripqp_qdldl => ripqp_qdldl_lp,
-                :ripqp_cholmod => ripqp_cholmod_lp,
+                # :ripqp_qdldl => ripqp_qdldl_lp,
+                # :ripqp_cholmod => ripqp_cholmod_lp,
                 # :ripqp_cc => ripqp_cc1_lp,
                 )
 
@@ -61,6 +64,7 @@ cplex_nops1_qp = CSV.read(string(res_path, "\\cplex_nops1_qp.csv"), DataFrame)
 xpress_nops1_qp = CSV.read(string(res_path, "\\xpress_nops1_qp.csv"), DataFrame)
 ripqp1_qp = CSV.read(string(res_path, "\\ripqp1_qp.csv"), DataFrame)
 ripqp_ma57_qp = CSV.read(string(res_path, "\\ripqp_ma571_qp.csv"), DataFrame)
+ripqp_ma57_multi_qp = CSV.read(string(res_path, "\\ripqp_ma57_multi1_qp.csv"), DataFrame)
 ripqp_ma57nosqd_qp = CSV.read(string(res_path, "\\ripqp_ma57nosqd1_qp.csv"), DataFrame)
 ripqp_ma57_qp2 = CSV.read(string(res_path, "\\ripqp_ma572_qp.csv"), DataFrame)
 ripqp_ma57nosqd_qp2 = CSV.read(string(res_path, "\\ripqp_ma57nosqd2_qp.csv"), DataFrame)
@@ -80,10 +84,11 @@ stats_qp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_qp,
                 # :cplex_nops1 => cplex_nops1_qp,
                 # :xpress_nops1 => xpress_nops1_qp,
-                :ripqp_ldl => ripqp1_qp,
+                # :ripqp_ldl => ripqp1_qp,
                 # :ripqp_ldlfact => ripqp1_qp,
                 :ripqp_ma57 => ripqp_ma57_qp,
-                :ripqp_ma572 => ripqp_ma57_qp2,
+                :ripqp_ma57_multi => ripqp_ma57_multi_qp,
+                # :ripqp_ma572 => ripqp_ma57_qp2,
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_qp,
                 # :ripqp_qdldl => ripqp_qdldl_qp,
                 # :ripqp => filter(x -> x.id ∉ easy_pbs_qp, ripqp1_qp),
@@ -102,7 +107,8 @@ function dfstat(df)
       output[i] = Inf
     else 
       # output[i] = df.iter[i]
-      output[i] = df.elapsed_time[i]
+      output[i] = df.relative_iter_cnt[i]
+      # output[i] = df.elapsed_time[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
