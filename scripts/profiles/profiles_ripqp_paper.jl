@@ -40,6 +40,7 @@ stats_lp = Dict(
                 # :cplex_nops1 => cplex_nops1_lp,
                 # :xpress_nops1 => xpress_nops1_lp,
                 # :ripqp1 => ripqp1_lp,
+                # :ripqp2 => ripqp2_lp,
                 # :ripqp_ldlfact => ripqp1_lp,
                 # :ripqp_multi => ripqp_multi1_lp,
                 # :ripqp_nops1 => ripqp_nops1_lp,
@@ -84,10 +85,10 @@ stats_qp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_qp,
                 # :cplex_nops1 => cplex_nops1_qp,
                 # :xpress_nops1 => xpress_nops1_qp,
-                # :ripqp_ldl => ripqp1_qp,
-                # :ripqp_ldlfact => ripqp1_qp,
-                :ripqp_ma57 => ripqp_ma57_qp,
-                :ripqp_ma57_multi => ripqp_ma57_multi_qp,
+                :ripqp_ldl => ripqp1_qp,
+                :ripqp2_ldl => ripqp2_qp,
+                # :ripqp_ma57 => ripqp_ma57_qp,
+                # :ripqp_ma57_multi => ripqp_ma57_multi_qp,
                 # :ripqp_ma572 => ripqp_ma57_qp2,
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_qp,
                 # :ripqp_qdldl => ripqp_qdldl_qp,
@@ -107,8 +108,8 @@ function dfstat(df)
       output[i] = Inf
     else 
       # output[i] = df.iter[i]
-      output[i] = df.relative_iter_cnt[i]
-      # output[i] = df.elapsed_time[i]
+      # output[i] = df.relative_iter_cnt[i]
+      output[i] = df.elapsed_time[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
@@ -118,9 +119,9 @@ function dfstat(df)
 end
 
 cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
-# perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
-# title!("Performance profile (Netlib problems)")
-perf = performance_profile(stats_qp, dfstat,legend=:bottomright)
-title!("Performance profile (Maros and Meszaros problems)")
+perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
+title!("Performance profile (Netlib problems)")
+# perf = performance_profile(stats_qp, dfstat,legend=:bottomright)
+# title!("Performance profile (Maros and Meszaros problems)")
 display("image/svg+xml", perf)
 # savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\qp_nops2.pdf")

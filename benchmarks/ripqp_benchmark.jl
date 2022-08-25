@@ -31,7 +31,7 @@ qm = createQuadraticModel(qpdata)
 ripqp1(QM) = ripqp(QM, sp = K2LDLParams(),
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp1(qm)
-ripqp2(QM) = ripqp(QM, sp = K2LDLParams(ρ0 = 1.0, δ0 = 1.0),
+ripqp2(QM) = ripqp(QM, sp = K2LDLParams(ρ0 = 0.1, δ0 = 0.1),
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp2(qm)
 # ripqpma57(QM) = ripqp(QM,
