@@ -39,14 +39,14 @@ stats_lp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_lp,
                 # :cplex_nops1 => cplex_nops1_lp,
                 # :xpress_nops1 => xpress_nops1_lp,
-                # :ripqp1 => ripqp1_lp,
-                # :ripqp2 => ripqp2_lp,
+                :ripqp1 => ripqp1_lp,
+                :ripqp2 => ripqp2_lp,
                 # :ripqp_ldlfact => ripqp1_lp,
                 # :ripqp_multi => ripqp_multi1_lp,
                 # :ripqp_nops1 => ripqp_nops1_lp,
                 # :ripqp_ma57 => ripqp_ma57_lp,
-                 :ripqp_ma57 => ripqp_ma57_lp,
-                 :ripqp_ma57_multi => ripqp_ma57_multi_lp,
+                #  :ripqp_ma57 => ripqp_ma57_lp,
+                #  :ripqp_ma57_multi => ripqp_ma57_multi_lp,
                 # :ripqp_ma572 => ripqp_ma57_lp2,
                 # :ripqp => filter(x -> x.id ∉ easy_pbs_lp, ripqp1_lp),
                 # :ripqp_qdldl => filter(x -> x.id ∉ easy_pbs_lp, ripqp_qdldl_lp),
@@ -119,9 +119,9 @@ function dfstat(df)
 end
 
 cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
-perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
-title!("Performance profile (Netlib problems)")
-# perf = performance_profile(stats_qp, dfstat,legend=:bottomright)
-# title!("Performance profile (Maros and Meszaros problems)")
+# perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
+# title!("Performance profile (Netlib problems)")
+perf = performance_profile(stats_qp, dfstat,legend=:bottomright)
+title!("Performance profile (Maros and Meszaros problems)")
 display("image/svg+xml", perf)
 # savefig(raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\qp_nops2.pdf")
