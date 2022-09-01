@@ -17,11 +17,11 @@ reset_timer!(RipQP.to)
 stats1 = RipQP.ripqp(qm, 
                     # sp = RipQP.K2LDLParams(fact_alg = RipQP.LDLFact()),# ρ0=0.1, δ0=0.1),
                      # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
-                    #  sp = RipQP.K2KrylovParams(
-                    #   form_mat = true,
-                    #    uplo=:U, 
-                    #    preconditioner = RipQP.LDL(pos = :R), 
-                    #    kmethod = :gmres, ρ_min = 1e0 * sqrt(eps()), δ_min = 1e0 * sqrt(eps())),
+                     sp = RipQP.K2KrylovParams(
+                      form_mat = true,
+                       uplo=:L, 
+                       preconditioner = RipQP.Equilibration(), 
+                       kmethod = :minres, ρ_min = 1e0 * sqrt(eps()), δ_min = 1e0 * sqrt(eps())),
                     # sp = RipQP.K2KrylovParams(uplo = :L, kmethod = :gmres, rhs_scale=true, #δ0 = 0.,
                     # # form_mat = true, equilibrate = false,
                     #   # preconditioner = RipQP.LDL(T = Float64),
@@ -184,6 +184,11 @@ QM = QuadraticModel(c, SparseMatrixCOO(tril(Q)), A=SparseMatrixCOO(A), lcon=b, u
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\QuadraticModels.jl\src\QuadraticModels.jl")
 # QM = QuadraticModels.QuadraticModel(c, Q, A=A, lcon=[-3; -4], ucon=[-2.; Inf], lvar=l, uvar=u, c0=0., name="QM1");
 stats1 = RipQP.ripqp(QM,
+                sp = RipQP.K2KrylovParams(
+                      form_mat = true,
+                       uplo=:L, 
+                       preconditioner = RipQP.Equilibration(), 
+                       kmethod = :minres, ρ_min = 1e0 * sqrt(eps()), δ_min = 1e0 * sqrt(eps())),
                 solve_method=RipQP.IPF(), scaling = false, history=false, ps=false, 
                 itol = RipQP.InputTol(max_time = 20.0, max_iter = 50))
 # stats1 = RipQP.ripqp(QM)

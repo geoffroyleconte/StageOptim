@@ -23,7 +23,7 @@ path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f232
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 save_path = "/home/gelecd/code/docGL/benchmarks/ripqp_paper"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
-pb = string(path_pb_lp, "/AGG.SIF")
+pb = string(path_pb_lp, "/25FV47.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
@@ -34,20 +34,20 @@ stats = ripqp1(qm)
 # ripqp2(QM) = ripqp(QM, sp = K2LDLParams(ρ0 = 0.1, δ0 = 0.1),
 #                     itol = InputTol(max_iter = 800, max_time=1200.))
 # stats = ripqp2(qm)
-# ripqpma57(QM) = ripqp(QM,
-#                     sp = K2LDLParams(fact_alg = HSLMA57Fact()),
-#                     itol = InputTol(max_iter = 800, max_time=1200.))
-# stats = ripqpma57(qm)
+ripqpma57(QM) = ripqp(QM,
+                    sp = K2LDLParams(fact_alg = HSLMA57Fact()),
+                    itol = InputTol(max_iter = 800, max_time=1200.))
+stats = ripqpma57(qm)
 # ripqpma57_multi(QM) = ripqp(QM, mode = :mono,
 #                     sp = K2KrylovParams(uplo = :L, kmethod = :gmres,
 #                     ρ_min = 1e0 * sqrt(eps()), δ_min = 1e0 * sqrt(eps()),
 #                     preconditioner = LDL(fact_alg = HSLMA57Fact(), pos = :R)),
 #                     itol = InputTol(max_iter = 100, max_time=1200.))
 # stats = ripqpma57_multi(qm)
-# ripqpma57_nosqd(QM) = ripqp(QM, 
-#                     sp = K2LDLParams(ρ_min = sqrt(eps()), δ_min = sqrt(eps()), fact_alg = HSLMA57Fact(sqd=false)),
-#                     itol = InputTol(max_iter = 800, max_time=1200.))
-# stats = ripqpma57_nosqd(qm)
+ripqpma97(QM) = ripqp(QM, 
+                    sp = K2LDLParams(fact_alg = HSLMA97Fact()),
+                    itol = InputTol(max_iter = 800, max_time=1200.))
+stats = ripqpma97(qm)
 # ripqpqdldl(QM) = ripqp(QM, 
 #                     sp = K2LDLParams(fact_alg = QDLDLFact()),
 #                     itol = InputTol(max_iter = 800, max_time=1200.))
@@ -120,7 +120,8 @@ end
 # save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
 save_problems(string(save_path, "/ripqp2"), ripqp1)
 # save_problems(string(save_path, "/ripqp2"), ripqp2)
-# save_problems(string(save_path, "/ripqp_ma571"), ripqpma57)
+save_problems(string(save_path, "/ripqp_ma571"), ripqpma57)
+save_problems(string(save_path, "/ripqp_ma971"), ripqpma97)
 # save_problems(string(save_path, "/ripqp_ma57_multi1"), ripqpma57_multi)
 # save_problems(string(save_path, "/ripqp_ma57nosqd2"), ripqpma57_nosqd)
 # save_problems(string(save_path, "/ripqp_qdldl1"), ripqpqdldl)
