@@ -8,20 +8,20 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\QSEBA.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\QPILOTNO.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
 TimerOutputs.enable_debug_timings(RipQP)
 reset_timer!(RipQP.to)
 stats1 = RipQP.ripqp(qm, 
-                    # sp = RipQP.K2LDLParams(fact_alg = RipQP.LDLFact()),# ρ0=0.1, δ0=0.1),
+                    sp = RipQP.K2LDLParams(fact_alg = RipQP.LDLFact(regul=:dynamic)),# ρ0=0.1, δ0=0.1),
                      # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
-                     sp = RipQP.K2KrylovParams(
-                      form_mat = true,
-                       uplo=:L, 
-                       preconditioner = RipQP.Equilibration(), 
-                       kmethod = :minres, ρ_min = 1e0 * sqrt(eps()), δ_min = 1e0 * sqrt(eps())),
+                    #  sp = RipQP.K2KrylovParams(
+                    #   form_mat = true,
+                    #    uplo=:L, 
+                    #    preconditioner = RipQP.Equilibration(), 
+                    #    kmethod = :minres, ρ_min = 1e0 * sqrt(eps()), δ_min = 1e0 * sqrt(eps())),
                     # sp = RipQP.K2KrylovParams(uplo = :L, kmethod = :gmres, rhs_scale=true, #δ0 = 0.,
                     # # form_mat = true, equilibrate = false,
                     #   # preconditioner = RipQP.LDL(T = Float64),
