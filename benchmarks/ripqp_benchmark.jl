@@ -1,10 +1,10 @@
 using QuadraticModels, QPSReader
 using RipQP
-# using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
+using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
 # using JLD2
 using CSV
 using SolverBenchmark
-using HSL, QDLDL
+# using HSL, QDLDL
 # include("/home/mgi.polymtl.ca/geleco/git_workspace/docGL/utils/K1QR.jl")
 
 function createQuadraticModel(qpdata; name="qp_pb")
@@ -31,7 +31,7 @@ qm = createQuadraticModel(qpdata)
 ripqp1(QM) = ripqp(QM, sp = K2LDLParams(),
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp1(qm)
-ripqp2(QM) = ripqp(QM, sp = K2LDLParams(fact_alg = LDLFact(regul = :dynamic)),
+ripqp2(QM) = ripqp(QM, sp = K2LDLParams(), kc = -1,
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp2(qm)
 # ripqpma57(QM) = ripqp(QM,
@@ -59,17 +59,17 @@ stats = ripqp2(qm)
 # ripqp_nops(QM) = ripqp(QM, ps = false, itol = InputTol(max_iter = 800, max_time=1200.))
 # stats = ripqp_nops(qm)
 # cplex2_nops(QM) = cplex(QM, presolve=0, crossover=2, display=0, threads=1)
-# cplex2(QM) = cplex(QM, crossover=2, display=0, threads=1)
+cplex2(QM) = cplex(QM, crossover=2, display=0, threads=1)
 # stats = cplex2_nops(qm)  # compile code
-# stats = cplex2(qm)  # compile code
+stats = cplex2(qm)  # compile code
 # gurobi2_nops(QM) = gurobi(QM, presolve=0, crossover=0, display=0, threads=1)
-# gurobi2(QM) = gurobi(QM, crossover=0, display=0, threads=1)
+gurobi2(QM) = gurobi(QM, crossover=0, display=0, threads=1)
 # stats = gurobi2_nops(qm)  # compile code
-# stats = gurobi2(qm)  # compile code
+stats = gurobi2(qm)  # compile code
 # xpress2_nops(QM) = xpress(QM, presolve=0, crossover=0, threads=1)
-# xpress2(QM) = xpress(QM, crossover=0, threads=1)
+xpress2(QM) = xpress(QM, crossover=0, threads=1)
 # stats = xpress2_nops(qm)  # compile code
-# stats = xpress2(qm)  # compile code
+stats = xpress2(qm)  # compile code
 # ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_time=1200.))
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
 #                             itol = InputTol(max_iter=400, max_time=10.) )#,
@@ -112,14 +112,14 @@ function save_problems(file_path :: String, ripqp_func :: Function,
 end
 
 # save_problems(string(save_path, "/gurobi_nops1"), gurobi2_nops)
-# save_problems(string(save_path, "/gurobi1"), gurobi2)
+save_problems(string(save_path, "/gurobi1"), gurobi2)
 # save_problems(string(save_path, "/cplex_nops1"), cplex2_nops)
-# save_problems(string(save_path, "/cplex1"), cplex2)
+save_problems(string(save_path, "/cplex1"), cplex2)
 # save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
-# save_problems(string(save_path, "/xpress1"), xpress2)
+save_problems(string(save_path, "/xpress1"), xpress2)
 # save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
 save_problems(string(save_path, "/ripqp1"), ripqp1)
-save_problems(string(save_path, "/ripqp3"), ripqp2)
+save_problems(string(save_path, "/ripqp_cc1"), ripqp2)
 # save_problems(string(save_path, "/ripqp_ma571"), ripqpma57)
 # save_problems(string(save_path, "/ripqp_ma971"), ripqpma97)
 # save_problems(string(save_path, "/ripqp_ma57_multi1"), ripqpma57_multi)
