@@ -18,9 +18,9 @@ xpress1_lp = CSV.read(string(res_path, "\\xpress1_lp.csv"), DataFrame)
 gurobi_nops1_lp = CSV.read(string(res_path, "\\gurobi_nops1_lp.csv"), DataFrame)
 cplex_nops1_lp = CSV.read(string(res_path, "\\cplex_nops1_lp.csv"), DataFrame)
 xpress_nops1_lp = CSV.read(string(res_path, "\\xpress_nops1_lp.csv"), DataFrame)
-ripqp1_lp = CSV.read(string(res_path, "\\ripqp1_lp.csv"), DataFrame) # new init
-ripqp2_lp = CSV.read(string(res_path, "\\ripqp2_lp.csv"), DataFrame)
-ripqp3_lp = CSV.read(string(res_path, "\\ripqp3_lp.csv"), DataFrame) # new init + dynamic
+ripqp1_lp = CSV.read(string(res_path, "\\ripqp1_lp.csv"), DataFrame) # compare commercial solvs + cc1
+ripqp2_lp = CSV.read(string(res_path, "\\ripqp2_lp.csv"), DataFrame) # compare factos
+ripqp3_lp = CSV.read(string(res_path, "\\ripqp3_lp.csv"), DataFrame) 
 ripqp_ma57_lp = CSV.read(string(res_path, "\\ripqp_ma571_lp.csv"), DataFrame)
 ripqp_ma97_lp = CSV.read(string(res_path, "\\ripqp_ma971_lp.csv"), DataFrame)
 ripqp_ma57_multi_lp = CSV.read(string(res_path, "\\ripqp_ma57_multi1_lp.csv"), DataFrame)
@@ -41,8 +41,8 @@ stats_lp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_lp,
                 # :cplex_nops1 => cplex_nops1_lp,
                 # :xpress_nops1 => xpress_nops1_lp,
-                :ripqp1 => ripqp1_lp,
-                :ripqp2 => ripqp2_lp,
+                :ripqp => ripqp1_lp,
+                # :ripqp2 => ripqp2_lp,
                 # :ripqp3 => ripqp3_lp,
                 # :ripqp_ldlfact => ripqp1_lp,
                 # :ripqp_multi => ripqp_multi1_lp,
@@ -57,7 +57,7 @@ stats_lp = Dict(
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_lp2,
                 # :ripqp_qdldl => ripqp_qdldl_lp,
                 # :ripqp_cholmod => ripqp_cholmod_lp,
-                # :ripqp_cc => ripqp_cc1_lp,
+                :ripqp_cc => ripqp_cc1_lp,
                 )
 
 gurobi1_qp = CSV.read(string(res_path, "\\gurobi1_qp.csv"), DataFrame)
@@ -89,8 +89,8 @@ stats_qp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_qp,
                 # :cplex_nops1 => cplex_nops1_qp,
                 # :xpress_nops1 => xpress_nops1_qp,
-                :ripqp1 => ripqp1_qp,
-                :ripqp2 => ripqp2_qp,
+                :ripqp => ripqp1_qp,
+                # :ripqp2 => ripqp2_qp,
                 # :ripqp_ma57 => ripqp_ma57_qp,
                 # :ripqp_ma97 => ripqp_ma97_qp,
                 # :ripqp_ma57_multi => ripqp_ma57_multi_qp,
@@ -103,7 +103,7 @@ stats_qp = Dict(
                 # :ripqp_cholmod => ripqp_cholmod_qp,
                 # :ripqp_multi => ripqp_multi1_qp,
                 # :ripqp_nops1 => ripqp_nops1_qp,
-                # :ripqp_cc => ripqp_cc1_qp,
+                :ripqp_cc => ripqp_cc1_qp,
                 )
 
 function dfstat(df)
@@ -112,9 +112,9 @@ function dfstat(df)
     if df.primal_feas[i] === missing
       output[i] = Inf
     else 
-      output[i] = df.iter[i]
+      # output[i] = df.iter[i]
       # output[i] = df.relative_iter_cnt[i]
-      # output[i] = df.elapsed_time[i]
+      output[i] = df.elapsed_time[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
@@ -124,10 +124,10 @@ function dfstat(df)
 end
 
 cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
-# perf = performance_profile(stats_lp, dfstat,legend=:bottomright)
-# title!("Performance profile (Netlib problems)")
 pgfplotsx()
+# perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+# title!("Performance profile (Netlib problems)")
 perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 title!("Performance profile (Maros and Meszaros problems)")
-display("image/svg+xml", perf)
-# savefig(perf, raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\test1.tikz")
+# display("image/svg+xml", perf)
+# savefig(perf, raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\cc_mm_time.tikz")
