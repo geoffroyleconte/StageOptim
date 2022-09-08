@@ -1,8 +1,8 @@
 using QuadraticModels, QPSReader
 using Quadmath, SparseArrays, DoubleFloats
-path_pb = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\datasets\quadLP\data\MPS"
+# path_pb = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\datasets\quadLP\data\MPS"
 # path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/quadLP/data/MPS"
-# path_pb = "/home/gelecd/datasets/quad_problems"
+path_pb = "/home/gelecd/datasets/quad_problems"
 
 function createQuadraticModel_T(qpdata; T = Float128, name="qp_pb")
     return QuadraticModel(convert(Array{T}, qps1.c), qpdata.qrows, qpdata.qcols,
@@ -22,6 +22,7 @@ qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
 
+using HSL
 using RipQP
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
 T = Double64
@@ -77,27 +78,27 @@ stats1 = ripqp(qm1,
   Timulti = Tlow,
   early_multi_stop = false,
   # sp = K2LDLParams(regul = :hybrid, ρ_min=1.0e-10, δ_min = 1.0e-10), # solve in Float64
-  sp = K2KrylovParams{Tlow}( # solve in Float128
-    uplo = :U,
+  sp = K2KrylovParams{Tlow}( # solve in Float64
+    uplo = :L,
     kmethod=:gmres,
     equilibrate = false,
     itmax = 100,
     mem = 100,
-    preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
-    ρ_min=1.0e-18,
-    δ_min = 1.0e-18,
+    preconditioner = LDL(fact_alg = HSLMA57Fact(), T = Tlow, pos = :R, warm_start = true),
+    ρ_min=1.0e-10,
+    δ_min = 1.0e-10,
     atol_min = 1.0e-12,
     rtol_min = 1.0e-12,
   ),
   sp3 = K2KrylovParams{T}( # solve in Float128
-    uplo = :U,
+    uplo = :L,
     kmethod=:gmres,
     equilibrate = false,
-    itmax = 150,
-    mem = 150,
-    preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
-    ρ_min=T(1.0e-18),
-    δ_min = T(1.0e-18),
+    itmax = 50,
+    mem = 50,
+    preconditioner = LDL(fact_alg = HSLMA57Fact(), T = Tlow, pos = :R, warm_start = true),
+    ρ_min=T(1.0e-10),
+    δ_min = T(1.0e-10),
     atol_min = T(1.0e-30),
     rtol_min = T(1.0e-30),
   ),
@@ -112,4 +113,5 @@ stats1 = ripqp(qm1,
     max_iter64 = 200,
   ),
   display = true,
+  scaling = false,
 )
