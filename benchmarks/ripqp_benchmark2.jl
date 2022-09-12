@@ -52,7 +52,7 @@ ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi, Timulti = Float64,
                     sp = K2KrylovParams(uplo = :U,
                         form_mat = true, equilibrate = true, kmethod = :gmres,
                         preconditioner = LDL(T = Float32, pos = :R, warm_start = true),
-                        ρ_min=1.0e-4, δ_min = 1.0e-4,
+                        ρ_min=1.0e-8, δ_min = 1.0e-8,
                         mem = 10,
                         itmax = 10,
                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
@@ -144,9 +144,9 @@ end
 # save_problems(string(save_path, "/cplex1"), cplex2)
 # save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
 # save_problems(string(save_path, "/xpress1"), xpress2)
-save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
-save_problems(string(save_path, "/ripqp3"), ripqp1)
-save_problems(string(save_path, "/ripqp_ldlprecond1"), ripqp_ldlprecond)
+# save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
+# save_problems(string(save_path, "/ripqp3"), ripqp1)
+save_problems(string(save_path, "/ripqp_ldlprecond2"), ripqp_ldlprecond)
 # save_problems(string(save_path, "/ripqp_cc1"), ripqp2)
 # save_problems(string(save_path, "/ripqp_ma572"), ripqpma57)
 # save_problems(string(save_path, "/ripqp_ma971"), ripqpma97)

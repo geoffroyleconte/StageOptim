@@ -116,11 +116,12 @@ stats_qp = Dict(
 function dfstat(df)
   output = zeros(length(df.status))
   for i=1:length(df.status)
-    if df.primal_feas[i] === missing
+    if df.primal_feas[i] === missing || df.objective[i] == Inf
       output[i] = Inf
     else 
-      output[i] = df.iter[i]
+      # output[i] = df.iter[i]
       # output[i] = df.relative_iter_cnt[i]
+      output[i] = df.iters_sp2[i]
       # output[i] = df.elapsed_time[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
