@@ -29,6 +29,7 @@ ripqp_cholmod_lp = open_file("ripqp_cholmod1_lp")
 ripqp_multi1_lp = open_file("ripqp_multi1_lp")
 ripqp_nops1_lp = open_file("ripqp_nops1_lp")
 ripqp_cc1_lp = open_file("ripqp_cc1_lp")
+ripqp_ldlprecond_lp = open_file("ripqp_ldlprecond1_lp")
 
 easy_pbs_lp = findall(ripqp1_lp.elapsed_time .≤ 200.0)
 stats_lp = Dict(
@@ -41,15 +42,15 @@ stats_lp = Dict(
                 # :ripqp => ripqp1_lp,
                 # :ripqp_ldl => ripqp2_lp,
                 # :ripqp_qdldl => ripqp_qdldl_lp,
-                # :ripqp => ripqp3_lp,
+                :ripqp => ripqp3_lp,
                 # :ripqp_ldlfact => ripqp1_lp,
                 # :ripqp_multi => ripqp_multi1_lp,
                 # :ripqp_nops1 => ripqp_nops1_lp,
                 #  :ripqp_ma57 => ripqp_ma57_lp,
                 #  :ripqp_ma97 => ripqp_ma97_lp,
-                :ripqp_ma57 => ripqp_ma57_lp2,
-                :ripqp_ma57_multi => ripqp_ma57_multi_lp,
-                :ripqp_ma57_multi2 => ripqp_ma57_multi2_lp,
+                # :ripqp_ma57 => ripqp_ma57_lp2,
+                # :ripqp_ma57_multi => ripqp_ma57_multi_lp,
+                # :ripqp_ma57_multi2 => ripqp_ma57_multi2_lp,
                 # :ripqp => filter(x -> x.id ∉ easy_pbs_lp, ripqp1_lp),
                 # :ripqp_ma97 => filter(x -> x.id ∉ easy_pbs_lp, ripqp_ma97_lp),
                 # :ripqp_ma57 => filter(x -> x.id ∉ easy_pbs_lp, ripqp_ma572_lp),
@@ -57,6 +58,7 @@ stats_lp = Dict(
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_lp2,
                 # :ripqp_cholmod => ripqp_cholmod_lp,
                 # :ripqp_cc => ripqp_cc1_lp,
+                :ripqp_ldlprecond => ripqp_ldlprecond_lp,
                 )
 
 gurobi1_qp = open_file("gurobi1_qp")
@@ -79,7 +81,8 @@ ripqp_qdldl_qp = open_file("ripqp_qdldl1_qp")
 ripqp_cholmod_qp = open_file("ripqp_cholmod1_qp") 
 ripqp_multi1_qp = open_file("ripqp_multi1_qp") 
 ripqp_nops1_qp = open_file("ripqp_nops1_qp") 
-ripqp_cc1_qp = open_file("ripqp_cc1_qp") 
+ripqp_cc1_qp = open_file("ripqp_cc1_qp")
+ripqp_ldlprecond_qp = open_file("ripqp_ldlprecond1_qp")
 
 easy_pbs_qp = findall(ripqp_ma57_qp.elapsed_time .≤ 5.0)
 stats_qp = Dict(
@@ -91,22 +94,23 @@ stats_qp = Dict(
                 # :xpress_nops1 => xpress_nops1_qp,
                 # :ripqp => ripqp1_qp,
                 # :ripqp_ldl => ripqp2_qp,
-                # :ripqp => ripqp3_qp,
+                :ripqp => ripqp3_qp,
                 # :ripqp_ma57 => ripqp_ma572_qp,
                 # :ripqp_qdldl => ripqp_qdldl_qp,
                 # :ripqp_ma57 => ripqp_ma57_qp,
                 # :ripqp_ma97 => ripqp_ma97_qp,
-                :ripqp_ma57 => ripqp_ma572_qp,
-                :ripqp_ma57_multi => ripqp_ma57_multi_qp,
-                :ripqp_ma57_multi2 => ripqp_ma57_multi2_qp,
+                # :ripqp_ma57 => ripqp_ma572_qp,
+                # :ripqp_ma57_multi => ripqp_ma57_multi_qp,
+                # :ripqp_ma57_multi2 => ripqp_ma57_multi2_qp,
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_qp,
                 # :ripqp => filter(x -> x.id ∉ easy_pbs_qp, ripqp_ma572_qp),
                 # :ripqp_qdldl => filter(x -> x.id ∉ easy_pbs_qp, ripqp_qdldl_qp),
                 # :ripqp_ma57_multi => filter(x -> x.id ∉ easy_pbs_qp, ripqp_ma57_multi_qp),
                 # :ripqp_cholmod => ripqp_cholmod_qp,
-                # :ripqp_multi => ripqp_multi1_qp,
+                :ripqp_multi => ripqp_multi1_qp,
                 # :ripqp_nops1 => ripqp_nops1_qp,
                 # :ripqp_cc => ripqp_cc1_qp,
+                :ripqp_ldlprecond => ripqp_ldlprecond_qp,
                 )
 
 function dfstat(df)
@@ -115,8 +119,8 @@ function dfstat(df)
     if df.primal_feas[i] === missing
       output[i] = Inf
     else 
-      # output[i] = df.iter[i]
-      output[i] = df.relative_iter_cnt[i]
+      output[i] = df.iter[i]
+      # output[i] = df.relative_iter_cnt[i]
       # output[i] = df.elapsed_time[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
@@ -128,9 +132,9 @@ end
 
 cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
 pgfplotsx()
-perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+# perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # title!("Performance profile (Netlib problems)")
-# perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # title!("Performance profile (Maros and Meszaros problems)")
 # display("image/svg+xml", perf)
 # savefig(perf, raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\multi_ma57_net_riter.tikz")

@@ -8,7 +8,7 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\25FV47.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\AGG2.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
@@ -19,30 +19,42 @@ stats1 = RipQP.ripqp(qm,
                      # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
                     #  sp = RipQP.K2KrylovParams(
                     #   form_mat = true,
-                    #    uplo=:L, 
+                    #    uplo=:L,
                     #    preconditioner = RipQP.Equilibration(), 
                     #    kmethod = :minres, ρ_min = 1e0 * sqrt(eps()), δ_min = 1e0 * sqrt(eps())),
                     sp = RipQP.K2KrylovParams(uplo = :U, kmethod = :gmres, rhs_scale=true, #δ0 = 0.,
                     form_mat = true,
                       equilibrate = true,
                       preconditioner = RipQP.LDL(T = Float32, pos = :R),
-                      ρ_min=1.0e-8, δ_min = 1.0e-8,
-                      mem = 100,
-                      itmax = 100,
+                      ρ_min=1.0e-4, δ_min = 1.0e-4,
+                      mem = 10,
+                      itmax = 10,
                       atol_min = 1.0e-8, rtol_min = 1.0e-8,
                       # k3_resid = true,
                       # cb_only = true,
                       ),   
+                      sp2 = RipQP.K2KrylovParams(uplo = :U, kmethod = :gmres, rhs_scale=true, #δ0 = 0.,
+                      form_mat = true,
+                        equilibrate = true,
+                        preconditioner = RipQP.LDL(T = Float64, pos = :R),
+                        ρ_min=1.0e-8, δ_min = 1.0e-8,
+                        mem = 5,
+                        itmax = 5,
+                        atol_min = 1.0e-8, rtol_min = 1.0e-8,
+                        # k3_resid = true,
+                        # cb_only = true,
+                        ), 
+                    # sp2 = RipQP.K2LDLParams(fact_alg = RipQP.LDLFact(regul = :classic)),
                     #  sp = RipQP.K3SKrylovParams(uplo = :U, kmethod=:minres, rhs_scale=true, #δ0 = 0.,
                     #         preconditioner = RipQP.BlockDiagK3S(),
                     #         ρ_min=1.0e-8, δ_min = 1.0e-8,
                     #         mem = 100,
                     #         atol_min = 1.0e-6, rtol_min = 1.0e-6,
                     #         ), 
-                     solve_method=RipQP.PC(), scaling = true, history=true, ps=true, mode=:mono, kc=0,
-                     perturb = false,
+                     solve_method=RipQP.PC(), scaling = true, history=true, ps=true, mode=:multi, kc=0,
+                     perturb = false, Timulti = Float64,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                     itol = RipQP.InputTol(max_iter=100, max_time=100.0, max_iter32 = 40,
+                     itol = RipQP.InputTol(max_iter=100, max_time=100.0, max_iter1 = 30,
                        ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ),
                      display = true,
@@ -278,3 +290,16 @@ stats1 = RipQP.ripqp(qm16, iconf = RipQP.InputConfig(
                      display = true,
                      )
 println(stats1)
+
+using LDLFactorizations, SparseArrays, LinearAlgebra, BenchmarkTools
+n = 1000
+A = sprand(Float64, n, n, 0.1)
+A = triu(A * A' + I)
+A32 = convert(SparseMatrixCSC{Float32, Int}, A)
+LDL = ldl(Symmetric(A, :U))
+LDL32 = ldl(Symmetric(A32, :U))
+res = rand(Float64, n);
+res32 = rand(Float32, n);
+
+@benchmark ldiv!($LDL, $res)
+@benchmark ldiv!($LDL32, $res32)
