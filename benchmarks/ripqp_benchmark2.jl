@@ -70,17 +70,17 @@ stats = ripqp1(qm)
 #                     solve_method = PC(),
 #                     itol = InputTol(max_iter = 800, max_time=1200.))
 
-ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi, Timulti = Float64,
+ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi, 
                     sp = K2KrylovParams(uplo = :U,
                         form_mat = true, equilibrate = false, kmethod = :gmres,
                         preconditioner = LDL(T = Float32, pos = :R, warm_start = true),
-                        ρ_min=1.0e-7, δ_min = 1.0e-7,
+                        ρ_min=1.0e-8, δ_min = 1.0e-8,
                         mem = 10,
                         itmax = 10,
                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
-                        atol_min = 1.0e-6, rtol_min = 1.0e-6,
+                        atol_min = 1.0e-8, rtol_min = 1.0e-8,
                         ),
-                        sp2 = K2LDLParams(fact_alg = LDLFact(regul = :classic)),
+                        sp2 = K2LDLParams(fact_alg = LDLFact(regul = :dynamic)),
                     solve_method = PC(),
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp_ldlprecond(qm)
