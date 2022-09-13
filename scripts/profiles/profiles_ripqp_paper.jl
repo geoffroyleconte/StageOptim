@@ -29,7 +29,9 @@ ripqp_cholmod_lp = open_file("ripqp_cholmod1_lp")
 ripqp_multi1_lp = open_file("ripqp_multi1_lp")
 ripqp_nops1_lp = open_file("ripqp_nops1_lp")
 ripqp_cc1_lp = open_file("ripqp_cc1_lp")
-ripqp_ldlprecond_lp = open_file("ripqp_ldlprecond1_lp")
+ripqp_ldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-4
+ripqp_ldlprecond2_lp = open_file("ripqp_ldlprecond2_lp") # regu1 1.0e-8
+ripqp_ldlprecond3_lp = open_file("ripqp_ldlprecond3_lp") # regu1 1.0e-8 no equi
 
 easy_pbs_lp = findall(ripqp1_lp.elapsed_time .≤ 200.0)
 stats_lp = Dict(
@@ -58,7 +60,8 @@ stats_lp = Dict(
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_lp2,
                 # :ripqp_cholmod => ripqp_cholmod_lp,
                 # :ripqp_cc => ripqp_cc1_lp,
-                :ripqp_ldlprecond => ripqp_ldlprecond_lp,
+                :ripqp_ldlprecond1 => ripqp_ldlprecond1_lp,
+                :ripqp_ldlprecond2 => ripqp_ldlprecond2_lp,
                 )
 
 gurobi1_qp = open_file("gurobi1_qp")
@@ -82,7 +85,8 @@ ripqp_cholmod_qp = open_file("ripqp_cholmod1_qp")
 ripqp_multi1_qp = open_file("ripqp_multi1_qp") 
 ripqp_nops1_qp = open_file("ripqp_nops1_qp") 
 ripqp_cc1_qp = open_file("ripqp_cc1_qp")
-ripqp_ldlprecond_qp = open_file("ripqp_ldlprecond1_qp")
+ripqp_ldlprecond1_qp = open_file("ripqp_ldlprecond1_qp")
+ripqp_ldlprecond2_qp = open_file("ripqp_ldlprecond2_qp")
 
 easy_pbs_qp = findall(ripqp_ma57_qp.elapsed_time .≤ 5.0)
 stats_qp = Dict(
@@ -110,7 +114,8 @@ stats_qp = Dict(
                 :ripqp_multi => ripqp_multi1_qp,
                 # :ripqp_nops1 => ripqp_nops1_qp,
                 # :ripqp_cc => ripqp_cc1_qp,
-                :ripqp_ldlprecond => ripqp_ldlprecond_qp,
+                :ripqp_ldlprecond1 => ripqp_ldlprecond1_qp,
+                :ripqp_ldlprecond2 => ripqp_ldlprecond2_qp,
                 )
 
 function dfstat(df)
@@ -121,8 +126,8 @@ function dfstat(df)
     else 
       # output[i] = df.iter[i]
       # output[i] = df.relative_iter_cnt[i]
-      output[i] = df.iters_sp2[i]
-      # output[i] = df.elapsed_time[i]
+      # output[i] = df.iters_sp2[i]
+      output[i] = df.elapsed_time[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
