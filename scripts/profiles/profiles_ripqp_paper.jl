@@ -29,7 +29,7 @@ ripqp_cholmod_lp = open_file("ripqp_cholmod1_lp")
 ripqp_multi1_lp = open_file("ripqp_multi1_lp")
 ripqp_nops1_lp = open_file("ripqp_nops1_lp")
 ripqp_cc1_lp = open_file("ripqp_cc1_lp")
-ripqp_ldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-4
+ripqp_ldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-8, LDL sp2, no equi
 ripqp_ldlprecond2_lp = open_file("ripqp_ldlprecond2_lp") # regu1 1.0e-8
 ripqp_ldlprecond3_lp = open_file("ripqp_ldlprecond3_lp") # regu1 1.0e-8 no equi
 
@@ -44,7 +44,7 @@ stats_lp = Dict(
                 # :ripqp => ripqp1_lp,
                 # :ripqp_ldl => ripqp2_lp,
                 # :ripqp_qdldl => ripqp_qdldl_lp,
-                :ripqp => ripqp3_lp,
+                # :ripqp => ripqp3_lp,
                 # :ripqp_ldlfact => ripqp1_lp,
                 # :ripqp_multi => ripqp_multi1_lp,
                 # :ripqp_nops1 => ripqp_nops1_lp,
@@ -62,6 +62,7 @@ stats_lp = Dict(
                 # :ripqp_cc => ripqp_cc1_lp,
                 :ripqp_ldlprecond1 => ripqp_ldlprecond1_lp,
                 :ripqp_ldlprecond2 => ripqp_ldlprecond2_lp,
+                :ripqp_ldlprecond3 => ripqp_ldlprecond3_lp,
                 )
 
 gurobi1_qp = open_file("gurobi1_qp")
@@ -87,6 +88,7 @@ ripqp_nops1_qp = open_file("ripqp_nops1_qp")
 ripqp_cc1_qp = open_file("ripqp_cc1_qp")
 ripqp_ldlprecond1_qp = open_file("ripqp_ldlprecond1_qp")
 ripqp_ldlprecond2_qp = open_file("ripqp_ldlprecond2_qp")
+ripqp_ldlprecond3_qp = open_file("ripqp_ldlprecond3_qp")
 
 easy_pbs_qp = findall(ripqp_ma57_qp.elapsed_time .≤ 5.0)
 stats_qp = Dict(
@@ -98,7 +100,7 @@ stats_qp = Dict(
                 # :xpress_nops1 => xpress_nops1_qp,
                 # :ripqp => ripqp1_qp,
                 # :ripqp_ldl => ripqp2_qp,
-                :ripqp => ripqp3_qp,
+                # :ripqp => ripqp3_qp,
                 # :ripqp_ma57 => ripqp_ma572_qp,
                 # :ripqp_qdldl => ripqp_qdldl_qp,
                 # :ripqp_ma57 => ripqp_ma57_qp,
@@ -116,6 +118,7 @@ stats_qp = Dict(
                 # :ripqp_cc => ripqp_cc1_qp,
                 :ripqp_ldlprecond1 => ripqp_ldlprecond1_qp,
                 :ripqp_ldlprecond2 => ripqp_ldlprecond2_qp,
+                :ripqp_ldlprecond3 => ripqp_ldlprecond3_qp,
                 )
 
 function dfstat(df)
@@ -127,7 +130,8 @@ function dfstat(df)
       # output[i] = df.iter[i]
       # output[i] = df.relative_iter_cnt[i]
       # output[i] = df.iters_sp2[i]
-      output[i] = df.elapsed_time[i]
+      # output[i] = df.elapsed_time[i]
+      output[i] = 2 * df.iters_sp2[i] + df.iters_sp[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
