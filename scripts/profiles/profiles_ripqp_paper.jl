@@ -131,7 +131,7 @@ function dfstat(df)
       # output[i] = df.relative_iter_cnt[i]
       # output[i] = df.iters_sp2[i]
       # output[i] = df.elapsed_time[i]
-      output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
+      output[i] = 2 * df.iters_sp2[i] + df.iters_sp[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
