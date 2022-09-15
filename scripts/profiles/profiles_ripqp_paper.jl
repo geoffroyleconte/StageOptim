@@ -29,7 +29,7 @@ ripqp_cholmod_lp = open_file("ripqp_cholmod1_lp")
 ripqp_multi1_lp = open_file("ripqp_multi1_lp")
 ripqp_nops1_lp = open_file("ripqp_nops1_lp")
 ripqp_cc1_lp = open_file("ripqp_cc1_lp")
-ripqp_ldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-8, LDL sp2, no equi
+ripqp_ldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-8, no equi
 ripqp_ldlprecond2_lp = open_file("ripqp_ldlprecond2_lp") # regu1 1.0e-8
 ripqp_ldlprecond3_lp = open_file("ripqp_ldlprecond3_lp") # regu1 1.0e-8 no equi
 
@@ -46,7 +46,7 @@ stats_lp = Dict(
                 # :ripqp_qdldl => ripqp_qdldl_lp,
                 # :ripqp => ripqp3_lp,
                 # :ripqp_ldlfact => ripqp1_lp,
-                # :ripqp_multi => ripqp_multi1_lp,
+                :ripqp_multi => ripqp_multi1_lp,
                 # :ripqp_nops1 => ripqp_nops1_lp,
                 #  :ripqp_ma57 => ripqp_ma57_lp,
                 #  :ripqp_ma97 => ripqp_ma97_lp,
@@ -131,7 +131,7 @@ function dfstat(df)
       # output[i] = df.relative_iter_cnt[i]
       # output[i] = df.iters_sp2[i]
       # output[i] = df.elapsed_time[i]
-      output[i] = 2 * df.iters_sp2[i] + df.iters_sp[i]
+      output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
