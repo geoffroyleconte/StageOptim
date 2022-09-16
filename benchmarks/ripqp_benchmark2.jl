@@ -68,7 +68,9 @@ ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi,
                         atol_min = 1.0e-7, rtol_min = 1.0e-7,
                         ),
                     solve_method = PC(),
-                    itol = InputTol(max_iter = 800, max_time=1200.))
+                    itol = InputTol(max_iter = 800, max_time=1200.,
+                                    ϵ_pdd1 = 1.0e-4, ϵ_rb1 = 1.0e-5,
+                                    ϵ_rc1 = 1.0e-5))
 
 # ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi, 
 #                     sp = K2KrylovParams(uplo = :U,

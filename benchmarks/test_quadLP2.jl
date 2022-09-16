@@ -1,8 +1,8 @@
 using QuadraticModels, QPSReader
 using Quadmath, SparseArrays, DoubleFloats
-path_pb = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\datasets\quadLP\data\MPS"
+# path_pb = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\datasets\quadLP\data\MPS"
 # path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/quadLP/data/MPS"
-# path_pb = "/home/gelecd/datasets/quad_problems"
+path_pb = "/home/gelecd/datasets/quad_problems"
 
 function createQuadraticModel_T(qpdata; T = Float128, name="qp_pb")
     return QuadraticModel(convert(Array{T}, qps1.c), qpdata.qrows, qpdata.qcols,
@@ -25,7 +25,7 @@ qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
 # using HSL
 using RipQP
 # include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
-T = Double64
+T = Float128
 qm1 = createQuadraticModel_T(qps1, T = T) # create QuadraticModel in Double64
 Tlow = Float64
 # stats1 = ripqp(qm1, mode = :multi, Timulti = Tlow,
