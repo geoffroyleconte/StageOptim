@@ -17,10 +17,10 @@ function createQuadraticModel_T(qpdata; T = Float128, name="qp_pb")
 end
 
 # qps1 = readqps(string(path_pb, "CYCLE.SIF"))
-qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
+# qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
-# qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
+qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
 
 # using HSL
 using RipQP

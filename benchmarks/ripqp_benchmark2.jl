@@ -23,7 +23,7 @@ path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f232
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 save_path = "/home/gelecd/code/docGL/benchmarks/ripqp_paper"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
-pb = string(path_pb_lp, "/25FV47.SIF")
+pb = string(path_pb_lp, "/AFIRO.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
@@ -56,7 +56,7 @@ ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi,
                         mem = 10,
                         itmax = 10,
                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
-                        atol_min = 1.0e-6, rtol_min = 1.0e-6,
+                        atol_min = 1.0e-8, rtol_min = 1.0e-8,
                         ),
                         sp2 = K2KrylovParams(uplo = :U,
                         form_mat = true, equilibrate = false, kmethod = :gmres,
@@ -65,12 +65,12 @@ ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi,
                         mem = 5,
                         itmax = 5,
                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
-                        atol_min = 1.0e-7, rtol_min = 1.0e-7,
+                        atol_min = 1.0e-10, rtol_min = 1.0e-10,
                         ),
                     solve_method = PC(),
                     itol = InputTol(max_iter = 800, max_time=1200.,
-                                    ϵ_pdd1 = 1.0e-4, ϵ_rb1 = 1.0e-5,
-                                    ϵ_rc1 = 1.0e-5))
+                                    ϵ_pdd1 = 1.0e-8, ϵ_rb1 = 1.0e-6,
+                                    ϵ_rc1 = 1.0e-6))
 
 # ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi, 
 #                     sp = K2KrylovParams(uplo = :U,
@@ -162,7 +162,7 @@ end
 # save_problems(string(save_path, "/xpress1"), xpress2)
 # save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp3"), ripqp1)
-save_problems(string(save_path, "/ripqp_ldlprecond1"), ripqp_ldlprecond)
+save_problems(string(save_path, "/ripqp_ldlprecond2"), ripqp_ldlprecond)
 # save_problems(string(save_path, "/ripqp_cc1"), ripqp2)
 # save_problems(string(save_path, "/ripqp_ma572"), ripqpma57)
 # save_problems(string(save_path, "/ripqp_ma971"), ripqpma97)
