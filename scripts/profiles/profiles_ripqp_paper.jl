@@ -29,9 +29,9 @@ ripqp_cholmod_lp = open_file("ripqp_cholmod1_lp")
 ripqp_multi1_lp = open_file("ripqp_multi1_lp")
 ripqp_nops1_lp = open_file("ripqp_nops1_lp")
 ripqp_cc1_lp = open_file("ripqp_cc1_lp")
-ripqp_ldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-8, no equi
-ripqp_ldlprecond2_lp = open_file("ripqp_ldlprecond2_lp") # regu1 1.0e-8
-ripqp_ldlprecond3_lp = open_file("ripqp_ldlprecond3_lp") # regu1 1.0e-8 no equi
+ripqp_ldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-8, stop crit 64, no equi
+ripqp_ldlprecond2_lp = open_file("ripqp_ldlprecond2_lp") # regu1 1.0e-8 equi
+ripqp_ldlprecond3_lp = open_file("ripqp_ldlprecond3_lp") # regu1 1.0e-8 stop crit 64, equi
 
 easy_pbs_lp = findall(ripqp1_lp.elapsed_time .≤ 200.0)
 stats_lp = Dict(
