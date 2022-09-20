@@ -74,9 +74,9 @@ ripqp_multik(qm; T = T, Tlow = Tlow) = ripqp(qm,
   itol = InputTol(
     T,
     max_iter = 700,
-    max_time = 7000.0,
+    max_time = 4000.0,
     max_iter1 = 100,
-    max_iter2 = 300,
+    max_iter2 = 200,
   ),
 )
 stats = ripqp_multik(qm1)
@@ -86,15 +86,15 @@ ripqp_multi(qm; T = T, Tlow = Tlow) = ripqp(
   mode = :multi,
   early_multi_stop = false,
   sp = K2LDLParams{Tlow}(),
-  itol = InputTol(T, max_iter = 700, max_time = 7000.0, max_iter1 = 100),
+  itol = InputTol(T, max_iter = 700, max_time = 4000.0, max_iter1 = 100),
 )
 stats = ripqp_multi(qm1)
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function, T::DataType)
   problems = [
-    createQuadraticModel_T(readqps(string(path_pb, "/TMA_ME_presolved.mps")), T = T),
-    createQuadraticModel_T(readqps(string(path_pb, "/GlcAlift_presolved.mps")), T = T),
-    createQuadraticModel_T(readqps(string(path_pb, "/GlcAerWT_presolved.mps")), T = T),
+    createQuadraticModel_T(readqps(string(path_pb, "/TMA_ME_presolved.mps")), T = T, name = "TMA_ME"),
+    createQuadraticModel_T(readqps(string(path_pb, "/GlcAlift_presolved.mps")), T = T, name = "GlcAlift"),
+    createQuadraticModel_T(readqps(string(path_pb, "/GlcAerWT_presolved.mps")), T = T, name = "GlcAerWT"),
   ]
 
   return solve_problems(ripqp_func, problems)
