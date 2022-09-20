@@ -60,9 +60,9 @@ stats_lp = Dict(
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_lp2,
                 # :ripqp_cholmod => ripqp_cholmod_lp,
                 # :ripqp_cc => ripqp_cc1_lp,
-                :ripqp_ldlprecond1 => ripqp_ldlprecond1_lp,
-                :ripqp_ldlprecond2 => ripqp_ldlprecond2_lp,
-                :ripqp_ldlprecond3 => ripqp_ldlprecond3_lp,
+                :ripqp_multifact1 => ripqp_ldlprecond1_lp,
+                # :ripqp_ldlprecond2 => ripqp_ldlprecond2_lp,
+                :ripqp_multifact2 => ripqp_ldlprecond3_lp,
                 )
 
 gurobi1_qp = open_file("gurobi1_qp")
@@ -116,9 +116,9 @@ stats_qp = Dict(
                 :ripqp_multi => ripqp_multi1_qp,
                 # :ripqp_nops1 => ripqp_nops1_qp,
                 # :ripqp_cc => ripqp_cc1_qp,
-                :ripqp_ldlprecond1 => ripqp_ldlprecond1_qp,
-                :ripqp_ldlprecond2 => ripqp_ldlprecond2_qp,
-                :ripqp_ldlprecond3 => ripqp_ldlprecond3_qp,
+                :ripqp_multifact1 => ripqp_ldlprecond1_qp,
+                # :ripqp_ldlprecond2 => ripqp_ldlprecond2_qp,
+                :ripqp_multifact2 => ripqp_ldlprecond3_qp,
                 )
 
 function dfstat(df)
@@ -130,8 +130,8 @@ function dfstat(df)
       # output[i] = df.iter[i]
       # output[i] = df.relative_iter_cnt[i]
       # output[i] = df.iters_sp2[i]
-      # output[i] = df.elapsed_time[i]
-      output[i] = 2 * df.iters_sp2[i] + df.iters_sp[i]
+      output[i] = df.elapsed_time[i]
+      # output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
@@ -142,9 +142,9 @@ end
 
 cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
 pgfplotsx()
-# perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # title!("Performance profile (Netlib problems)")
-perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+# perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # title!("Performance profile (Maros and Meszaros problems)")
 # display("image/svg+xml", perf)
-# savefig(perf, raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\multi_ma57_net_riter.tikz")
+# savefig(perf, raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\multifact_mm_riter.tikz")

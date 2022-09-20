@@ -5,15 +5,15 @@ using Quadmath, SparseArrays, DoubleFloats
 path_pb = "/home/gelecd/datasets/quad_problems"
 
 function createQuadraticModel_T(qpdata; T = Float128, name="qp_pb")
-    return QuadraticModel(convert(Array{T}, qps1.c), qpdata.qrows, qpdata.qcols,
-            convert(Array{T}, qps1.qvals),
-            Arows=qpdata.arows, Acols=qpdata.acols,
-            Avals=convert(Array{T}, qps1.avals),
-            lcon=convert(Array{T}, qps1.lcon),
-            ucon=convert(Array{T}, qps1.ucon),
-            lvar=convert(Array{T}, qps1.lvar),
-            uvar=convert(Array{T}, qps1.uvar),
-            c0=T(qpdata.c0), x0 = zeros(T, length(qps1.c)), name=name)
+  return QuadraticModel(convert(Array{T}, qpdata.c), qpdata.qrows, qpdata.qcols,
+          convert(Array{T}, qpdata.qvals),
+          Arows=qpdata.arows, Acols=qpdata.acols,
+          Avals=convert(Array{T}, qpdata.avals),
+          lcon=convert(Array{T}, qpdata.lcon),
+          ucon=convert(Array{T}, qpdata.ucon),
+          lvar=convert(Array{T}, qpdata.lvar),
+          uvar=convert(Array{T}, qpdata.uvar),
+          c0=T(qpdata.c0), x0 = zeros(T, length(qpdata.c)), name=name)
 end
 
 # qps1 = readqps(string(path_pb, "CYCLE.SIF"))
@@ -87,11 +87,11 @@ stats1 = ripqp(qm1,
     kmethod=:gmres,
     form_mat = true,
     equilibrate = true,
-    itmax = 50,
-    mem = 50,
+    itmax = 100,
+    mem = 100,
     preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
-    ρ_min=1.0e-10,
-    δ_min = 1.0e-10,
+    ρ_min=1.0e-8,
+    δ_min = 1.0e-8,
     atol_min = 1.0e-15,
     rtol_min = 1.0e-15,
   ),
@@ -125,7 +125,7 @@ stats1 = ripqp(qm1,
   ps=true,
   itol = InputTol(
     T,
-    # ϵ_rb = T(1e-40), # very small to see what residuals can be reached
+    ϵ_rb = T(1e-40), # very small to see what residuals can be reached
     # ϵ_rb64 = 1e-20, # very small to see what residuals can be reached
     max_iter = 700,
     max_time = 70000.0,
@@ -135,6 +135,66 @@ stats1 = ripqp(qm1,
   display = true,
   scaling = true,
 )
+
+# GlcAerWT
+# stats1 = ripqp(qm1,
+#          mode = :multi,
+#          early_multi_stop = false,
+#          # sp = K2LDLParams(regul = :hybrid, ρ_min=1.0e-10, δ_min = 1.0e-10), # solve in Float64
+#          sp = K2KrylovParams{Tlow}( # solve in Float64
+#            uplo = :U,
+#            kmethod=:gmres,
+#            form_mat = true,
+#            equilibrate = false,
+#            itmax = 100,
+#            mem = 100,
+#            preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
+#            ρ_min=1.0e-9,
+#            δ_min = 1.0e-9,
+#            atol_min = 1.0e-15,
+#            rtol_min = 1.0e-15,
+#          ),
+#          sp2 = K2KrylovParams{T}( # solve in Float128
+#            uplo = :U,
+#            kmethod=:gmres,
+#            form_mat = true,
+#            equilibrate = false,
+#            itmax = 20,
+#            mem = 20,
+#            preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
+#            ρ_min=T(1.0e-15),
+#            δ_min = T(1.0e-15),
+#            atol_min = T(1.0e-14),
+#            rtol_min = T(1.0e-14),
+#          ),
+#            sp3 = K2KrylovParams{T}( # solve in Float128
+#            uplo = :U,
+#            kmethod=:gmres,
+#            form_mat = true,
+#            equilibrate = false,
+#            itmax = 5,
+#            mem = 5,
+#            preconditioner = LDL(T = T, pos = :R, warm_start = true),
+#            ρ_min=T(1.0e-15),
+#            δ_min = T(1.0e-15),
+#            atol_min = T(1.0e-16),
+#            rtol_min = T(1.0e-16),
+#          ),
+#          solve_method=IPF(),
+#          ps=true,
+#          itol = InputTol(
+#            T,
+#            ϵ_rb = T(1e-40), # very small to see what residuals can be reached
+#            # ϵ_rb64 = 1e-20, # very small to see what residuals can be reached
+#            max_iter = 700,
+#            max_time = 70000.0,
+#            max_iter1 = 200,
+#            max_iter2 = 300,
+#          ),
+#          display = true,
+#          scaling = true,
+#        )
+
 
 # GlcAlift                  
 # stats1 = ripqp(qm1, 
