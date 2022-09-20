@@ -100,7 +100,7 @@ function optimize_ripqp(path_pb :: String, ripqp_func :: Function, T::DataType)
   return solve_problems(ripqp_func, problems)
 end
 
-function save_quad_problems(file_path :: String, ripqp_func :: Function, path_pb :: String = path_pb, T = T)
+function save_quad_problems(file_path :: String, ripqp_func :: Function; path_pb :: String = path_pb, T = T)
   lp_stats = optimize_ripqp(path_pb, ripqp_func, T)
   CSV.write(string(file_path, "_quad.csv"), lp_stats)
   return Nothing
