@@ -245,6 +245,14 @@ ripqp_multik7(qm; T = T, Tlow = Tlow) = ripqp(qm,
     ϵ_rc1 = T(1.0e-6), ϵ_rb1 = T(1.0e-6)),
   display = true,
 )
+
+ripqp_multi(qm; T = T, Tlow = Tlow) = ripqp(
+  qm,
+  mode = :multi,
+  early_multi_stop = false,
+  sp = K2LDLParams{Tlow}(),
+  itol = InputTol(T, max_iter = 700, max_time = 4000.0, max_iter1 = 100),
+)
 stats = ripqp_multi(qm1)
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function, T::DataType)
