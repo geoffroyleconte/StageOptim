@@ -266,12 +266,12 @@ function save_quad_problems(file_path :: String, ripqp_func :: Function; path_pb
   return Nothing
 end
 
-save_quad_problems(string(save_path, "/ripqp_multik2"), ripqp_multi2, T = T)
-save_quad_problems(string(save_path, "/ripqp_multik3"), ripqp_multi3, T = T)
-save_quad_problems(string(save_path, "/ripqp_multik4"), ripqp_multi4, T = T)
-save_quad_problems(string(save_path, "/ripqp_multik5"), ripqp_multi5, T = T)
-save_quad_problems(string(save_path, "/ripqp_multik6"), ripqp_multi6, T = T)
-save_quad_problems(string(save_path, "/ripqp_multik7"), ripqp_multi7, T = T)
+save_quad_problems(string(save_path, "/ripqp_multik2"), ripqp_multik2, T = T)
+save_quad_problems(string(save_path, "/ripqp_multik3"), ripqp_multik3, T = T)
+save_quad_problems(string(save_path, "/ripqp_multik4"), ripqp_multik4, T = T)
+save_quad_problems(string(save_path, "/ripqp_multik5"), ripqp_multik5, T = T)
+save_quad_problems(string(save_path, "/ripqp_multik6"), ripqp_multik6, T = T)
+save_quad_problems(string(save_path, "/ripqp_multik7"), ripqp_multik7, T = T)
 save_quad_problems(string(save_path, "/ripqp_multi1"), ripqp_multi, T = T)
 
 
