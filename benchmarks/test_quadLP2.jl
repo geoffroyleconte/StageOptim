@@ -1,8 +1,8 @@
 using QuadraticModels, QPSReader
 using Quadmath, SparseArrays, DoubleFloats
-# path_pb = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\datasets\quadLP\data\MPS"
+path_pb = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\datasets\quadLP\data\MPS"
 # path_pb = "/home/mgi.polymtl.ca/geleco/quad_optim/problems/quadLP/data/MPS"
-path_pb = "/home/gelecd/datasets/quad_problems"
+# path_pb = "/home/gelecd/datasets/quad_problems"
 
 function createQuadraticModel_T(qpdata; T = Float128, name="qp_pb")
   return QuadraticModel(convert(Array{T}, qpdata.c), qpdata.qrows, qpdata.qcols,
@@ -19,8 +19,8 @@ end
 # qps1 = readqps(string(path_pb, "CYCLE.SIF"))
 # qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
-# qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
-qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
+qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
+# qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
 
 # using HSL
 using RipQP
@@ -84,31 +84,32 @@ stats1 = ripqp(qm1,
   # sp = K2LDLParams(regul = :hybrid, ρ_min=1.0e-10, δ_min = 1.0e-10), # solve in Float64
   sp = K2KrylovParams{Tlow}( # solve in Float64
     uplo = :U,
-    kmethod=:gmres,
+    kmethod=:gmresir,
     form_mat = true,
-    equilibrate = true,
+    equilibrate = false,
     itmax = 100,
-    mem = 100,
+    mem = 10,
     preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
-    ρ_min=1.0e-8,
-    δ_min = 1.0e-8,
+    ρ_min=1.0e-15,
+    δ_min = 1.0e-15,
     atol_min = 1.0e-15,
     rtol_min = 1.0e-15,
+    Tir = T,
   ),
-  sp2 = K2KrylovParams{T}( # solve in Float128
-    uplo = :U,
-    kmethod=:gmres,
-    form_mat = true,
-    equilibrate = true,
-    itmax = 20,
-    mem = 20,
-    preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
-    ρ_min=T(1.0e-15),
-    δ_min = T(1.0e-15),
-    atol_min = T(1.0e-14),
-    rtol_min = T(1.0e-14),
-  ),
-    sp3 = K2KrylovParams{T}( # solve in Float128
+  # sp2 = K2KrylovParams{T}( # solve in Float128
+  #   uplo = :U,
+  #   kmethod=:gmres,
+  #   form_mat = true,
+  #   equilibrate = true,
+  #   itmax = 20,
+  #   mem = 20,
+  #   preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
+  #   ρ_min=T(1.0e-15),
+  #   δ_min = T(1.0e-15),
+  #   atol_min = T(1.0e-14),
+  #   rtol_min = T(1.0e-14),
+  # ),
+    sp2 = K2KrylovParams{T}( # solve in Float128
     uplo = :U,
     kmethod=:gmres,
     form_mat = true,
@@ -125,12 +126,12 @@ stats1 = ripqp(qm1,
   ps=true,
   itol = InputTol(
     T,
-    ϵ_rb = T(1e-40), # very small to see what residuals can be reached
+    # ϵ_rb = T(1e-40), # very small to see what residuals can be reached
     # ϵ_rb64 = 1e-20, # very small to see what residuals can be reached
     max_iter = 700,
     max_time = 70000.0,
-    max_iter1 = 100,
-    max_iter2 = 300,
+    max_iter1 = 200,
+    # max_iter2 = 300,
   ),
   display = true,
   scaling = true,
