@@ -71,8 +71,8 @@ Tlow = Float64
 
 
 # T = Double64
-# qm1 = createQuadraticModel_T(qps1, T = T) # create QuadraticModel in Float128
-# Tlow = Float64
+qm1 = createQuadraticModel_T(qps1, T = T) # create QuadraticModel in Float128
+Tlow = Float64
 # stats2 = ripqp(qm1 , mode = :multi, sp = K2LDLParams{Float64}(), early_multi_stop = false,
 #                 itol = InputTol(T, #ϵ_rb = T(1e-40), # very small to see what residuals can be reached
 #                   # ϵ_rb64 = 1e-20, # very small to see what residuals can be reached
@@ -84,7 +84,7 @@ stats1 = ripqp(qm1,
   # sp = K2LDLParams(regul = :hybrid, ρ_min=1.0e-10, δ_min = 1.0e-10), # solve in Float64
   sp = K2KrylovParams{Tlow}( # solve in Float64
     uplo = :U,
-    kmethod=:gmresir,
+    kmethod=:gmres,
     form_mat = true,
     equilibrate = false,
     itmax = 100,
@@ -92,8 +92,8 @@ stats1 = ripqp(qm1,
     preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
     ρ_min=1.0e-15,
     δ_min = 1.0e-15,
-    atol_min = 1.0e-15,
-    rtol_min = 1.0e-15,
+    atol_min = 1.0e-16,
+    rtol_min = 1.0e-16,
     Tir = T,
   ),
   # sp2 = K2KrylovParams{T}( # solve in Float128
@@ -121,6 +121,7 @@ stats1 = ripqp(qm1,
     δ_min = T(1.0e-15),
     atol_min = T(1.0e-16),
     rtol_min = T(1.0e-16),
+    switch_solve_method = true,
   ),
   solve_method=IPF(),
   ps=true,
@@ -130,7 +131,10 @@ stats1 = ripqp(qm1,
     # ϵ_rb64 = 1e-20, # very small to see what residuals can be reached
     max_iter = 700,
     max_time = 70000.0,
-    max_iter1 = 200,
+    max_iter1 = 100,
+    ϵ_pdd1 = T(1.0e1),
+    ϵ_rc1 = T(1.0e-6),
+    ϵ_rb1 = T(1.0e-6),
     # max_iter2 = 300,
   ),
   display = true,
