@@ -27,24 +27,21 @@ Tlow = Float64
 path_pb_lp = "/home/gelecd/.julia/artifacts/545f8c5577a056981a21caf3f53bd7b59cf67410/optrove-netlib-lp-f83996fca937"
 qm1 = createQuadraticModel_T(readqps(string(path_pb_lp, "/AFIRO.SIF")), T=T)
 
-T = Float128
-Tlow = Float64
 ripqp_multik2(qm; T = T, Tlow = Tlow) = ripqp(qm, 
   mode = :multi,
   early_multi_stop = false,
   sp = K2KrylovParams{Tlow}( # solve in Float64
     uplo = :U,
-    kmethod=:gmresir,
+    kmethod=:gmres,
     form_mat = true,
     equilibrate = false,
     itmax = 100,
-    mem = 10,
+    mem = 100,
     preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
     ρ_min=1.0e-15,
     δ_min = 1.0e-15,
-    atol_min = 1.0e-15,
-    rtol_min = 1.0e-15,
-    Tir = T,
+    atol_min = 1.0e-16,
+    rtol_min = 1.0e-16,
   ),
     sp2 = K2KrylovParams{T}( # solve in Float128
     uplo = :U,
@@ -60,7 +57,9 @@ ripqp_multik2(qm; T = T, Tlow = Tlow) = ripqp(qm,
     rtol_min = T(1.0e-16),
   ),
   solve_method=IPF(),
-  itol = InputTol(T, max_iter = 700, max_time = 7000.0, max_iter1 = 200),
+  solve_method2=PC(),
+  itol = InputTol(T, max_iter = 700, max_time = 7000.0, max_iter1 = 100, ϵ_pdd1 = T(1.0e1),
+    ϵ_rc1 = T(1.0e-6), ϵ_rb1 = T(1.0e-6)),
   display = true,
 )
 stats = ripqp_multik2(qm1)
@@ -129,9 +128,9 @@ ripqp_multik4(qm; T = T, Tlow = Tlow) = ripqp(qm,
     δ_min = T(1.0e-15),
     atol_min = T(1.0e-16),
     rtol_min = T(1.0e-16),
-    switch_solve_method = true,
   ),
   solve_method=IPF(),
+  solve_method2=PC(),
   itol = InputTol(T, max_iter = 700, max_time = 7000.0, max_iter1 = 200, ϵ_pdd1 = T(1.0e1),
     ϵ_rc1 = T(1.0e-6), ϵ_rb1 = T(1.0e-6)),
   display = true,
@@ -201,10 +200,10 @@ ripqp_multik6(qm; T = T, Tlow = Tlow) = ripqp(qm,
     δ_min = T(1.0e-15),
     atol_min = T(1.0e-16),
     rtol_min = T(1.0e-16),
-    switch_solve_method = true,
   ),
   solve_method=IPF(),
-  itol = InputTol(T, max_iter = 700, max_time = 7000.0, max_iter1 = 200, ϵ_pdd1 = T(1.0e1),
+  solve_method2=PC(),
+  itol = InputTol(T, max_iter = 700, max_time = 7000.0, max_iter1 = 100, ϵ_pdd1 = T(1.0e1),
     ϵ_rc1 = T(1.0e-6), ϵ_rb1 = T(1.0e-6)),
   display = true,
 )
@@ -218,8 +217,8 @@ ripqp_multik7(qm; T = T, Tlow = Tlow) = ripqp(qm,
     kmethod=:gmres,
     form_mat = true,
     equilibrate = false,
-    itmax = 100,
-    mem = 10,
+    itmax = 150,
+    mem = 150,
     preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
     ρ_min=1.0e-15,
     δ_min = 1.0e-15,
@@ -238,10 +237,10 @@ ripqp_multik7(qm; T = T, Tlow = Tlow) = ripqp(qm,
     δ_min = T(1.0e-15),
     atol_min = T(1.0e-16),
     rtol_min = T(1.0e-16),
-    switch_solve_method = true,
   ),
   solve_method=IPF(),
-  itol = InputTol(T, max_iter = 700, max_time = 7000.0, max_iter1 = 200, ϵ_pdd1 = T(1.0e1),
+  solve_method2=PC(),
+  itol = InputTol(T, max_iter = 700, max_time = 7000.0, max_iter1 = 100, ϵ_pdd1 = T(1.0e1),
     ϵ_rc1 = T(1.0e-6), ϵ_rb1 = T(1.0e-6)),
   display = true,
 )
@@ -271,7 +270,7 @@ function save_quad_problems(file_path :: String, ripqp_func :: Function; path_pb
   return Nothing
 end
 
-# save_quad_problems(string(save_path, "/ripqp_multik2"), ripqp_multik2, T = T)
+save_quad_problems(string(save_path, "/ripqp_multik2"), ripqp_multik2, T = T)
 # save_quad_problems(string(save_path, "/ripqp_multik3"), ripqp_multik3, T = T)
 save_quad_problems(string(save_path, "/ripqp_multik4"), ripqp_multik4, T = T)
 # save_quad_problems(string(save_path, "/ripqp_multik5"), ripqp_multik5, T = T)

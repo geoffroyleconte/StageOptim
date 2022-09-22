@@ -7,7 +7,7 @@ using CSV
 open_file(fname; res_path = res_path) = CSV.read(string(res_path, "\\", fname, ".csv"), DataFrame)
 
 ripqp_multik1 = open_file("ripqp_multik1_quad") # 3 sp init 
-ripqp_multik2 = open_file("ripqp_multik2_quad") # 1 200iter gmres ir no eq
+ripqp_multik2 = open_file("ripqp_multik2_quad") # 
 ripqp_multik3 = open_file("ripqp_multik3_quad") # 1 100iter gmres ir no eq
 ripqp_multik4 = open_file("ripqp_multik4_quad") # 
 ripqp_multik5 = open_file("ripqp_multik5_quad") # 1 100 iter gmres no eq
