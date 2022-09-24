@@ -19,8 +19,9 @@ end
 # qps1 = readqps(string(path_pb, "CYCLE.SIF"))
 # qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
-qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
+# qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
+qps1 = readqps(string(path_pb, "/GlcAerWT.mps"))
 
 # using HSL
 using RipQP
@@ -87,11 +88,11 @@ stats1 = ripqp(qm1,
     kmethod=:gmres,
     form_mat = true,
     equilibrate = false,
-    itmax = 100,
-    mem = 100,
+    itmax = 50,
+    mem = 50,
     preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
-    ρ_min=1.0e-15,
-    δ_min = 1.0e-15,
+    ρ_min=1.0e-10,
+    δ_min = 1.0e-10,
     atol_min = 1.0e-16,
     rtol_min = 1.0e-16,
     Tir = T,

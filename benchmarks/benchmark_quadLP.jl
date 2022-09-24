@@ -95,7 +95,7 @@ sp = K2KrylovParams{Tlow}( # solve in Float64
 ),
 solve_method=IPF(),
 solve_method2=PC(),
-itol = InputTol(T, max_iter = 700, max_time = 10000.0, max_iter1 = 200, ϵ_pdd1 = T(1.0e1),
+itol = InputTol(T, max_iter = 7000, max_time = 20000.0, max_iter1 = 200, ϵ_pdd1 = T(1.0e1),
   ϵ_rc1 = T(1.0e-5), ϵ_rb1 = T(1.0e-5)),
 display = true,
 )
@@ -251,11 +251,11 @@ ripqp_multi(qm; T = T, Tlow = Tlow) = ripqp(
   mode = :multi,
   early_multi_stop = false,
   sp = K2LDLParams{Tlow}(),
-  itol = InputTol(T, max_iter = 700, max_time = 10000.0, max_iter1 = 100),
+  itol = InputTol(T, max_iter = 7000, max_time = 20000.0, max_iter1 = 100),
 )
 stats = ripqp_multi(qm1)
 
-ripqp_mono(qm; T = T) = ripqp(qm, itol = InputTol(T, max_iter = 700, max_time = 10000.0, max_iter1 = 100))
+ripqp_mono(qm; T = T) = ripqp(qm, itol = InputTol(T, max_iter = 7000, max_time = 20000.0))
 stats = ripqp_mono(qm1)
 
 function optimize_ripqp(path_pb :: String, ripqp_func :: Function, T::DataType)
