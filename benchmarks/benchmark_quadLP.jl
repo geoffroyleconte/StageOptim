@@ -132,7 +132,7 @@ ripqp_multik4(qm; T = T, Tlow = Tlow) = ripqp(qm,
   ),
   solve_method=IPF(),
   solve_method2=PC(),
-  itol = InputTol(T, max_iter = 700, max_time = 2000.0, max_iter1 = 200, ϵ_pdd1 = T(1.0e1),
+  itol = InputTol(T, max_iter = 7000, max_time = 20000.0, max_iter1 = 100, ϵ_pdd1 = T(1.0e1),
     ϵ_rc1 = T(1.0e-6), ϵ_rb1 = T(1.0e-6)),
   display = true,
 )
@@ -291,14 +291,14 @@ function save_quad_problems_nops(file_path :: String, ripqp_func :: Function; pa
 end
 
 # save_quad_problems(string(save_path, "/ripqp_multik2"), ripqp_multik2, T = T)
-save_quad_problems(string(save_path, "/ripqp_multik3"), ripqp_multik3, T = T)
+# save_quad_problems(string(save_path, "/ripqp_multik3"), ripqp_multik3, T = T)
 # save_quad_problems(string(save_path, "/ripqp_multik4"), ripqp_multik4, T = T)
 # save_quad_problems(string(save_path, "/ripqp_multik5"), ripqp_multik5, T = T)
 # save_quad_problems(string(save_path, "/ripqp_multik6"), ripqp_multik6, T = T)
 # save_quad_problems(string(save_path, "/ripqp_multik7"), ripqp_multik7, T = T)
-save_quad_problems(string(save_path, "/ripqp_multi1"), ripqp_multi, T = T)
-save_quad_problems(string(save_path, "/ripqp_mono1"), ripqp_mono, T = T)
-save_quad_problems_nops(string(save_path, "/ripqp_multik3"), ripqp_multik3, T = T)
+# save_quad_problems(string(save_path, "/ripqp_multi1"), ripqp_multi, T = T)
+# save_quad_problems(string(save_path, "/ripqp_mono1"), ripqp_mono, T = T)
+save_quad_problems_nops(string(save_path, "/ripqp_multik3"), ripqp_multik4, T = T)
 
 # multik1
 # ripqp_multik(qm; T = T, Tlow = Tlow) = ripqp(qm, 
