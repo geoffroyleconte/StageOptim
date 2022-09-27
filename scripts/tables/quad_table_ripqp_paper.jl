@@ -17,7 +17,8 @@ ripqp_multiks = [
 ] 
 ripqp_multi1 = open_file("ripqp_multi1_quad")
 ripqp_mono1 = open_file("ripqp_mono1_quad")
-ripqp_multi_nops = open_file("ripqp_multik3_nops_quad")
+ripqp_multi_nops = open_file("ripqp_multik3_nops_quad") # en fait c'est le 4
+ripqp_multi_nops = open_file("ripqp_multik5_nops_quad") # en fait c'est le 4
 
 nks = length(ripqp_multiks)
 header = [

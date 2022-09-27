@@ -146,13 +146,13 @@ ripqp_multik5(qm; T = T, Tlow = Tlow) = ripqp(qm,
     kmethod=:gmres,
     form_mat = true,
     equilibrate = false,
-    itmax = 100,
-    mem = 10,
+    itmax = 50,
+    mem = 50,
     preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
     ρ_min=1.0e-15,
     δ_min = 1.0e-15,
-    atol_min = 1.0e-15,
-    rtol_min = 1.0e-15,
+    atol_min = 1.0e-16,
+    rtol_min = 1.0e-16,
   ),
     sp2 = K2KrylovParams{T}( # solve in Float128
     uplo = :U,
@@ -168,7 +168,9 @@ ripqp_multik5(qm; T = T, Tlow = Tlow) = ripqp(qm,
     rtol_min = T(1.0e-16),
   ),
   solve_method=IPF(),
-  itol = InputTol(T, max_iter = 700, max_time = 2000.0, max_iter1 = 100),
+  solve_method2=PC(),
+  itol = InputTol(T, max_iter = 7000, max_time = 20000.0, max_iter1 = 100, ϵ_pdd1 = T(1.0e1),
+    ϵ_rc1 = T(1.0e-6), ϵ_rb1 = T(1.0e-6)),
   display = true,
 )
 stats = ripqp_multik5(qm1)
@@ -298,7 +300,8 @@ end
 # save_quad_problems(string(save_path, "/ripqp_multik7"), ripqp_multik7, T = T)
 # save_quad_problems(string(save_path, "/ripqp_multi1"), ripqp_multi, T = T)
 # save_quad_problems(string(save_path, "/ripqp_mono1"), ripqp_mono, T = T)
-save_quad_problems_nops(string(save_path, "/ripqp_multik3"), ripqp_multik4, T = T)
+# save_quad_problems_nops(string(save_path, "/ripqp_multik3"), ripqp_multik4, T = T)
+save_quad_problems_nops(string(save_path, "/ripqp_multik5"), ripqp_multik5, T = T)
 
 # multik1
 # ripqp_multik(qm; T = T, Tlow = Tlow) = ripqp(qm, 
