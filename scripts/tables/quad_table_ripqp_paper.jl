@@ -17,8 +17,8 @@ ripqp_multiks = [
 ] 
 ripqp_multi1 = open_file("ripqp_multi1_quad")
 ripqp_mono1 = open_file("ripqp_mono1_quad")
-ripqp_multi_nops = open_file("ripqp_multik3_nops_quad") # en fait c'est le 4
-ripqp_multi_nops = open_file("ripqp_multik5_nops_quad") # en fait c'est le 4
+ripqp_multi_nops3 = open_file("ripqp_multik3_nops_quad") # en fait c'est le 4
+ripqp_multi_nops5 = open_file("ripqp_multik5_nops_quad")
 
 nks = length(ripqp_multiks)
 header = [
@@ -94,13 +94,14 @@ header2 = [
   "pfeas",
   "dfeas",
 ]
-data2 = Matrix{Any}(undef, 9, nh)
+data2 = Matrix{Any}(undef, 12, nh)
 row_names2 = []
 for pb_index in 1:3
   push!(row_names2, pbs[pb_index])
   push!(row_names2, pbs[pb_index])
   push!(row_names2, pbs[pb_index])
-  data2[3 * (pb_index-1) + 1, :] .= [
+  push!(row_names2, pbs[pb_index])
+  data2[4 * (pb_index-1) + 1, :] .= [
     "multik",
     ripqp_multiks[3].elapsed_time[pb_index],
     ripqp_multiks[3].iters_sp[pb_index],
@@ -110,7 +111,7 @@ for pb_index in 1:3
     ripqp_multiks[3].primal_feas[pb_index],
     ripqp_multiks[3].dual_feas[pb_index],
   ]
-  data2[3 * (pb_index-1) + 2, :] .= [
+  data2[4 * (pb_index-1) + 2, :] .= [
     "multi",
     ripqp_multi1.elapsed_time[pb_index],
     ripqp_multi1.iters_sp[pb_index],
@@ -121,7 +122,7 @@ for pb_index in 1:3
     ripqp_multi1.dual_feas[pb_index],
   ]
 
-  data2[3 * (pb_index-1) + 3, :] .= [
+  data2[4 * (pb_index-1) + 3, :] .= [
     "mono",
     ripqp_mono1.elapsed_time[pb_index],
     0,
@@ -131,13 +132,23 @@ for pb_index in 1:3
     ripqp_mono1.primal_feas[pb_index],
     ripqp_mono1.dual_feas[pb_index],
   ]
+  data2[4 * (pb_index-1) + 4, :] .= [
+    "multik nops",
+    ripqp_multi_nops3.elapsed_time[pb_index],
+    ripqp_multi_nops3.iters_sp[pb_index],
+    ripqp_multi_nops3.iters_sp2[pb_index],
+    ripqp_multi_nops3.objective[pb_index],
+    ripqp_multi_nops3.pdd[pb_index],
+    ripqp_multi_nops3.primal_feas[pb_index],
+    ripqp_multi_nops3.dual_feas[pb_index],
+  ]
 end
 
 table = pretty_table(data2; 
     header = header2,
     row_names= row_names2,
     title = "bm ripqp quad prec",
-    body_hlines = [3, 6],
+    body_hlines = [4, 8],
     backend = Val(:latex),
     formatters = (ft_printf(["%7.1e", "%d", "%d", "%7.1e","%7.1e","%7.1e","%7.1e"], 2:8),
       (v, i, j) -> (SolverBenchmark.safe_latex_AbstractFloat(v)),

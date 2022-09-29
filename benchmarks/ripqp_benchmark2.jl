@@ -1,10 +1,10 @@
 using QuadraticModels, QPSReader
-using RipQP
 # using QuadraticModelsGurobi, QuadraticModelsCPLEX, QuadraticModelsXpress
 # using JLD2
 using CSV
 using SolverBenchmark
 using HSL, QDLDL
+using RipQP
 # include("/home/mgi.polymtl.ca/geleco/git_workspace/docGL/utils/K1QR.jl")
 
 function createQuadraticModel(qpdata; name="qp_pb")
@@ -71,6 +71,31 @@ ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi,
                     itol = InputTol(max_iter = 800, max_time=1200.,
                                     ϵ_pdd1 = 1.0e-8, ϵ_rb1 = 1.0e-6,
                                     ϵ_rc1 = 1.0e-6))
+
+ripqp_ldlprecond2_5(QM) = ripqp(QM, mode = :multi,
+                    sp = K2_5KrylovParams(uplo = :U,
+                        form_mat = true, kmethod = :gmres,
+                        preconditioner = LDL(T = Float32, pos = :R, warm_start = true),
+                        ρ_min=1.0e-8, δ_min = 1.0e-8,
+                        mem = 10,
+                        itmax = 10,
+                        atol0 = 1.0e-2, rtol0 = 1.0e-2,
+                        atol_min = 1.0e-8, rtol_min = 1.0e-8,
+                        ),
+                        sp2 = K2_5KrylovParams(uplo = :U,
+                        form_mat = true, kmethod = :gmres,
+                        preconditioner = LDL(T = Float64, pos = :R, warm_start = true),
+                        ρ_min=1.0e-8, δ_min = 1.0e-8,
+                        mem = 5,
+                        itmax = 5,
+                        atol0 = 1.0e-2, rtol0 = 1.0e-2,
+                        atol_min = 1.0e-10, rtol_min = 1.0e-10,
+                        ),
+                    solve_method = PC(),
+                    itol = InputTol(max_iter = 800, max_time=1200.,
+                                    ϵ_pdd1 = 1.0e-8, ϵ_rb1 = 1.0e-6,
+                                    ϵ_rc1 = 1.0e-6))
+stats = ripqp_ldlprecond2_5(qm)
 
 # ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi, 
 #                     sp = K2KrylovParams(uplo = :U,
@@ -160,9 +185,10 @@ end
 # save_problems(string(save_path, "/cplex1"), cplex2)
 # save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
 # save_problems(string(save_path, "/xpress1"), xpress2)
-# save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
+save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp3"), ripqp1)
-save_problems(string(save_path, "/ripqp_ldlprecond3"), ripqp_ldlprecond)
+save_problems(string(save_path, "/ripqp_ldlprecond2"), ripqp_ldlprecond)
+save_problems(string(save_path, "/ripqp_ldlprecond2_5"), ripqp_ldlprecond2_5)
 # save_problems(string(save_path, "/ripqp_cc1"), ripqp2)
 # save_problems(string(save_path, "/ripqp_ma572"), ripqpma57)
 # save_problems(string(save_path, "/ripqp_ma971"), ripqpma97)
