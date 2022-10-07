@@ -18,9 +18,9 @@ function createQuadraticModel_T(qpdata; T = Float128, name="qp_pb")
 end
 
 # qps1 = readqps(string(path_pb, "\\CYCLE.SIF"))
-# qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
+qps1 = readqps(string(path_pb, "/TMA_ME_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/TMA_ME.mps"))
-qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
+# qps1 = readqps(string(path_pb, "/GlcAlift_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAerWT_presolved.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAlift.mps"))
 # qps1 = readqps(string(path_pb, "/GlcAerWT.mps"))
@@ -85,14 +85,14 @@ stats1 = ripqp(qm1,
   mode = :multi,
   early_multi_stop = false,
   # sp = K2LDLParams(regul = :hybrid, ρ_min=1.0e-10, δ_min = 1.0e-10), # solve in Float64
-  sp = K2_5KrylovParams{Tlow}( # solve in Float64
+  sp = K2KrylovParams{Tlow}( # solve in Float64
     uplo = :U,
     kmethod=:gmres,
     form_mat = true,
-    # equilibrate = false,
+    equilibrate = false,
     itmax = 50,
     mem = 50,
-    preconditioner = LDL(T = Tlow, pos = :R, warm_start = true),
+    preconditioner = LDL(fact_alg = LDLFact(), T = Tlow, pos = :R, warm_start = true),
     ρ_min=1.0e-15,
     δ_min = 1.0e-15,
     atol_min = 1.0e-16,
@@ -112,11 +112,11 @@ stats1 = ripqp(qm1,
   #   atol_min = T(1.0e-14),
   #   rtol_min = T(1.0e-14),
   # ),
-    sp2 = K2_5KrylovParams{T}( # solve in Float128
+    sp2 = K2KrylovParams{T}( # solve in Float128
     uplo = :U,
     kmethod=:gmres,
     form_mat = true,
-    # equilibrate = false,
+    equilibrate = false,
     itmax = 5,
     mem = 5,
     preconditioner = LDL(T = T, pos = :R, warm_start = true),
