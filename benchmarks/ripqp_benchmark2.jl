@@ -98,53 +98,53 @@ stats = ripqp_ldlprecond(qm)
 #                                     ϵ_rc1 = 1.0e-6))
 # stats = ripqp_ldlprecond2_5(qm)
 
-ripqp_lldlprecond1(QM) = ripqp(QM, mode = :multi, 
-                    sp = K2KrylovParams(uplo = :L,
-                        form_mat = true, equilibrate = false, kmethod = :gmres,
-                        preconditioner = LDL(fact_alg = LLDLFact(mem=10), 
-                                            T = Float32, pos = :R, warm_start = true),
-                        ρ_min=1.0e-8, δ_min = 1.0e-8,
-                        mem = 50,
-                        itmax = 50,
-                        atol0 = 1.0e-2, rtol0 = 1.0e-2,
-                        atol_min = 1.0e-8, rtol_min = 1.0e-8,
-                        ),
-                        sp2 = K2KrylovParams(uplo = :U,
-                        form_mat = true, equilibrate = false, kmethod = :gmres,
-                        preconditioner = LDL(T = Float64, pos = :R, warm_start = true),
-                        ρ_min=1.0e-8, δ_min = 1.0e-8,
-                        mem = 5,
-                        itmax = 5,
-                        atol0 = 1.0e-2, rtol0 = 1.0e-2,
-                        atol_min = 1.0e-10, rtol_min = 1.0e-10,
-                        ),
-                    solve_method = IPF(), solve_method2 = PC(),
-                    itol = InputTol(max_iter = 800, max_time=1200.))
-stats = ripqp_lldlprecond1(qm)
+# ripqp_lldlprecond1(QM) = ripqp(QM, mode = :multi, 
+#                     sp = K2KrylovParams(uplo = :L,
+#                         form_mat = true, equilibrate = false, kmethod = :gmres,
+#                         preconditioner = LDL(fact_alg = LLDLFact(mem=10), 
+#                                             T = Float32, pos = :R, warm_start = true),
+#                         ρ_min=1.0e-8, δ_min = 1.0e-8,
+#                         mem = 50,
+#                         itmax = 50,
+#                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
+#                         atol_min = 1.0e-8, rtol_min = 1.0e-8,
+#                         ),
+#                         sp2 = K2KrylovParams(uplo = :U,
+#                         form_mat = true, equilibrate = false, kmethod = :gmres,
+#                         preconditioner = LDL(T = Float64, pos = :R, warm_start = true),
+#                         ρ_min=1.0e-8, δ_min = 1.0e-8,
+#                         mem = 5,
+#                         itmax = 5,
+#                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
+#                         atol_min = 1.0e-10, rtol_min = 1.0e-10,
+#                         ),
+#                     solve_method = IPF(), solve_method2 = PC(),
+#                     itol = InputTol(max_iter = 800, max_time=1200.))
+# stats = ripqp_lldlprecond1(qm)
 
-ripqp_lldlprecond2(QM) = ripqp(QM, mode = :multi, 
-                    sp = K2KrylovParams(uplo = :L,
-                        form_mat = true, equilibrate = true, kmethod = :gmres,
-                        preconditioner = LDL(fact_alg = LLDLFact(mem=10), 
-                                            T = Float32, pos = :R, warm_start = true),
-                        ρ_min=1.0e-8, δ_min = 1.0e-8,
-                        mem = 50,
-                        itmax = 50,
-                        atol0 = 1.0e-2, rtol0 = 1.0e-2,
-                        atol_min = 1.0e-8, rtol_min = 1.0e-8,
-                        ),
-                        sp2 = K2KrylovParams(uplo = :U,
-                        form_mat = true, equilibrate = true, kmethod = :gmres,
-                        preconditioner = LDL(T = Float64, pos = :R, warm_start = true),
-                        ρ_min=1.0e-8, δ_min = 1.0e-8,
-                        mem = 5,
-                        itmax = 5,
-                        atol0 = 1.0e-2, rtol0 = 1.0e-2,
-                        atol_min = 1.0e-10, rtol_min = 1.0e-10,
-                        ),
-                    solve_method = IPF(), solve_method2 = PC(),
-                    itol = InputTol(max_iter = 800, max_time=1200.))
-stats = ripqp_lldlprecond2(qm)
+# ripqp_lldlprecond2(QM) = ripqp(QM, mode = :multi, 
+#                     sp = K2KrylovParams(uplo = :L,
+#                         form_mat = true, equilibrate = true, kmethod = :gmres,
+#                         preconditioner = LDL(fact_alg = LLDLFact(mem=10), 
+#                                             T = Float32, pos = :R, warm_start = true),
+#                         ρ_min=1.0e-8, δ_min = 1.0e-8,
+#                         mem = 50,
+#                         itmax = 50,
+#                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
+#                         atol_min = 1.0e-8, rtol_min = 1.0e-8,
+#                         ),
+#                         sp2 = K2KrylovParams(uplo = :U,
+#                         form_mat = true, equilibrate = true, kmethod = :gmres,
+#                         preconditioner = LDL(T = Float64, pos = :R, warm_start = true),
+#                         ρ_min=1.0e-8, δ_min = 1.0e-8,
+#                         mem = 5,
+#                         itmax = 5,
+#                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
+#                         atol_min = 1.0e-10, rtol_min = 1.0e-10,
+#                         ),
+#                     solve_method = IPF(), solve_method2 = PC(),
+#                     itol = InputTol(max_iter = 800, max_time=1200.))
+# stats = ripqp_lldlprecond2(qm)
 
 # ripqpma97(QM) = ripqp(QM,
 #                     sp = K2LDLParams(fact_alg = HSLMA97Fact()),
@@ -172,8 +172,8 @@ stats = ripqp_lldlprecond2(qm)
 # xpress2(QM) = xpress(QM, crossover=0, threads=1)
 # stats = xpress2_nops(qm)  # compile code
 # stats = xpress2(qm)  # compile code
-ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_iter = 800, max_time=1200.))
-stats = ripqp_bm_multi(qm)
+# ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_iter = 800, max_time=1200.))
+# stats = ripqp_bm_multi(qm)
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
 #                             itol = InputTol(max_iter=400, max_time=10.) )#,
 
