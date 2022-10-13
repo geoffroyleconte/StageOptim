@@ -28,9 +28,9 @@ pb = string(path_pb_lp, "/AFIRO.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 
-# ripqp1(QM) = ripqp(QM, sp = K2LDLParams(),
-#                     itol = InputTol(max_iter = 800, max_time=1200.))
-# stats = ripqp1(qm)
+ripqp1(QM) = ripqp(QM, sp = K2LDLParams(),
+                    itol = InputTol(max_iter = 800, max_time=1200.))
+stats = ripqp1(qm)
 # ripqp2(QM) = ripqp(QM, sp = K2LDLParams(), kc = -1,
 #                     itol = InputTol(max_iter = 800, max_time=1200.))
 # stats = ripqp2(qm)
@@ -172,8 +172,8 @@ stats = ripqp_ldlprecond(qm)
 # xpress2(QM) = xpress(QM, crossover=0, threads=1)
 # stats = xpress2_nops(qm)  # compile code
 # stats = xpress2(qm)  # compile code
-# ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_iter = 800, max_time=1200.))
-# stats = ripqp_bm_multi(qm)
+ripqp_bm_multi(QM) = ripqp(QM, mode=:multi, itol = InputTol(max_iter = 800, max_time=1200.))
+stats = ripqp_bm_multi(qm)
 # ripqp_bm_minres(QM) = ripqp(QM, iconf = InputConfig(sp = K2_5hybridParams(preconditioner = :ActiveCHybridLDL)),
 #                             itol = InputTol(max_iter=400, max_time=10.) )#,
 
@@ -220,8 +220,8 @@ end
 # save_problems(string(save_path, "/cplex1"), cplex2)
 # save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
 # save_problems(string(save_path, "/xpress1"), xpress2)
-# save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
-# save_problems(string(save_path, "/ripqp3"), ripqp1)
+save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
+save_problems(string(save_path, "/ripqp3"), ripqp1)
 save_problems(string(save_path, "/ripqp_ldlprecond4"), ripqp_ldlprecond)
 # save_problems(string(save_path, "/ripqp_ldlprecond2_5"), ripqp_ldlprecond2_5)
 # save_problems(string(save_path, "/ripqp_lldlprecond1"), ripqp_lldlprecond1)
