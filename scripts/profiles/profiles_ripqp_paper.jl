@@ -51,8 +51,8 @@ stats_lp = Dict(
                 # :ripqp_qdldl => ripqp_qdldl_lp,
                 # :ripqp => ripqp3_lp,
                 # :ripqp_ldlfact => ripqp1_lp,
-                # :ripqp_multi => ripqp_multi1_lp,
-                # :ripqp_multi2 => ripqp_multi2_lp,
+                :ripqp_multi => ripqp_multi1_lp,
+                :ripqp_multi2 => ripqp_multi2_lp,
                 # :ripqp_nops1 => ripqp_nops1_lp,
                 #  :ripqp_ma57 => ripqp_ma57_lp,
                 #  :ripqp_ma97 => ripqp_ma97_lp,
@@ -143,10 +143,10 @@ function dfstat(df)
       output[i] = Inf
     else 
       # output[i] = df.iter[i]
-      # output[i] = df.relative_iter_cnt[i]
+      output[i] = df.relative_iter_cnt[i]
       # output[i] = df.iters_sp[i]
       # output[i] = df.elapsed_time[i]
-      output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
+      # output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
