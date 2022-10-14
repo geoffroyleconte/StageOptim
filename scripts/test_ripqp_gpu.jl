@@ -64,6 +64,8 @@ qm_gpu = QuadraticModel(
   x0 = CUDA.zeros(Float64, qm.meta.nvar),
 )
 
+stats = ripqp(qm_gpu, sp = RipQP.K2KrylovParams(kmethod = :minres), ps = false, scaling = false)
+
 qm_gpu = QuadraticModel(
   CuVector{Float64}(qm.data.c),
   CUDA.CUSPARSE.CuSparseMatrixCSC(spzeros(Float64, qm.meta.nvar, qm.meta.nvar)),
