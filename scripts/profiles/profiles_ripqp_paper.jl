@@ -34,10 +34,10 @@ ripqp_ldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-8, stop cr
 ripqp_ldlprecond2_lp = open_file("ripqp_ldlprecond2_lp") # regu1 1.0e-8 equi
 ripqp_ldlprecond3_lp = open_file("ripqp_ldlprecond3_lp") # regu1 1.0e-8 stop crit 64, equi
 ripqp_ldlprecond4_lp = open_file("ripqp_ldlprecond4_lp") # regu1 1.0e-8, stop crit 64, no equi, gmres
-ripqp_ldlprecond5_lp = open_file("ripqp_ldlprecond4_lp") # regu1 1.0e-8, stop crit 64, equi, minres
+ripqp_ldlprecond5_lp = open_file("ripqp_ldlprecond5_lp") # regu1 1.0e-8, stop crit 64, equi, minres
 ripqp_ldlprecond2_5_lp = open_file("ripqp_ldlprecond2_5_lp") 
-ripqp_lldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-8, stop crit 64, no equi, new regu_try_catch
-ripqp_lldlprecond2_lp = open_file("ripqp_ldlprecond2_lp") # regu1 1.0e-8, stop crit 64, no equi, new regu_try_catch
+ripqp_lldlprecond1_lp = open_file("ripqp_lldlprecond1_lp") # regu1 1.0e-8, stop crit 64, no equi, new regu_try_catch
+ripqp_lldlprecond2_lp = open_file("ripqp_lldlprecond2_lp") # regu1 1.0e-8, stop crit 64, no equi, new regu_try_catch
 
 easy_pbs_lp = findall(ripqp1_lp.elapsed_time .≤ 200.0)
 stats_lp = Dict(
@@ -47,10 +47,10 @@ stats_lp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_lp,
                 # :cplex_nops1 => cplex_nops1_lp,
                 # :xpress_nops1 => xpress_nops1_lp,
-                :ripqp => ripqp1_lp,
-                :ripqp_ldl => ripqp2_lp,
+                # :ripqp => ripqp1_lp,
+                # :ripqp_ldl => ripqp2_lp,
                 # :ripqp_qdldl => ripqp_qdldl_lp,
-                :ripqp3 => ripqp3_lp,
+                # :ripqp3 => ripqp3_lp,
                 # :ripqp_ldlfact => ripqp1_lp,
                 # :ripqp_multi => ripqp_multi1_lp,
                 # :ripqp_multi2 => ripqp_multi2_lp,
@@ -69,9 +69,12 @@ stats_lp = Dict(
                 # :ripqp_cc => ripqp_cc1_lp,
                 # :ripqp_multifact1 => ripqp_ldlprecond1_lp,
                 # :ripqp_ldlprecond1 => ripqp_ldlprecond3_lp,
-                # :ripqp_ldlprecond4 => ripqp_ldlprecond4_lp,
+                :ripqp_ldlprecond4 => ripqp_ldlprecond4_lp,
+                  #  :ripqp_ldlprecond5 => ripqp_ldlprecond5_lp,
                 # :ripqp_multifact2 => ripqp_ldlprecond3_lp,
                 # :ripqp_ldlprecond2_5 => ripqp_ldlprecond2_5_lp,
+                :ripqp_lldl1 => ripqp_lldlprecond1_lp,
+                # :ripqp_lldl2 => ripqp_lldlprecond2_lp,
                 )
 
 gurobi1_qp = open_file("gurobi1_qp")
@@ -100,10 +103,10 @@ ripqp_ldlprecond1_qp = open_file("ripqp_ldlprecond1_qp") # regu1 1.0e-8, stop cr
 ripqp_ldlprecond2_qp = open_file("ripqp_ldlprecond2_qp") # regu1 1.0e-8 equi
 ripqp_ldlprecond3_qp = open_file("ripqp_ldlprecond3_qp") # regu1 1.0e-8 stop crit 64, equi
 ripqp_ldlprecond4_qp = open_file("ripqp_ldlprecond4_qp") # regu1 1.0e-8, stop crit 64, no equi, new regu_try_catch
-ripqp_ldlprecond5_lp = open_file("ripqp_ldlprecond4_lp") # regu1 1.0e-8, stop crit 64, equi, minres
+ripqp_ldlprecond5_qp = open_file("ripqp_ldlprecond5_qp") # regu1 1.0e-8, stop crit 64, equi, minres
 ripqp_ldlprecond2_5_qp = open_file("ripqp_ldlprecond2_5_qp") 
-ripqp_lldlprecond1_qp = open_file("ripqp_ldlprecond1_qp") # regu1 1.0e-8, stop crit 64, no equi, new regu_try_catch
-ripqp_lldlprecond2_qp = open_file("ripqp_ldlprecond2_qp") # regu1 1.0e-8, stop crit 64, minres equi 1 solv, gmres no equi 2nd
+ripqp_lldlprecond1_qp = open_file("ripqp_lldlprecond1_qp") # regu1 1.0e-8, stop crit 64, no equi, new regu_try_catch
+ripqp_lldlprecond2_qp = open_file("ripqp_lldlprecond2_qp") # regu1 1.0e-8, stop crit 64, minres equi 1 solv, gmres no equi 2nd
 
 easy_pbs_qp = findall(ripqp_ma57_qp.elapsed_time .≤ 5.0)
 stats_qp = Dict(
@@ -113,9 +116,9 @@ stats_qp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_qp,
                 # :cplex_nops1 => cplex_nops1_qp,
                 # :xpress_nops1 => xpress_nops1_qp,
-                :ripqp => ripqp1_qp,
-                :ripqp_ldl => ripqp2_qp,
-                :ripqp3 => ripqp3_qp,
+                # :ripqp => ripqp1_qp,
+                # :ripqp_ldl => ripqp2_qp,
+                # :ripqp3 => ripqp3_qp,
                 # :ripqp_ma57 => ripqp_ma572_qp,
                 # :ripqp_qdldl => ripqp_qdldl_qp,
                 # :ripqp_ma57 => ripqp_ma57_qp,
@@ -135,7 +138,10 @@ stats_qp = Dict(
                 # :ripqp_multifact1 => ripqp_ldlprecond1_qp,
                 # :ripqp_ldlprecond2 => ripqp_ldlprecond2_qp,
                 # :ripqp_multifact2 => ripqp_ldlprecond3_qp,
-                # :ripqp_multifact4 => ripqp_ldlprecond4_qp,
+                :ripqp_multifact4 => ripqp_ldlprecond4_qp,
+                #  :ripqp_multifact5 => ripqp_ldlprecond5_qp,
+                 :ripqp_lldl1 => ripqp_lldlprecond1_qp,
+                #  :ripqp_lldl2 => ripqp_lldlprecond2_qp,
                 )
 
 function dfstat(df)
@@ -147,8 +153,8 @@ function dfstat(df)
       # output[i] = df.iter[i]
       # output[i] = df.relative_iter_cnt[i]
       # output[i] = df.iters_sp[i]
-      output[i] = df.elapsed_time[i]
-      # output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
+      # output[i] = df.elapsed_time[i]
+      output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
       output[i] = Inf
