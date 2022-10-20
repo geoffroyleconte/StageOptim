@@ -23,7 +23,7 @@ path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f232
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 save_path = "/home/gelecd/code/docGL/benchmarks/ripqp_paper"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
-pb = string(path_pb_lp, "/AFIRO.SIF")
+pb = string(path_pb_lp, "/25FV47.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
@@ -49,7 +49,7 @@ stats = ripqpma57(qm)
 # stats = ripqpma57_multi2(qm)
 
 ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi,
-                    sp = K2KrylovParams(uplo = :U,
+                    sp = K2KrylovParams(uplo = :L,
                         form_mat = true, equilibrate = false, kmethod = :gmres,
                         preconditioner = LDL(fact_alg = HSLMA57Fact(), T = Float32, pos = :R, warm_start = true),
                         ρ_min=1.0e-8, δ_min = 1.0e-8,
@@ -58,7 +58,7 @@ ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi,
                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
                         atol_min = 1.0e-8, rtol_min = 1.0e-8,
                         ),
-                        sp2 = K2KrylovParams(uplo = :U,
+                        sp2 = K2KrylovParams(uplo = :L,
                         form_mat = true, equilibrate = false, kmethod = :gmres,
                         preconditioner = LDL(fact_alg = HSLMA57Fact(), T = Float64, pos = :R, warm_start = true),
                         ρ_min=1.0e-8, δ_min = 1.0e-8,
