@@ -23,7 +23,7 @@ path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f232
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 save_path = "/home/gelecd/code/docGL/benchmarks/ripqp_paper"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
-pb = string(path_pb_lp, "/25FV47.SIF")
+pb = string(path_pb_lp, "/AGG.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
@@ -38,31 +38,30 @@ ripqpma57(QM) = ripqp(QM,
                     sp = K2LDLParams(fact_alg = HSLMA57Fact()),
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqpma57(qm)
-# ripqpma57_multi(QM) = ripqp(QM, mode = :multi,
-#                     sp = K2LDLParams(fact_alg = HSLMA57Fact()),
-#                     itol = InputTol(max_iter = 100, max_time=1200.))
-# stats = ripqpma57_multi(qm)
+ripqpma57_multi(QM) = ripqp(QM, mode = :multi, early_multi_stop = false,
+                    sp = K2LDLParams{Float32}(bypass_bound_dist_safety = true,
+                        fact_alg = HSLMA57Fact(), ρ_min=Float32(1.0e-8), δ_min = Float32(1.0e-8)),
+                    itol = InputTol(max_iter = 800, max_time=1200.))
+stats = ripqpma57_multi(qm)
 
 # ripqpma57_multi2(QM) = ripqp(QM, mode = :multi,
 #                     sp = K2LDLParams(fact_alg = HSLMA57Fact()),
 #                     itol = InputTol(max_iter = 100, max_iter32 = 5, max_time=1200.))
 # stats = ripqpma57_multi2(qm)
 
-ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi,
+ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi, early_multi_stop = false,
                     sp = K2KrylovParams(uplo = :L,
                         form_mat = true, equilibrate = false, kmethod = :gmres,
-                        preconditioner = LDL(fact_alg = HSLMA57Fact(), T = Float32, pos = :R, warm_start = true),
+                        preconditioner = LDL(fact_alg = HSLMA57Fact(), T = Float32, warm_start = true),
                         ρ_min=1.0e-8, δ_min = 1.0e-8,
-                        mem = 10,
-                        itmax = 10,
+                        mem = 5,
+                        itmax = 5,
                         atol0 = 1.0e-2, rtol0 = 1.0e-2,
-                        atol_min = 1.0e-8, rtol_min = 1.0e-8,
+                        atol_min = 1.0e-6, rtol_min = 1.0e-6,
                         ),
                         sp2 = K2LDLParams(fact_alg = HSLMA57Fact()),
                     solve_method = PC(),
-                    itol = InputTol(max_iter = 800, max_time=1200.,
-                                    ϵ_pdd1 = 1.0e-8, ϵ_rb1 = 1.0e-6,
-                                    ϵ_rc1 = 1.0e-6))
+                    itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqp_ldlprecond(qm)
 
 # ripqp_ldlprecond2(QM) = ripqp(QM, mode = :multi,
@@ -237,7 +236,6 @@ end
 # save_problems(string(save_path, "/xpress1"), xpress2)
 # save_problems(string(save_path, "/ripqp_multi2"), ripqp_bm_multi)
 # save_problems(string(save_path, "/ripqp3"), ripqp1)
-save_problems(string(save_path, "/ripqp_ldlprecondma57"), ripqp_ldlprecond)
 # save_problems(string(save_path, "/ripqp_ldlprecond5"), ripqp_ldlprecond2)
 # save_problems(string(save_path, "/ripqp_ldlprecond2_5"), ripqp_ldlprecond2_5)
 # save_problems(string(save_path, "/ripqp_lldlprecond1"), ripqp_lldlprecond1)
@@ -248,6 +246,8 @@ save_problems(string(save_path, "/ripqp_ma573"), ripqpma57)
 # save_problems(string(save_path, "/ripqp_ma971"), ripqpma97)
 # save_problems(string(save_path, "/ripqp_ma57_multi1"), ripqpma57_multi)
 # save_problems(string(save_path, "/ripqp_ma57_multi2"), ripqpma57_multi2)
+save_problems(string(save_path, "/ripqp_ma57_multi3"), ripqpma57_multi3)
+save_problems(string(save_path, "/ripqp_ldlprecondma57"), ripqp_ldlprecond)
 # save_problems(string(save_path, "/ripqp_ma57nosqd2"), ripqpma57_nosqd)
 # save_problems(string(save_path, "/ripqp_qdldl1"), ripqpqdldl)
 # save_problems(string(save_path, "/ripqp_cholmod1"), ripqpcholmod)
