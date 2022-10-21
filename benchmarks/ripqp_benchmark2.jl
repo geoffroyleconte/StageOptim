@@ -24,7 +24,7 @@ path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f232
 save_path = "/home/gelecd/code/docGL/benchmarks/ripqp_paper"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
 pb = string(path_pb_lp, "/AGG.SIF")
-# pb2 = string(path_pb_qp, "/DUAL1.SIF")
+# pb2 = string(path_pb_qp, "/AUG2D.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
 
@@ -40,7 +40,7 @@ ripqpma57(QM) = ripqp(QM,
 stats = ripqpma57(qm)
 ripqpma57_multi(QM) = ripqp(QM, mode = :multi, early_multi_stop = false,
                     sp = K2LDLParams{Float32}(bypass_bound_dist_safety = true,
-                        fact_alg = HSLMA57Fact(), ρ_min=Float32(1.0e-8), δ_min = Float32(1.0e-8)),
+                        fact_alg = HSLMA57Fact(), ρ_min=Float32(1.0e-7), δ_min = Float32(1.0e-7)),
                     itol = InputTol(max_iter = 800, max_time=1200.))
 stats = ripqpma57_multi(qm)
 
@@ -242,11 +242,11 @@ end
 # save_problems(string(save_path, "/ripqp_lldlprecond2"), ripqp_lldlprecond2)
 # save_problems(string(save_path, "/ripqp_cc1"), ripqp2)
 # save_problems(string(save_path, "/ripqp_ma572"), ripqpma57)
+save_problems(string(save_path, "/ripqp_ma57_multi3"), ripqpma57_multi)
 save_problems(string(save_path, "/ripqp_ma573"), ripqpma57)
 # save_problems(string(save_path, "/ripqp_ma971"), ripqpma97)
 # save_problems(string(save_path, "/ripqp_ma57_multi1"), ripqpma57_multi)
 # save_problems(string(save_path, "/ripqp_ma57_multi2"), ripqpma57_multi2)
-save_problems(string(save_path, "/ripqp_ma57_multi3"), ripqpma57_multi)
 save_problems(string(save_path, "/ripqp_ldlprecondma57"), ripqp_ldlprecond)
 # save_problems(string(save_path, "/ripqp_ma57nosqd2"), ripqpma57_nosqd)
 # save_problems(string(save_path, "/ripqp_qdldl1"), ripqpqdldl)
