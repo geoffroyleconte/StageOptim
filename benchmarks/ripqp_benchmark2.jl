@@ -41,7 +41,8 @@ stats = ripqpma57(qm)
 ripqpma57_multi(QM) = ripqp(QM, mode = :multi, early_multi_stop = false,
                     sp = K2LDLParams{Float32}(bypass_bound_dist_safety = true,
                         fact_alg = HSLMA57Fact(), ρ_min=Float32(1.0e-7), δ_min = Float32(1.0e-7)),
-                    itol = InputTol(max_iter = 800, max_time=1200.))
+                    itol = InputTol(max_iter = 800, max_time=1200.,
+                                    ϵ_pdd1 = 1.0e1, ϵ_rb1 = 1.0e-2, ϵ_rc1 = 1.0e-2))
 stats = ripqpma57_multi(qm)
 
 # ripqpma57_multi2(QM) = ripqp(QM, mode = :multi,
@@ -61,7 +62,8 @@ ripqp_ldlprecond(QM) = ripqp(QM, mode = :multi, early_multi_stop = false,
                         ),
                         sp2 = K2LDLParams(fact_alg = HSLMA57Fact()),
                     solve_method = PC(),
-                    itol = InputTol(max_iter = 800, max_time=1200.))
+                    itol = InputTol(max_iter = 800, max_time=1200.,
+                                    ϵ_pdd1 = 1.0e1, ϵ_rb1 = 1.0e-2, ϵ_rc1 = 1.0e-2))
 stats = ripqp_ldlprecond(qm)
 
 # ripqp_ldlprecond2(QM) = ripqp(QM, mode = :multi,
