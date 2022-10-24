@@ -45,6 +45,20 @@ ripqpma57_multi(QM) = ripqp(QM, mode = :multi, early_multi_stop = false,
                                     ϵ_pdd1 = 1.0e1, ϵ_rb1 = 1.0e-2, ϵ_rc1 = 1.0e-2))
 stats = ripqpma57_multi(qm)
 
+ripqpma57_multi2(QM) = ripqp(QM, mode = :multi, early_multi_stop = false,
+                    sp = K2LDLParams{Float32}(bypass_bound_dist_safety = true,
+                        fact_alg = HSLMA57Fact(), ρ_min=Float32(1.0e-7), δ_min = Float32(1.0e-7)),
+                    itol = InputTol(max_iter = 800, max_time=1200.,
+                                    ϵ_pdd1 = 1.0e10, ϵ_rb1 = 1.0e-2, ϵ_rc1 = 1.0e-2))
+stats = ripqpma57_multi2(qm)
+
+ripqpma57_multi3(QM) = ripqp(QM, mode = :multi, early_multi_stop = false,
+                    sp = K2LDLParams{Float32}(bypass_bound_dist_safety = true,
+                        fact_alg = HSLMA57Fact(), ρ_min=Float32(1.0e-7), δ_min = Float32(1.0e-7)),
+                    itol = InputTol(max_iter = 800, max_time=1200.,
+                                    ϵ_pdd1 = 1.0e0, ϵ_rb1 = 1.0e-2, ϵ_rc1 = 1.0e-2))
+stats = ripqpma57_multi3(qm)
+
 # ripqpma57_multi2(QM) = ripqp(QM, mode = :multi,
 #                     sp = K2LDLParams(fact_alg = HSLMA57Fact()),
 #                     itol = InputTol(max_iter = 100, max_iter32 = 5, max_time=1200.))
@@ -245,11 +259,13 @@ end
 # save_problems(string(save_path, "/ripqp_cc1"), ripqp2)
 # save_problems(string(save_path, "/ripqp_ma572"), ripqpma57)
 save_problems(string(save_path, "/ripqp_ma57_multi3"), ripqpma57_multi)
-save_problems(string(save_path, "/ripqp_ma573"), ripqpma57)
+save_problems(string(save_path, "/ripqp_ma57_multi4"), ripqpma57_multi2)
+save_problems(string(save_path, "/ripqp_ma57_multi5"), ripqpma57_multi3)
+# save_problems(string(save_path, "/ripqp_ma573"), ripqpma57)
 # save_problems(string(save_path, "/ripqp_ma971"), ripqpma97)
 # save_problems(string(save_path, "/ripqp_ma57_multi1"), ripqpma57_multi)
 # save_problems(string(save_path, "/ripqp_ma57_multi2"), ripqpma57_multi2)
-save_problems(string(save_path, "/ripqp_ldlprecondma57"), ripqp_ldlprecond)
+# save_problems(string(save_path, "/ripqp_ldlprecondma57"), ripqp_ldlprecond)
 # save_problems(string(save_path, "/ripqp_ma57nosqd2"), ripqpma57_nosqd)
 # save_problems(string(save_path, "/ripqp_qdldl1"), ripqpqdldl)
 # save_problems(string(save_path, "/ripqp_cholmod1"), ripqpcholmod)
