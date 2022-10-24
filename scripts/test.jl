@@ -8,16 +8,16 @@ path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\pro
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\AGG.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\BNL2.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
 TimerOutputs.enable_debug_timings(RipQP)
 reset_timer!(RipQP.to)
 stats1 = RipQP.ripqp(qm, 
-                    # sp = RipQP.K2_5LDLParams(fact_alg = RipQP.LDLFact(regul=:dynamic)),# ρ0=0.1, δ0=0.1),
+                    sp = RipQP.K2LDLParams(ρ_min=1.0e-13, safety_dist_bnd=false),
                      # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
-                     sp = RipQP.K1CholParams(),
+                    #  sp = RipQP.K1CholParams(),
                     # sp = RipQP.K2KrylovParams(uplo = :L, kmethod = :minres, rhs_scale=false, #δ0 = 0.,
                     # form_mat = true,
                     #   equilibrate = false,
