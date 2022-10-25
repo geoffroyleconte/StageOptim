@@ -2,13 +2,13 @@ using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, SparseArrays, Tim
 using QDLDL
 # using RipQP
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib_ps"
-# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\PILOT-JA.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\QPILOTNO.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
