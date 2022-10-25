@@ -2,20 +2,20 @@ using QPSReader, QuadraticModels, SolverCore, SolverBenchmark, SparseArrays, Tim
 using QDLDL
 # using RipQP
 include(raw"C:\Users\Geoffroy Leconte\.julia\dev\RipQP\src\RipQP.jl")
-# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
+path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_netlib_ps"
-path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
+# path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\problemes_marosmeszaros"
 save_path = raw"C:\Users\Geoffroy Leconte\Documents\doctorat\code\systems"
 # path_pb = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\datasets\\lptestset"
 # qm = QuadraticModel(readqps(string(path_pb, "\\BANDM_PS.mps")))
-qm = QuadraticModel(readqps(string(path_pb, "\\QPILOTNO.SIF"), mpsformat=:fixed))
+qm = QuadraticModel(readqps(string(path_pb, "\\PILOT-JA.SIF"), mpsformat=:fixed))
 # stats1 = RipQP.ripqp(qm, iconf = RipQP.InputConfig(refinement = :none, kc=0,mode=:mono, scaling=true, 
 #                      sp = RipQP.K2_5hybridParams(preconditioner = :ActiveCHybridLDL), solve_method=:PC),
 #                      itol = RipQP.InputTol(max_iter=100, ϵ_rb32 = 1e-6) )#,
 TimerOutputs.enable_debug_timings(RipQP)
 reset_timer!(RipQP.to)
 stats1 = RipQP.ripqp(qm, 
-                    sp = RipQP.K2LDLParams(safety_dist_bnd=true, δ_min = 1.0e-8, ρ_min = 1.0e-13, fact_alg = RipQP.LDLFact(regul=:classic)),
+                    sp = RipQP.K2LDLParams(safety_dist_bnd=true, fact_alg = RipQP.LDLFact(regul=:classic)),
                      # w = RipQP.SystemWrite(write=false, name=string(save_path, "/bug_minres"),kfirst=1, kgap=10),
                     #  sp = RipQP.K1CholParams(),
                     # sp = RipQP.K2KrylovParams(uplo = :L, kmethod = :minres, rhs_scale=false, #δ0 = 0.,
@@ -53,7 +53,7 @@ stats1 = RipQP.ripqp(qm,
                     #  solve_method2=RipQP.PC(),
                      perturb = false,
                      # w = RipQP.SystemWrite(write=true, kfirst=1, name = string(save_path, "\\CVXQP1_M"), kgap=1000)), 
-                     itol = RipQP.InputTol(max_iter=200, max_time=100.0, max_iter1 = 30,
+                     itol = RipQP.InputTol(max_iter=400, max_time=100.0, max_iter1 = 30,
                        ϵ_rc=1.0e-6, ϵ_rb=1.0e-6, ϵ_pdd=1.0e-8,
                      ),
                      display = true,
@@ -71,6 +71,72 @@ using DelimitedFiles, MatrixMarket
 K = MatrixMarket.mmread(string(save_path, "\\bug_minaresK_iter1.mtx"))
 rhs_aff = readdlm(string(save_path, "\\bug_minaresrhs_iter1_aff.rhs"), Float64)[:]
 rhs_cc =  readdlm(string(save_path, "\\bug_minaresrhs_iter1_cc.rhs"), Float64)[:] 
+
+function riptest(qm)
+    stats = RipQP.ripqp(qm, display = false, sp = RipQP.K2LDLParams(), solve_method=RipQP.PC(), scaling = true, 
+    ps = true,
+   itol = RipQP.InputTol(max_iter=150, max_time=10.0),
+  #  ϵ_rc=1.0e-1, ϵ_rb=1.0e-1, ϵ_pdd=1.0e0,
+   )
+  #  println(maximum(-(Symmetric(qm.data.H, :L) * stats.solution) + (qm.data.A' * stats.multipliers) + 
+  #   stats.multipliers_L - stats.multipliers_U - qm.data.c))
+   return stats
+end
+
+function createQuadraticModel(qpdata; name="qp_pb")
+    return QuadraticModel(qpdata.c, qpdata.qrows, qpdata.qcols, qpdata.qvals,
+            Arows=qpdata.arows, Acols=qpdata.acols, Avals=qpdata.avals,
+            lcon=qpdata.lcon, ucon=qpdata.ucon, lvar=qpdata.lvar, uvar=qpdata.uvar,
+            c0=qpdata.c0, name=name)
+end
+
+problems = []
+i_max = 14
+i = 1
+for file_name in readdir(path_pb)
+    if file_name[end-3:end] == ".SIF" && !(file_name in ["80BAU3B.SIF" ; "BORE3D.SIF";
+                                                        "CAPRI.SIF"; "CZPROB.SIF";
+                                                        "ETAMACRO.SIF"; "FINNIS.SIF";
+                                                        "FORPLAN.SIF"; "GREENBEA.SIF";
+                                                        "GREENBEB.SIF"; "MAROS.SIF";
+                                                        "NESM.SIF"; "PEROLD.SIF";
+                                                         "PILOT-JA.SIF"; "PILOT-WE.SIF";
+                                                         "PILOT.SIF"; "PILOT4.SIF";
+                                                         "PILOT87.SIF"; "PILOTNOV.SIF";
+                                                          "RECIPELP.SIF"; "SHELL.SIF";
+                                                         "SIERRA.SIF"; "STAIR.SIF";
+                                                         "STANDATA.SIF"; "STANDGUB.SIF";
+                                                        "STANDMPS.SIF"; "TUFF.SIF";
+                                                        "VTP-BASE.SIF"; "DTOC3.SIF";
+                                                         "HS35MOD.SIF";"QBORE3D.SIF";
+                                                        "QCAPRI.SIF"; "QETAMACR.SIF";
+                                                          "QFORPLAN.SIF"; "QPCSTAIR.SIF";
+                                                        "QPCSTAIR.SIF"; "QPILOTNO.SIF";
+                                                        "QRECIPE.SIF"; "QSHELL.SIF";
+                                                        "QSIERRA.SIF"; "QSTAIR.SIF";
+                                                        "QSTANDAT.SIF"; "UBH1.SIF";
+                                                        "YAO.SIF"]) # problems with fixed variables
+
+
+        println(file_name)
+        pb_i = string(path_pb, "\\", file_name)
+        if file_name in ["BLEND.SIF"; "DFL001.SIF"; "FORPLAN.SIF"; "GFRD-PNC.SIF"; "SIERRA.SIF";
+                        "EXDATA.SIF"; "QFORPLAN.SIF"; "QGFRDXPN.SIF"; "VALUES.SIF"]
+            qpdata_i = readqps(pb_i, mpsformat=:fixed)
+        else
+            qpdata_i = readqps(pb_i)
+        end
+        push!(problems, createQuadraticModel(qpdata_i, name=file_name[1:end-4]))
+
+        if i==i_max
+            break
+        end
+        i += 1
+    end
+end
+problems_stats = solve_problems(riptest, problems,
+                                colstats=[:name, :status, :elapsed_time, :objective, :dual_feas, :primal_feas, :iter]);
+
 
 using DataFrames
 using SolverBenchmark

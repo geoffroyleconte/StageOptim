@@ -66,8 +66,8 @@ stats_lp = Dict(
                 :ripqp_ma57 => ripqp_ma573_lp,
                 # :ripqp_ma57_multi => ripqp_ma57_multi_lp,
                 # :ripqp_ma57_multi2 => ripqp_ma57_multi2_lp,
-                :ripqp_ma57_multi3 => ripqp_ma57_multi3_lp,
-                :ripqp_ma57_multi4 => ripqp_ma57_multi4_lp,
+                # :ripqp_ma57_multi3 => ripqp_ma57_multi3_lp,
+                # :ripqp_ma57_multi4 => ripqp_ma57_multi4_lp,
                 :ripqp_ma57_multi5 => ripqp_ma57_multi5_lp,
                 # :ripqp => filter(x -> x.id ∉ easy_pbs_lp, ripqp1_lp),
                 # :ripqp_ma97 => filter(x -> x.id ∉ easy_pbs_lp, ripqp_ma97_lp),
@@ -143,9 +143,9 @@ stats_qp = Dict(
                 # :ripqp_ma57_multi => ripqp_ma57_multi_qp,
                 # :ripqp_multi => ripqp_multi1_qp,
                 # :ripqp_ma57_multi2 => ripqp_ma57_multi2_qp,
-                # :ripqp_ma57_multi3 => ripqp_ma57_multi3_qp,
+                :ripqp_ma57_multi3 => ripqp_ma57_multi3_qp,
                 :ripqp_ma57_multi4 => ripqp_ma57_multi4_qp,
-                :ripqp_ma57_multi5 => ripqp_ma57_multi5_qp,
+                # :ripqp_ma57_multi5 => ripqp_ma57_multi5_qp,
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_qp,
                 # :ripqp => filter(x -> x.id ∉ easy_pbs_qp, ripqp_ma572_qp),
                 # :ripqp_qdldl => filter(x -> x.id ∉ easy_pbs_qp, ripqp_qdldl_qp),
@@ -185,9 +185,9 @@ end
 
 cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
 pgfplotsx()
-# perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # title!("Performance profile (Netlib problems)")
-perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+# perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # title!("Performance profile (Maros and Meszaros problems)")
 # display("image/svg+xml", perf)
 # savefig(perf, raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\multi_mm_riter.tikz")
