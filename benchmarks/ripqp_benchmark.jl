@@ -23,7 +23,7 @@ path_pb_qp = "/home/gelecd/.julia/artifacts/0eff5ae5b345db85386f55f672a19c90f232
 # save_path = "/home/mgi.polymtl.ca/geleco/git_workspace/docGL/amdahl_benchmarks/results"
 save_path = "/home/gelecd/code/docGL/benchmarks/ripqp_paper"
 # save_path = "C:\\Users\\Geoffroy Leconte\\Documents\\doctorat\\code\\docGL\\amdahl_benchmarks\\results"
-pb = string(path_pb_lp, "/25FV47.SIF")
+pb = string(path_pb_lp, "/GREENBEA.SIF")
 # pb2 = string(path_pb_qp, "/DUAL1.SIF")
 qpdata = readqps(pb);
 qm = createQuadraticModel(qpdata)
@@ -118,7 +118,7 @@ end
 # save_problems(string(save_path, "/xpress_nops1"), xpress2_nops)
 # save_problems(string(save_path, "/xpress1"), xpress2)
 # save_problems(string(save_path, "/ripqp_multi1"), ripqp_bm_multi)
-save_problems(string(save_path, "/ripqp2"), ripqp1)
+save_problems(string(save_path, "/ripqp1"), ripqp1)
 # save_problems(string(save_path, "/ripqp_cc1"), ripqp2)
 # save_problems(string(save_path, "/ripqp_ma57"), ripqpma57)
 # save_problems(string(save_path, "/ripqp_ma971"), ripqpma97)
