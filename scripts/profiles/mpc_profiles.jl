@@ -37,7 +37,7 @@ ripqp_qdldl_qp = open_file("ripqp_qdldl1_qp")
 ripqp_cholmod_qp = open_file("ripqp_cholmod1_qp")
 ripqp_multi1_qp = open_file("ripqp_multi1_qp")
 ripqp_ma57_multi1_qp = open_file("ripqp_ma57_multi1_qp")
-ripqp_ma57_multi2_lp = open_file("ripqp_ma57_multi2_qp")
+ripqp_ma57_multi2_qp = open_file("ripqp_ma57_multi2_qp")
 ripqp_ldlprecond1_qp = open_file("ripqp_ldlprecond1_qp") # regu1 1.0e-8, stop crit 64, no equi
 ripqp_ldlprecond2_qp = open_file("ripqp_ldlprecond2_qp") # regu1 1.0e-8 equi
 ripqp_lldlprecond1_qp = open_file("ripqp_lldlprecond_qp") # regu1 1.0e-8, stop crit 64, no equi, new regu_try_catch
@@ -67,6 +67,22 @@ function dfstat_energy(df)
     if df.primal_feas[i] === missing || df.objective[i] == Inf
       output[i] = Inf
     else 
+      output[i] = df.relative_iter_cnt[i]
+      # output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
+    end
+    if df.status[i] ∉ ["first_order", "acceptable"]
+      output[i] = Inf
+    end
+  end
+  return output
+end
+
+function dfstat_energy2(df)
+  output = zeros(length(df.status))
+  for i=1:length(df.status)
+    if df.primal_feas[i] === missing || df.objective[i] == Inf
+      output[i] = Inf
+    else 
       output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
@@ -89,8 +105,8 @@ perf = performance_profile(stats_qp, dfstat_time, legend=:bottomright, b = Solve
 # savefig(perf, string(save_path, "\\solvers_mm_time.tikz"))
 
 ################################ compare fact alg ################################
-stats_lp = Dict(:ripqp_ldl => ripqp1_lp, :ripqp_ma57 => :ripqp_ma57_lp, :ripqp_ma97 => ripqp_ma97_lp, :ripqp_qdldl => ripqp_qdldl_lp, :ripqp_cholmod => ripqp_cholmod_lp)
-stats_qp = Dict(:ripqp_ldl => ripqp1_qp, :ripqp_ma57 => :ripqp_ma57_qp, :ripqp_ma97 => ripqp_ma97_qp, :ripqp_qdldl => ripqp_qdldl_qp, :ripqp_cholmod => ripqp_cholmod_qp)
+stats_lp = Dict(:ripqp_ldl => ripqp1_lp, :ripqp_ma57 => ripqp_ma57_lp, :ripqp_ma97 => ripqp_ma97_lp, :ripqp_qdldl => ripqp_qdldl_lp, :ripqp_cholmod => ripqp_cholmod_lp)
+stats_qp = Dict(:ripqp_ldl => ripqp1_qp, :ripqp_ma57 => ripqp_ma57_qp, :ripqp_ma97 => ripqp_ma97_qp, :ripqp_qdldl => ripqp_qdldl_qp, :ripqp_cholmod => ripqp_cholmod_qp)
 pgfplotsx()
 perf = performance_profile(stats_lp, dfstat_time, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # savefig(perf, string(save_path, "\\fact_net_time.tikz"))
@@ -102,10 +118,10 @@ perf = performance_profile(stats_qp, dfstat_time, legend=:bottomright, b = Solve
 stats_lp = Dict(:ripqp => ripqp1_lp, :ripqp_cc => ripqp_cc1_lp)
 stats_qp = Dict(:ripqp => ripqp1_qp, :ripqp_cc => ripqp_cc1_qp)
 pgfplotsx()
-perf = performance_profile(stats_lp, dfstat_time, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_lp, dfstat_energy, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # savefig(perf, string(save_path, "\\cc_net_time.tikz"))
 pgfplotsx()
-perf = performance_profile(stats_qp, dfstat_time, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_qp, dfstat_energy, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # savefig(perf, string(save_path, "\\cc_mm_time.tikz"))
 
 ################################ multi precision ################################
@@ -132,20 +148,20 @@ perf = performance_profile(stats_qp, dfstat_time, legend=:bottomright, b = Solve
 stats_lp = Dict(:ripqp_multi => ripqp_multi1_lp, :ripqp_multifact1 => ripqp_ldlprecond1_lp, :ripqp_multifact2 => ripqp_ldlprecond2_lp)
 stats_qp = Dict(:ripqp_multi => ripqp_multi1_qp, :ripqp_multifact1 => ripqp_ldlprecond1_qp, :ripqp_multifact2 => ripqp_ldlprecond2_qp)
 pgfplotsx()
-perf = performance_profile(stats_lp, dfstat_energy, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_lp, dfstat_energy2, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # savefig(perf, string(save_path, "\\multifact_net_riter.tikz"))
 pgfplotsx()
-perf = performance_profile(stats_qp, dfstat_energy, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_qp, dfstat_energy2, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # savefig(perf, string(save_path, "\\multifact_mm_riter.tikz"))
 
 ################################ multi precision lldl precond ################################
 stats_lp = Dict(:ripqp_multifact1 => ripqp_ldlprecond1_lp, :ripqp_multifact_lldl => ripqp_lldlprecond1_lp)
 stats_qp = Dict(:ripqp_multifact1 => ripqp_ldlprecond1_qp, :ripqp_multifact_lldl => ripqp_lldlprecond1_qp)
 pgfplotsx()
-perf = performance_profile(stats_lp, dfstat_energy, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_lp, dfstat_energy2, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # savefig(perf, string(save_path, "\\lldl_net_riter.tikz"))
 pgfplotsx()
-perf = performance_profile(stats_qp, dfstat_energy, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_qp, dfstat_energy2, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # savefig(perf, string(save_path, "\\lldl_mm_riter.tikz"))
 pgfplotsx()
 perf = performance_profile(stats_lp, dfstat_time, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
