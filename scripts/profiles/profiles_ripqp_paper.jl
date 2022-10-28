@@ -52,7 +52,7 @@ stats_lp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_lp,
                 # :cplex_nops1 => cplex_nops1_lp,
                 # :xpress_nops1 => xpress_nops1_lp,
-                :ripqp => ripqp1_lp,
+                # :ripqp => ripqp1_lp,
                 :ripqp_ldl => ripqp2_lp,
                 # :ripqp_qdldl => ripqp_qdldl_lp,
                 # :ripqp_mono => ripqp3_lp,
@@ -75,7 +75,7 @@ stats_lp = Dict(
                 # :ripqp_ma57_multi => filter(x -> x.id ∉ easy_pbs_lp, ripqp_ma57_multi_lp),
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_lp2,
                 # :ripqp_cholmod => ripqp_cholmod_lp,
-                # :ripqp_cc => ripqp_cc1_lp,
+                :ripqp_cc => ripqp_cc1_lp,
                 # :ripqp_multifact1 => ripqp_ldlprecond1_lp,
                 # :ripqp_ldlprecond1 => ripqp_ldlprecond3_lp,
                 # :ripqp_ldlprecond4 => ripqp_ldlprecond4_lp,
@@ -131,7 +131,7 @@ stats_qp = Dict(
                 # :gurobi_nops1 => gurobi_nops1_qp,
                 # :cplex_nops1 => cplex_nops1_qp,
                 # :xpress_nops1 => xpress_nops1_qp,
-                :ripqp => ripqp1_qp,
+                # :ripqp => ripqp1_qp,
                 :ripqp_ldl => ripqp2_qp,
                 # :ripqp_mono => ripqp3_qp,
                 # :ripqp_ma57 => ripqp_ma572_qp,
@@ -153,7 +153,7 @@ stats_qp = Dict(
                 # :ripqp_cholmod => ripqp_cholmod_qp,
                 # :ripqp_multi => ripqp_multi1_qp,
                 # :ripqp_nops1 => ripqp_nops1_qp,
-                # :ripqp_cc => ripqp_cc1_qp,
+                :ripqp_cc => ripqp_cc1_qp,
                 # :ripqp_multifact1 => ripqp_ldlprecond1_qp,
                 # :ripqp_ldlprecond2 => ripqp_ldlprecond2_qp,
                 # :ripqp_multifact2 => ripqp_ldlprecond3_qp,
@@ -170,10 +170,10 @@ function dfstat(df)
     if df.primal_feas[i] === missing || df.objective[i] == Inf
       output[i] = Inf
     else 
-      output[i] = df.iter[i]
+      # output[i] = df.iter[i]
       # output[i] = df.relative_iter_cnt[i]
       # output[i] = df.iters_sp[i]
-      # output[i] = df.elapsed_time[i]
+      output[i] = df.elapsed_time[i]
       # output[i] = 4 * df.iters_sp2[i] + df.iters_sp[i]
     end
     if df.status[i] ∉ ["first_order", "acceptable"]
@@ -185,9 +185,9 @@ end
 
 cost = df -> df.elapsed_time + (df.status .!= :first_order) * Inf # + (df.elapsed_time .>= 10.) * Inf
 pgfplotsx()
-# perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # title!("Performance profile (Netlib problems)")
-perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+# perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # title!("Performance profile (Maros and Meszaros problems)")
 # display("image/svg+xml", perf)
 # savefig(perf, raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\multi_mm_riter.tikz")

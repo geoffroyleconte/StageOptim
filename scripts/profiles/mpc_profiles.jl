@@ -118,10 +118,10 @@ perf = performance_profile(stats_qp, dfstat_time, legend=:bottomright, b = Solve
 stats_lp = Dict(:ripqp => ripqp1_lp, :ripqp_cc => ripqp_cc1_lp)
 stats_qp = Dict(:ripqp => ripqp1_qp, :ripqp_cc => ripqp_cc1_qp)
 pgfplotsx()
-perf = performance_profile(stats_lp, dfstat_energy, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_lp, dfstat_time, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # savefig(perf, string(save_path, "\\cc_net_time.tikz"))
 pgfplotsx()
-perf = performance_profile(stats_qp, dfstat_energy, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
+perf = performance_profile(stats_qp, dfstat_time, legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # savefig(perf, string(save_path, "\\cc_mm_time.tikz"))
 
 ################################ multi precision ################################
