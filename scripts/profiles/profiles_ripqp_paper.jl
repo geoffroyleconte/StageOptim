@@ -34,6 +34,7 @@ ripqp_multi1_lp = open_file("ripqp_multi1_lp")
 ripqp_multi2_lp = open_file("ripqp_multi2_lp")
 ripqp_nops1_lp = open_file("ripqp_nops1_lp")
 ripqp_cc1_lp = open_file("ripqp_cc1_lp")
+ripqp_cc2_lp = open_file("ripqp_cc2_lp")
 ripqp_ldlprecond1_lp = open_file("ripqp_ldlprecond1_lp") # regu1 1.0e-8, stop crit 64, no equi
 ripqp_ldlprecond2_lp = open_file("ripqp_ldlprecond2_lp") # regu1 1.0e-8 equi
 ripqp_ldlprecond3_lp = open_file("ripqp_ldlprecond3_lp") # regu1 1.0e-8 stop crit 64, equi
@@ -53,7 +54,7 @@ stats_lp = Dict(
                 # :cplex_nops1 => cplex_nops1_lp,
                 # :xpress_nops1 => xpress_nops1_lp,
                 # :ripqp => ripqp1_lp,
-                :ripqp_ldl => ripqp2_lp,
+                :ripqp => ripqp2_lp,
                 # :ripqp_qdldl => ripqp_qdldl_lp,
                 # :ripqp_mono => ripqp3_lp,
                 # :ripqp_ldlfact => ripqp1_lp,
@@ -76,6 +77,7 @@ stats_lp = Dict(
                 # :ripqp_ma57nosqd => ripqp_ma57nosqd_lp2,
                 # :ripqp_cholmod => ripqp_cholmod_lp,
                 :ripqp_cc => ripqp_cc1_lp,
+                # :ripqp_cc2 => ripqp_cc2_lp,
                 # :ripqp_multifact1 => ripqp_ldlprecond1_lp,
                 # :ripqp_ldlprecond1 => ripqp_ldlprecond3_lp,
                 # :ripqp_ldlprecond4 => ripqp_ldlprecond4_lp,
@@ -113,6 +115,7 @@ ripqp_multi1_qp = open_file("ripqp_multi1_qp")
 ripqp_multi2_qp = open_file("ripqp_multi2_qp")
 ripqp_nops1_qp = open_file("ripqp_nops1_qp") 
 ripqp_cc1_qp = open_file("ripqp_cc1_qp")
+ripqp_cc2_qp = open_file("ripqp_cc2_qp")
 ripqp_ldlprecond1_qp = open_file("ripqp_ldlprecond1_qp") # regu1 1.0e-8, stop crit 64, no equi
 ripqp_ldlprecond2_qp = open_file("ripqp_ldlprecond2_qp") # regu1 1.0e-8 equi
 ripqp_ldlprecond3_qp = open_file("ripqp_ldlprecond3_qp") # regu1 1.0e-8 stop crit 64, equi
@@ -132,7 +135,7 @@ stats_qp = Dict(
                 # :cplex_nops1 => cplex_nops1_qp,
                 # :xpress_nops1 => xpress_nops1_qp,
                 # :ripqp => ripqp1_qp,
-                :ripqp_ldl => ripqp2_qp,
+                :ripqp => ripqp2_qp,
                 # :ripqp_mono => ripqp3_qp,
                 # :ripqp_ma57 => ripqp_ma572_qp,
                 # :ripqp_qdldl => ripqp_qdldl_qp,
@@ -154,6 +157,7 @@ stats_qp = Dict(
                 # :ripqp_multi => ripqp_multi1_qp,
                 # :ripqp_nops1 => ripqp_nops1_qp,
                 :ripqp_cc => ripqp_cc1_qp,
+                # :ripqp_cc => ripqp_cc2_qp,
                 # :ripqp_multifact1 => ripqp_ldlprecond1_qp,
                 # :ripqp_ldlprecond2 => ripqp_ldlprecond2_qp,
                 # :ripqp_multifact2 => ripqp_ldlprecond3_qp,
@@ -190,4 +194,4 @@ perf = performance_profile(stats_lp, dfstat,legend=:bottomright, b = SolverBench
 # perf = performance_profile(stats_qp, dfstat,legend=:bottomright, b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend())
 # title!("Performance profile (Maros and Meszaros problems)")
 # display("image/svg+xml", perf)
-# savefig(perf, raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\multi_mm_riter.tikz")
+# savefig(perf, raw"C:\Users\Geoffroy Leconte\Documents\doctorat\biblio\papiers\ripqp\paper\profiles\cc_net_time.tikz")
