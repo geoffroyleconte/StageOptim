@@ -2,23 +2,27 @@ using PrettyTables
 using Random
 using LinearAlgebra
 using ProximalOperators
+using MLDatasets
 using NLPModels, NLPModelsModifiers, RegularizedProblems, RegularizedOptimization, ShiftedProximalOperators, SolverBenchmark
 using Printf
 
-Random.seed!(1234)
-compound = 1
-
 # utils for extracting stats / display table
 modelname(nlp::LSR1Model) = "LSR1"
+modelname(nlp::LBFGSModel) = "LBFGS"
+modelname(nlp::SpectralGradientModel) = "SpectralGradient"
+modelname(nlp::DiagonalQNModel) = "DiagonalQN"
 subsolvername(subsolver::Symbol) = subsolver == :None ? "" : string("-", subsolver)
 function options_str(options::ROSolverOptions, solver::Symbol, subsolver_options::ROSolverOptions, subsolver::Symbol)
   if solver == :TRDH
-    return !options.spectral ? (options.psb ? "-DiagQN-PSB" : "-DiagQN-Andrei") : "-Spectral"
+    out_str = !options.spectral ? (options.psb ? "-DiagQN-PSB" : "-DiagQN-Andrei") : "-Spectral"
+    out_str = (options.reduce_TR) ? out_str : string(out_str, "-noredTR")
   elseif solver == :TR && subsolver == :TRDH
-    return !subsolver_options.spectral ? (subsolver_options.psb ? "-DiagQN-PSB" : "-DiagQN-Andrei") : "-Spectral"
+    out_str = !subsolver_options.spectral ? (subsolver_options.psb ? "-DiagQN-PSB" : "-DiagQN-Andrei") : "-Spectral"
+    out_str = (subsolver_options.reduce_TR) ? out_str : string(out_str, "-noredTR")
   else
-    return ""
+    out_str = ""
   end
+  return out_str
 end
 grad_evals(nlp::AbstractNLPModel) = neval_grad(nlp)
 grad_evals(nls::AbstractNLSModel) = neval_jtprod_residual(nls) + neval_jprod_residual(nls)
@@ -119,49 +123,11 @@ function benchmark_table(
 end
 
 
-# model
-model, nls_model, sol = bpdn_model(compound, bounds = true)
 
-# parameters
-solvers = [:R2, :TRDH, :TRDH, :TR, :TR, :TR, :TR]
-subsolvers = [:None, :None, :None, :R2, :TRDH, :TRDH, :TRDH]
-f = LSR1Model(model)
-λ = norm(grad(model, zeros(model.meta.nvar)), Inf) / 10
-h = NormL0(λ)
-
-options = ROSolverOptions(ν = 1.0, β = 1e16, ϵa = 1e-6, ϵr = 1e-6, verbose = 10, maxIter = 500, spectral = true)
-options2 = ROSolverOptions(spectral = false, psb = true)
-options3 = ROSolverOptions(spectral = false, psb = false)
-options4 = ROSolverOptions(spectral = true)
-options5 = ROSolverOptions(ν = 1.0, β = 1e16, ϵa = 1e-6, ϵr = 1e-6, verbose = 10, maxIter = 500, spectral = false, psb = true)
-solver_options = [options, options, options5, options, options, options, options]
-subsolver_options = [options2, options2, options2, options2, options2, options3, options4] # n'importe lequel si subsolver = :None
-
-benchmark_table(f, 1:f.meta.nvar, sol, h, λ, solvers, subsolvers, solver_options, subsolver_options, "BPDN-cstr")
-
-
-# no cstr model
-
-# model
-model, nls_model, sol = bpdn_model(compound, bounds = false)
-f = LSR1Model(model)
-benchmark_table(f, 1:f.meta.nvar, sol, h, λ, solvers, subsolvers, solver_options, subsolver_options, "BPDN")
-
-# NNMF
-m, n, k = 100, 50, 5
-model, A, selected = nnmf_model(m, n, k)
-f = LSR1Model(model)
-λ = norm(grad(model, rand(model.meta.nvar)), Inf) / 200
-h = NormL0(λ)
-options = ROSolverOptions(ν = 1.0e-3, β = 1e16, ϵa = 1e-6, ϵr = 1e-6, verbose = 10, maxIter = 500, spectral = true)
-options5 = ROSolverOptions(ν = 1.0e-3, β = 1e16, ϵa = 1e-6, ϵr = 1e-6, verbose = 10, maxIter = 500, spectral = false)
-solver_options = [options, options, options5, options, options, options, options]
-subsolver_options = [options2, options2, options2, options2, options2, options3, options4]
-benchmark_table(f, selected, [], h, λ, solvers, subsolvers, solver_options, subsolver_options,
-                "NNMF with m = $m, n = $n, k = $k, ν = 1.0e-3,")
-
-
-
+# λ = norm(grad(model, rand(model.meta.nvar)), Inf) / 100000
+# h = NormL1(λ)
+# benchmark_table(f, selected, [], h, λ, solvers, subsolvers, solver_options, subsolver_options,
+#                 "NNMF with m = $m, n = $n, k = $k, ν = 1.0e-3,")
 
 
 
