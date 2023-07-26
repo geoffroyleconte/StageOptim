@@ -3,12 +3,12 @@ using RegularizedOptimization, RegularizedProblems, ProximalOperators, NLPModels
 function unbounded_model(β, α, ϵ, γ3, p)
 
   @assert β ≥ 2 / α + 1
-  kϵ = Int(floor(ϵ^(-2 / (1 - 2*p))))
+  kϵ = Int(floor(ϵ^(-2 / (1 - p))))
   K = 0:kϵ # K[k] = k - 1
   w(k) = (kϵ - k) / kϵ 
   Δ(k) = γ3^k
-  G = [- ϵ * (1 + w(k)) * sqrt(1 / (1 / (α * Δ(k)) + k^p * (1 + 1 / (α * Δ(k))))) for k in K] # G[k] = g_(k-1)
-  g0 = -ϵ * (1 + w(0)) * sqrt(1 / (1+ 2/α))
+  G = [- ϵ * (1 + w(k)) for k in K] # G[k] = g_(k-1)
+  g0 = -2 * ϵ
   G[1] = g0
   S = [-1 / k^p * G[k+1] for k in K] # S[k] = s_(k-1)
   S[1] = -g0
@@ -17,7 +17,7 @@ function unbounded_model(β, α, ϵ, γ3, p)
   for k=1:kϵ
     X[k+1] = X[k] + S[k]
   end
-  f0 = 4 * ϵ^2 * (1.0 / (1 + 2 / α) + 1.0) + 4.0 / (1.0 - 2 * p)
+  f0 = 8 * ϵ^2 + 4.0 / (1.0 - p)
   F = zeros(kϵ + 1) # F[k] = f_(k-1)
   F[1] = f0
   for k=1:kϵ
@@ -123,19 +123,19 @@ model, X, kϵ = unbounded_model(β, α, ϵ, γ, p)
 h = NormL1(0.0)
 χ = NormLinf(1.0)
 lsr1model = LSR1Model(model)
-# TR_out = TR(lsr1model, h, χ, options, x0 = lsr1model.meta.x0)
-TR_out = TRDH(model, h, χ, options, x0 = lsr1model.meta.x0)
+TR_out = TR(lsr1model, h, χ, options, x0 = lsr1model.meta.x0)
+# TR_out = TRDH(model, h, χ, options, x0 = lsr1model.meta.x0)
 
 
 
 γ3 = γ
 @assert β ≥ 2 / α + 1
-kϵ = Int(floor(ϵ^(-2 / (1 - 2*p))))
+kϵ = Int(floor(ϵ^(-2 / (1 - p))))
 K = 0:kϵ # K[k] = k - 1
 w(k) = (kϵ - k) / kϵ 
 Δ(k) = γ3^k
-G = [- ϵ * (1 + w(k)) * sqrt(1 / (1 / (α * Δ(k)) + k^p * (1 + 1 / (α * Δ(k))))) for k in K] # G[k] = g_(k-1)
-g0 = -ϵ * (1 + w(0)) * sqrt(1 / (1+ 2/α))
+G = [- ϵ * (1 + w(k)) for k in K] # G[k] = g_(k-1)
+g0 = -2 * ϵ
 G[1] = g0
 S = [-1 / k^p * G[k+1] for k in K] # S[k] = s_(k-1)
 S[1] = -g0
@@ -144,7 +144,7 @@ X[1] = 0.0
 for k=1:kϵ
   X[k+1] = X[k] + S[k]
 end
-f0 = 4 * ϵ^2 * (1.0 / (1 + 2 / α) + 1.0) + 4.0 / (1.0 - 2 * p)
+f0 = 8 * ϵ^2 + 4.0 / (1.0 - p)
 F = zeros(kϵ + 1) # F[k] = f_(k-1)
 F[1] = f0
 for k=1:kϵ
@@ -236,8 +236,9 @@ end
 
 
 using PGFPlots
+absc = X[1]:0.01:X[end]
 b = Axis(
-  PGFPlots.Plots.Linear(X, f.(X), mark = "none"),
+  PGFPlots.Plots.Linear(absc, f.(absc), mark = "none"),
   xlabel = "x",
   ylabel = "f(x)",
   # ymode = "log",
@@ -245,7 +246,7 @@ b = Axis(
 # save("f-plot.tikz", b)
 
 c = Axis(
-  PGFPlots.Plots.Linear(X, g.(X), mark = "none"),
+  PGFPlots.Plots.Linear(absc, g.(absc), mark = "none"),
   xlabel = "x",
   ylabel = "f'(x)",
   # ymode = "log",
